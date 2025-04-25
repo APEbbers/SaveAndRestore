@@ -32,6 +32,10 @@ import platform
 from PySide6.QtCore import Qt, QTimer, QSize, QSettings, SIGNAL
 from PySide6.QtGui import QGuiApplication, QAction
 from PySide6.QtWidgets import QMainWindow, QLabel, QSizePolicy, QApplication, QToolButton, QStyle, QMenuBar, QMenu
+import zipfile
+from zipfile import ZipFile
+import datetime
+import pathlib
 
 import Standard_Functions_SaveAndRestore as Standard_Functions
 
@@ -79,12 +83,27 @@ class SaveAndRestore:
         UserConfig = App.getUserConfigDir() + "user.cfg"
         SystemConfig = App.getUserConfigDir() + "system.cfg"
 
-        Text = f"""
-        User config file is:    {UserConfig}\n
-        System config file is:  {SystemConfig}\n
-        """
+        # Text = f"""
+        # User config file is:    {UserConfig}\n
+        # System config file is:  {SystemConfig}\n
+        # """
 
-        Standard_Functions.Mbox(Text, "", 0)
+        # Standard_Functions.Mbox(Text, "", 0)
+
+        Files = [UserConfig, SystemConfig]
+        Year = datetime.datetime.year
+        Month = datetime.datetime.month
+        day = datetime.datetime.day
+
+        FileName = f"{Year}_{Month}_{day} FreeCAD Settings.zip"
+        desktop = pathlib.Path.home() / "Desktop"
+        Fullname = os.path.join(desktop, FileName)
+
+        with ZipFile(Fullname, "w") as zipObj:
+            for File in Files:
+                zipObj.write(Files)
+
+        return
 
 
 class run:
