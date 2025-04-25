@@ -29,8 +29,8 @@ import FreeCADGui as Gui
 import shutil
 import sys
 import platform
-from PySide6.QtCore import Qt, QTimer, QSize, QSettings
-from PySide6.QtGui import QGuiApplication
+from PySide6.QtCore import Qt, QTimer, QSize, QSettings, SIGNAL
+from PySide6.QtGui import QGuiApplication, QAction
 from PySide6.QtWidgets import QMainWindow, QLabel, QSizePolicy, QApplication, QToolButton, QStyle, QMenuBar, QMenu
 
 import Standard_Functions_SaveAndRestore as Standard_Functions
@@ -38,7 +38,7 @@ import Standard_Functions_SaveAndRestore as Standard_Functions
 translate = App.Qt.translate
 
 # Get the main window of FreeCAD
-mw = Gui.getMainWindow()
+mw: QMainWindow = Gui.getMainWindow()
 
 
 class SaveAndRestore:
@@ -52,24 +52,27 @@ class SaveAndRestore:
         self.ApplicationMenus()
 
     def ApplicationMenus(self):
-        # Define a placeholder for the tools menu
-        ToolsMenu = QMenu()
+        try:
+            # get the menubar
+            MenuBar: QMenuBar = mw.menuBar()
 
-        # get the menubar
-        MenuBar: QMenuBar = mw.menuBar()
+            # Add a button for the Save and Restore dialog
+            Button = QAction(mw)
+            Button.setText(translate("FreeCAD SaveAndRestore", "Save and restore..."))
+            Button.setToolTip(translate("FreeCAD SaveAndRestore", "Save and restore FreeCAD's setting files"))
 
-        # Get the tools menu
-        for child in MenuBar.actions():
-            if child.objectName() == "&Tools":
-                ToolsMenu = child
-                break
+            def LoadDialog():
+                self.LoadDialog()
 
-        # Add a button for the Save and Restore dialog
-        Button = ToolsMenu.addAction(translate("FreeCAD SaveAndRestore", "Save and restore..."))
-        Button.setToolTip("FreeCAD SaveAndRestore", "Save and restore FreeCAD's setting files")
+            Button.connect(Button, SIGNAL("triggered()"), LoadDialog)
 
-        Button.triggered.connect(self.LoadDialog)
+            # Add the button to the tools menu
+            for action in MenuBar.children():
+                if action.objectName() == "&Tools":
+                    action.addAction(Button)
 
+        except Exception:
+            pass
         return
 
     def LoadDialog(self):
@@ -78,7 +81,7 @@ class SaveAndRestore:
 
         Text = f"""
         User config file is:    {UserConfig}\n
-        System config file is:  {SystemConfig}|n
+        System config file is:  {SystemConfig}\n
         """
 
         Standard_Functions.Mbox(Text, "", 0)
