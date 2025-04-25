@@ -49,6 +49,8 @@ class SaveAndRestore:
         """
         super().__init__()
 
+        self.ApplicationMenus()
+
     def ApplicationMenus(self):
         # Define a placeholder for the tools menu
         ToolsMenu = QMenu()
