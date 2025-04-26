@@ -64,7 +64,7 @@ class SaveAndRestore:
             Button.setToolTip(translate("FreeCAD SaveAndRestore", "Save and restore FreeCAD's setting files"))
 
             def LoadDialog():
-                self.loadDialog
+                LoadDialog_SaveAndRestore.main()
 
             Button.connect(Button, SIGNAL("triggered()"), LoadDialog)
 
@@ -75,10 +75,6 @@ class SaveAndRestore:
 
         except Exception:
             pass
-        return
-
-    def loadDialog(self):
-        LoadDialog_SaveAndRestore.main()
         return
 
 
