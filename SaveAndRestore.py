@@ -61,6 +61,7 @@ class SaveAndRestore:
             # Add a button for the Save and Restore dialog
             Button = QAction(mw)
             Button.setText(translate("FreeCAD SaveAndRestore", "Save and restore..."))
+            Button.setObjectName("SaveAndRestore")
             Button.setToolTip(translate("FreeCAD SaveAndRestore", "Save and restore FreeCAD's setting files"))
 
             def LoadDialog():
@@ -69,10 +70,18 @@ class SaveAndRestore:
             Button.connect(Button, SIGNAL("triggered()"), LoadDialog)
 
             # Add the button to the tools menu
-            for action in MenuBar.children():
-                if action.objectName() == "&Tools":
-                    action.addAction(Button)
+            def addMenu():
+                for child in MenuBar.children():
+                    if child.objectName() == "&Tools":
+                        isPresent = False
+                        for action in child.actions():
+                            if action.text() == "Save and restore...":
+                                isPresent = True
 
+                        if isPresent is False:
+                            child.addAction(Button)
+
+            mw.workbenchActivated.connect(addMenu)
         except Exception:
             pass
         return
