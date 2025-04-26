@@ -104,6 +104,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             # Define the filename
             FileName = f"{Prefix} - FreeCAD Settings.zip"
 
+            # Get the file and location were the zip file must be saved
             Fullname = Standard_Functions.GetFileDialog(
                 Filter="Archive (*.zip)",
                 parent=self.form,
@@ -118,6 +119,34 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         else:
             print(translate("FreeCAD SaveAndRestore", "No settings selected to save"))
         return
+
+    def RestoreSettings(self):
+        UserConfig = "user.cfg"
+        SystemConfig = "system.cfg"
+
+        Files = []
+        if self.form.IncludeUser_Save.checkState() == Qt.CheckState.Checked:
+            Files.append(UserConfig)
+        if self.form.IncludeSystem_Save.checkState() == Qt.CheckState.Checked:
+            Files.append(SystemConfig)
+
+        Fullname = Standard_Functions.GetFileDialog(
+            Filter="Archive (*.zip)",
+            parent=self.form,
+            DefaultPath=Parameters_SaveAndRestore.SAVE_DIRECTORY,
+            SaveAs=False,
+        )
+        if Fullname is not None and Fullname != "":
+            # loading the temp.zip and creating a zip object
+            with ZipFile(Fullname, "r") as zipObj:
+                # Extracting all the members of the zip
+                # into a specific location.
+                for File in Files:
+                    zipObj.extract(File, App.getUserConfigDir())
+
+                answer = Standard_Functions.RestartDialog(includeIcons=True)
+                if answer == "yes":
+                    Standard_Functions.restart_freecad()
 
 
 def main():

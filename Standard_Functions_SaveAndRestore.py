@@ -165,7 +165,7 @@ def RestartDialog(message="", includeIcons=False):
     # Set the message
     if message == "":
         message = translate(
-            "FreeCAD Ribbon",
+            "FreeCAD SaveAndRestore",
             "You must restart FreeCAD for changes to take effect.",
         )
 
@@ -173,12 +173,12 @@ def RestartDialog(message="", includeIcons=False):
     msgBox = QMessageBox()
     msgBox.setIcon(QMessageBox.Icon.Warning)
     msgBox.setText(message)
-    msgBox.setWindowTitle("FreeCAD Ribbon")
+    msgBox.setWindowTitle("FreeCAD SaveAndRestore")
     # Set the buttons and default button
     msgBox.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
     msgBox.setDefaultButton(QMessageBox.StandardButton.No)
-    msgBox.button(QMessageBox.StandardButton.Yes).setText(translate("FreeCAD Ribbon", "Restart now"))
-    msgBox.button(QMessageBox.StandardButton.No).setText(translate("FreeCAD Ribbon", "Restart later"))
+    msgBox.button(QMessageBox.StandardButton.Yes).setText(translate("FreeCAD SaveAndRestore", "Restart now"))
+    msgBox.button(QMessageBox.StandardButton.No).setText(translate("FreeCAD SaveAndRestore", "Restart later"))
     if includeIcons is True:
         msgBox.button(QMessageBox.StandardButton.No).setIcon(Gui.getIcon("edit_Cancel.svg"))
         msgBox.button(QMessageBox.StandardButton.Yes).setIcon(Gui.getIcon("edit_OK.svg"))
