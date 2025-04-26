@@ -136,9 +136,9 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         SystemConfig = "system.cfg"
 
         Files = []
-        if self.form.IncludeUser_Save.checkState() == Qt.CheckState.Checked:
+        if self.form.IncludeUser_Restore.checkState() == Qt.CheckState.Checked:
             Files.append(UserConfig)
-        if self.form.IncludeSystem_Save.checkState() == Qt.CheckState.Checked:
+        if self.form.IncludeSystem_Restore.checkState() == Qt.CheckState.Checked:
             Files.append(SystemConfig)
 
         Fullname = Standard_Functions.GetFileDialog(
