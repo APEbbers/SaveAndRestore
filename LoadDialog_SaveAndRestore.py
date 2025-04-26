@@ -75,22 +75,26 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         # this will create a Qt widget from our ui file
         self.form = Gui.PySideUic.loadUi(os.path.join(pathUI, "ui_Dialog.ui"))
 
+        def on_saveSettings_clicked():
+            print(translate("FreeCAD SaveAndRestore", "Settings saved"))
+            self.SaveSettings()
+
         self.form.saveSettings.connect(
             self.form.saveSettings,
             SIGNAL("clicked()"),
-            self.on_saveSettings_clicked,
+            on_saveSettings_clicked,
         )
+        return
 
-    def on_saveSettings_clicked(self):
-        self.SaveSettings()
+        return
 
-    def SaveSettings(self=None):
+    def SaveSettings(self):
         UserConfig = App.getUserConfigDir() + "user.cfg"
         SystemConfig = App.getUserConfigDir() + "system.cfg"
 
         Files = [UserConfig, SystemConfig]
 
-        now = datetime.datetime.now()
+        now = datetime.now()
         Prefix = now.strftime("%Y_%m_%d_%H_%M_%S")
 
         # Define the filename
@@ -113,7 +117,6 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
 
 
 def main():
-    print("tried to load the form")
     # Get the form
     Dialog = LoadDialog().form
     # Show the form
