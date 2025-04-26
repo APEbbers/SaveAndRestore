@@ -96,6 +96,16 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             SIGNAL("clicked()"),
             on_RestoreSettings_clicked,
         )
+
+        # Connect the restore ToolBars function
+        def on_EnableToolbars_clicked():
+            self.EnableToolbars()
+
+        self.form.restoreToolbars.connect(
+            self.form.restoreToolbars,
+            SIGNAL("clicked()"),
+            on_EnableToolbars_clicked,
+        )
         return
 
     def SaveSettings(self):
@@ -158,6 +168,22 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                 answer = Standard_Functions.RestartDialog(includeIcons=True)
                 if answer == "yes":
                     Standard_Functions.restart_freecad()
+
+        return
+
+    def EnableToolbars(self):
+        ToolBarGroup = App.ParamGet("User parameter:BaseApp/MainWindow/Toolbars")
+
+        ToolBarStates = ToolBarGroup.getBools()
+
+        for ToolBar in ToolBarStates:
+            ToolBar.setBool(True)
+
+        answer = Standard_Functions.RestartDialog(includeIcons=True)
+        if answer == "yes":
+            Standard_Functions.restart_freecad()
+
+        return
 
 
 def main():
