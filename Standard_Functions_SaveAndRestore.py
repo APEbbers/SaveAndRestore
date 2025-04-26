@@ -899,3 +899,17 @@ def AddToClipboard(Text):
 
     cmd = "clip" if platform.system() == "Windows" else "pbcopy"
     subprocess.run(cmd, input=Text, text=True, shell=True)
+
+
+def find_cloud_path():
+    import subprocess
+    import platform
+
+    if platform.system().lower() == "windows":
+        command = r'reg query "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" /v "Desktop"'
+        result = subprocess.run(command, stdout=subprocess.PIPE, text=True)
+        desktop = result.stdout.splitlines()[2].split()[2]
+
+        return desktop
+    else:
+        return ""

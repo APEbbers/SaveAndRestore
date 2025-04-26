@@ -47,10 +47,9 @@ from PySide6.QtCore import Qt, SIGNAL, Signal, QObject, QThread, QSize
 import sys
 import json
 from datetime import datetime
-import shutil
-import Standard_Functions_SaveAndRestore as StandardFunctions
-import webbrowser
-from SaveAndRestore import SaveAndRestore
+import Standard_Functions_SaveAndRestore as Standard_Functions
+import pathlib
+from zipfile import ZipFile
 
 # import graphical created Ui. (With QtDesigner or QtCreator)
 import Dialog as Dialog
@@ -81,7 +80,34 @@ class LoadDialog(Dialog.Ui_Dialog):
         )
 
     def on_saveSettings_clicked(self):
-        SaveAndRestore.LoadDialog()
+        self.SaveSettings()
+
+    def SaveSettings(self=None):
+        UserConfig = App.getUserConfigDir() + "user.cfg"
+        SystemConfig = App.getUserConfigDir() + "system.cfg"
+
+        Files = [UserConfig, SystemConfig]
+
+        now = datetime.datetime.now()
+        Prefix = now.strftime("%Y_%m_%d_%H_%M_%S")
+
+        # Define the filename
+        FileName = f"{Prefix} - FreeCAD Settings.zip"
+
+        # assume onedrive is present, desktop will be one layer below
+        # something like "C:/Users/username/Onedrive - company name/Desktop"
+        desktop = Standard_Functions.find_cloud_path()
+        # if no Onedrive revert to standard Desktop
+        # location: i.e. "C:/Users/username/Desktop
+        if len(desktop) == 0:
+            desktop = pathlib.Path.home() / "Desktop"
+        Fullname = os.path.join(desktop, FileName)
+
+        with ZipFile(Fullname, "w") as zipObj:
+            for File in Files:
+                zipObj.write(File, File.split(os.sep)[-1])
+
+        return
 
 
 def main():
