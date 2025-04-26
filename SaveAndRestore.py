@@ -83,7 +83,7 @@ class SaveAndRestore:
             pass
         return
 
-    def LoadDialog(self):
+    def LoadDialog(self=None):
         UserConfig = App.getUserConfigDir() + "user.cfg"
         SystemConfig = App.getUserConfigDir() + "system.cfg"
 
