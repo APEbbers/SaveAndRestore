@@ -46,14 +46,14 @@ def Mbox(
     0 : OK                          (text, title, style)\n
     1 : Yes | No                    (text, title, style)\n
     2 : Ok | Cancel                 (text, title, style)\n
+    3 : Yes | No | Cancel           (text, title, style)\n
     20 : Inputbox                   (text, title, style, default)\n
     21 : Inputbox with dropdown     (text, title, style, default, stringlist)\n
     Icontype:                       string: NoIcon, Question, Warning, Critical. Default Information\n
     30 : OK (Non blocking)          (text, title, style)\n
     """
-    from PySide.QtWidgets import QMessageBox, QInputDialog
-    from PySide.QtCore import Qt
-    from PySide import QtWidgets
+    from PySide6.QtWidgets import QMessageBox, QInputDialog
+    from PySide6.QtCore import Qt
 
     Icon = QMessageBox.Icon.Information
     if IconType == "NoIcon":
@@ -103,6 +103,25 @@ def Mbox(
         reply = msgBox.exec_()
         if reply == QMessageBox.StandardButton.Ok:
             return "ok"
+        if reply == QMessageBox.StandardButton.Cancel:
+            return "cancel"
+    if style == 3:
+        # Set the messagebox
+        msgBox = QMessageBox()
+        msgBox.setIcon(Icon)
+        msgBox.setText(text)
+        msgBox.setWindowTitle(title)
+        # Set the buttons and default button
+        msgBox.setStandardButtons(
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No | QMessageBox.StandardButton.Cancel
+        )
+        msgBox.setDefaultButton(QMessageBox.StandardButton.Yes)
+
+        reply = msgBox.exec_()
+        if reply == QMessageBox.StandardButton.Yes:
+            return "yes"
+        if reply == QMessageBox.StandardButton.No:
+            return "no"
         if reply == QMessageBox.StandardButton.Cancel:
             return "cancel"
     if style == 20:
@@ -920,3 +939,68 @@ def find_cloud_path(Folder="Desktop"):
         return desktop
     else:
         return pathlib.Path.home() / Folder
+
+
+def EnableToolbars(StyleSheet):
+    from PySide6.QtWidgets import QToolBar
+
+    WBList = Gui.listWorkbenches()
+    loadAllWorkbenches(
+        AutoHide=False,
+        FinishMessage=translate("FreeCAD SaveAndResore", "All workbenches activated"),
+        StyleSheet=StyleSheet,
+    )
+    for WB in WBList:
+        for tb in mw.findChildren(QToolBar):
+            tb.show()
+
+    answer = RestartDialog(includeIcons=True)
+    if answer == "yes":
+        restart_freecad()
+    return
+
+
+def loadAllWorkbenches(AutoHide=True, HideOnly=False, FinishMessage="", StyleSheet=None):
+    from PySide6.QtWidgets import QLabel
+    from PySide6.QtCore import Qt
+
+    lbl = QLabel(translate("FreeCAD SaveAndResore", "Loading workbench … (…/…)"))
+    lbl.setWindowFlags(Qt.WindowType.Dialog | Qt.WindowType.WindowStaysOnTopHint)
+    lbl.setMinimumSize(300, 20)
+    lbl.setContentsMargins(3, 3, 3, 3)
+
+    # Get the stylesheet from the main window and use it for this form
+    if StyleSheet is not None:
+        lbl.setStyleSheet(StyleSheet)
+
+    if HideOnly is False:
+        activeWorkbench = Gui.activeWorkbench().name()
+        lbl.show()
+        lst = Gui.listWorkbenches()
+        for i, wb in enumerate(lst):
+            msg = (
+                translate("FreeCAD SaveAndResore", "Loading workbench ")
+                + wb
+                + " ("
+                + str(i + 1)
+                + "/"
+                + str(len(lst))
+                + ")"
+            )
+            print(msg)
+            lbl.setText(msg)
+            geo = lbl.geometry()
+            geo.setSize(lbl.sizeHint())
+            lbl.setGeometry(geo)
+            lbl.repaint()
+            Gui.updateGui()  # Probably slower with this, because it redraws the entire GUI with all tool buttons changed etc. but allows the label to actually be updated, and it looks nice and gives a quick overview of all the workbenches…
+            try:
+                Gui.activateWorkbench(wb)
+            except Exception:
+                pass
+        if FinishMessage != "":
+            lbl.setText(FinishMessage)
+            print(FinishMessage)
+        Gui.activateWorkbench(activeWorkbench)
+    if AutoHide is True or HideOnly is True:
+        lbl.hide()

@@ -26,30 +26,10 @@ SOFTWARE.
 import FreeCAD as App
 import FreeCADGui as Gui
 import os
-from PySide6.QtGui import QIcon, QPixmap, QAction, QGuiApplication
-from PySide6.QtWidgets import (
-    QListWidgetItem,
-    QTableWidgetItem,
-    QListWidget,
-    QTableWidget,
-    QToolBar,
-    QToolButton,
-    QComboBox,
-    QPushButton,
-    QMenu,
-    QWidget,
-    QLineEdit,
-    QSizePolicy,
-    QRadioButton,
-    QLabel,
-    QCheckBox,
-)
-from PySide6.QtCore import Qt, SIGNAL, Signal, QObject, QThread, QSize
+from PySide6.QtCore import Qt, SIGNAL
 import sys
-import json
 from datetime import datetime
 import Standard_Functions_SaveAndRestore as Standard_Functions
-import pathlib
 from zipfile import ZipFile
 import Parameters_SaveAndRestore
 import StyleMapping_SaveAndRestore
@@ -100,7 +80,12 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
 
         # Connect the restore ToolBars function
         def on_EnableToolbars_clicked():
-            self.EnableToolbars()
+            StyleSheet = "background-color: "
+            +StyleMapping_SaveAndRestore.ReturnStyleItem("Background_Color")
+            +";color: "
+            +StyleMapping_SaveAndRestore.ReturnStyleItem("FontColor")
+            +";"
+            Standard_Functions.EnableToolbars(StyleSheet=StyleSheet)
 
         self.form.restoreToolbars.connect(
             self.form.restoreToolbars,
@@ -171,70 +156,6 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                     Standard_Functions.restart_freecad()
 
         return
-
-    def EnableToolbars(self):
-        WBList = Gui.listWorkbenches()
-        self.loadAllWorkbenches(
-            AutoHide=False,
-            FinishMessage=translate("FreeCAD SaveAndResore", "All workbenches activated"),
-        )
-        for WB in WBList:
-            for tb in mw.findChildren(QToolBar):
-                tb.show()
-
-        answer = Standard_Functions.RestartDialog(includeIcons=True)
-        if answer == "yes":
-            Standard_Functions.restart_freecad()
-        return
-
-    def loadAllWorkbenches(self, AutoHide=True, HideOnly=False, FinishMessage=""):
-        lbl = QLabel(translate("FreeCAD SaveAndResore", "Loading workbench … (…/…)"))
-        lbl.setWindowFlags(Qt.WindowType.Dialog | Qt.WindowType.WindowStaysOnTopHint)
-        lbl.setMinimumSize(300, 20)
-        lbl.setContentsMargins(3, 3, 3, 3)
-
-        # Get the stylesheet from the main window and use it for this form
-        (
-            lbl.setStyleSheet(
-                "background-color: "
-                + StyleMapping_SaveAndRestore.ReturnStyleItem("Background_Color")
-                + ";color: "
-                + StyleMapping_SaveAndRestore.ReturnStyleItem("FontColor")
-                + ";"
-            )
-        )
-
-        if HideOnly is False:
-            activeWorkbench = Gui.activeWorkbench().name()
-            lbl.show()
-            lst = Gui.listWorkbenches()
-            for i, wb in enumerate(lst):
-                msg = (
-                    translate("FreeCAD SaveAndResore", "Loading workbench ")
-                    + wb
-                    + " ("
-                    + str(i + 1)
-                    + "/"
-                    + str(len(lst))
-                    + ")"
-                )
-                print(msg)
-                lbl.setText(msg)
-                geo = lbl.geometry()
-                geo.setSize(lbl.sizeHint())
-                lbl.setGeometry(geo)
-                lbl.repaint()
-                Gui.updateGui()  # Probably slower with this, because it redraws the entire GUI with all tool buttons changed etc. but allows the label to actually be updated, and it looks nice and gives a quick overview of all the workbenches…
-                try:
-                    Gui.activateWorkbench(wb)
-                except Exception:
-                    pass
-            if FinishMessage != "":
-                lbl.setText(FinishMessage)
-                print(FinishMessage)
-            Gui.activateWorkbench(activeWorkbench)
-        if AutoHide is True or HideOnly is True:
-            lbl.hide()
 
 
 def main():

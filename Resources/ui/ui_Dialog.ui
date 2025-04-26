@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>275</width>
-    <height>212</height>
+    <width>340</width>
+    <height>221</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -136,7 +136,7 @@
        <widget class="QPushButton" name="restoreToolbars">
         <property name="minimumSize">
          <size>
-          <width>100</width>
+          <width>120</width>
           <height>25</height>
          </size>
         </property>
