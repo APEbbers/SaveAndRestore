@@ -29,6 +29,7 @@ import FreeCADGui as Gui
 import shutil
 import sys
 import platform
+import subprocess
 from PySide6.QtCore import Qt, QTimer, QSize, QSettings, SIGNAL
 from PySide6.QtGui import QGuiApplication, QAction
 from PySide6.QtWidgets import QMainWindow, QLabel, QSizePolicy, QApplication, QToolButton, QStyle, QMenuBar, QMenu
@@ -36,6 +37,9 @@ import zipfile
 from zipfile import ZipFile
 import datetime
 import pathlib
+from glob import glob
+import json
+from pathlib import Path
 
 import Standard_Functions_SaveAndRestore as Standard_Functions
 
@@ -83,27 +87,39 @@ class SaveAndRestore:
         UserConfig = App.getUserConfigDir() + "user.cfg"
         SystemConfig = App.getUserConfigDir() + "system.cfg"
 
-        # Text = f"""
-        # User config file is:    {UserConfig}\n
-        # System config file is:  {SystemConfig}\n
-        # """
-
-        # Standard_Functions.Mbox(Text, "", 0)
-
         Files = [UserConfig, SystemConfig]
-        Year = datetime.datetime.year
-        Month = datetime.datetime.month
-        day = datetime.datetime.day
 
-        FileName = f"{Year}_{Month}_{day} FreeCAD Settings.zip"
-        desktop = pathlib.Path.home() / "Desktop"
+        now = datetime.datetime.now()
+        Prefix = now.strftime("%Y_%m_%d_%H_%M_%S")
+
+        # Define the filename
+        FileName = f"{Prefix} - FreeCAD Settings.zip"
+
+        # assume onedrive is present, desktop will be one layer below
+        # something like "C:/Users/username/Onedrive - company name/Desktop"
+        desktop = find_cloud_path()
+        # if no Onedrive revert to standard Desktop
+        # location: i.e. "C:/Users/username/Desktop
+        if len(desktop) == 0:
+            desktop = pathlib.Path.home() / "Desktop"
         Fullname = os.path.join(desktop, FileName)
 
         with ZipFile(Fullname, "w") as zipObj:
             for File in Files:
-                zipObj.write(Files)
+                zipObj.write(File, File.split(os.sep)[-1])
 
         return
+
+
+def find_cloud_path():
+    if platform.system().lower() == "windows":
+        command = r'reg query "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" /v "Desktop"'
+        result = subprocess.run(command, stdout=subprocess.PIPE, text=True)
+        desktop = result.stdout.splitlines()[2].split()[2]
+
+        return desktop
+    else:
+        return ""
 
 
 class run:
