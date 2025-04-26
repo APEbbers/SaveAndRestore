@@ -51,8 +51,14 @@ import Standard_Functions_SaveAndRestore as Standard_Functions
 import pathlib
 from zipfile import ZipFile
 
+# Get the resources
+pathUI = os.path.join(os.path.dirname(__file__), "Resources", "ui")
+pathIcons = os.path.join(os.path.dirname(__file__), "Resources", "icons")
+sys.path.append(pathIcons)
+sys.path.append(pathUI)
+
 # import graphical created Ui. (With QtDesigner or QtCreator)
-import Dialog as Dialog
+import ui_Dialog as ui_Dialog
 
 # Define the translation
 translate = App.Qt.translate
@@ -60,12 +66,8 @@ translate = App.Qt.translate
 # Get the main window of FreeCAD
 mw = Gui.getMainWindow()
 
-# Get the resources
-pathUI = os.path.join(os.path.dirname(__file__), "Resources", "ui")
-pathIcons = os.path.join(os.path.dirname(__file__), "Resources", "icons")
 
-
-class LoadDialog(Dialog.Ui_Dialog):
+class LoadDialog(ui_Dialog.Ui_Dialog):
 
     def __init__(self):
         super(LoadDialog, self).__init__()
