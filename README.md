@@ -1,2 +1,2 @@
 # SaveAndRestore
-A simple workbench to save and restore your settings
+A simple addon to save and restore your settings
