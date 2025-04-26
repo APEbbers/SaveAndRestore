@@ -348,7 +348,7 @@ def GetFileDialog(Filter="", parent=None, DefaultPath="", SaveAs: bool = True) -
         If True,  as SaveAs dialog will open and the file will be overwritten\n
         If False, an OpenFile dialog will be open and the file will be opened.\n
     """
-    from PySide.QtWidgets import QFileDialog
+    from PySide6.QtWidgets import QFileDialog
 
     file = ""
     if SaveAs is False:
@@ -901,15 +901,22 @@ def AddToClipboard(Text):
     subprocess.run(cmd, input=Text, text=True, shell=True)
 
 
-def find_cloud_path():
+def find_cloud_path(Folder="Desktop"):
     import subprocess
     import platform
+    import pathlib
 
+    # assume onedrive is present, desktop will be one layer below
+    # something like "C:/Users/username/Onedrive - company name/Desktop"
     if platform.system().lower() == "windows":
-        command = r'reg query "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" /v "Desktop"'
+        command = rf'reg query "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" /v {Folder}'
         result = subprocess.run(command, stdout=subprocess.PIPE, text=True)
         desktop = result.stdout.splitlines()[2].split()[2]
 
+        # if no Onedrive revert to standard Desktop
+        # location: i.e. "C:/Users/username/Desktop
+        if len(desktop) == 0:
+            desktop = pathlib.Path.home() / Folder
         return desktop
     else:
-        return ""
+        return pathlib.Path.home() / Folder

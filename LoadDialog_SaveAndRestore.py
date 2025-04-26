@@ -50,6 +50,7 @@ from datetime import datetime
 import Standard_Functions_SaveAndRestore as Standard_Functions
 import pathlib
 from zipfile import ZipFile
+import Parameters_SaveAndRestore
 
 # Get the resources
 pathUI = os.path.join(os.path.dirname(__file__), "Resources", "ui")
@@ -86,8 +87,6 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         )
         return
 
-        return
-
     def SaveSettings(self):
         UserConfig = App.getUserConfigDir() + "user.cfg"
         SystemConfig = App.getUserConfigDir() + "system.cfg"
@@ -100,14 +99,21 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         # Define the filename
         FileName = f"{Prefix} - FreeCAD Settings.zip"
 
-        # assume onedrive is present, desktop will be one layer below
-        # something like "C:/Users/username/Onedrive - company name/Desktop"
-        desktop = Standard_Functions.find_cloud_path()
-        # if no Onedrive revert to standard Desktop
-        # location: i.e. "C:/Users/username/Desktop
-        if len(desktop) == 0:
-            desktop = pathlib.Path.home() / "Desktop"
-        Fullname = os.path.join(desktop, FileName)
+        # # assume onedrive is present, desktop will be one layer below
+        # # something like "C:/Users/username/Onedrive - company name/Desktop"
+        # desktop = Standard_Functions.find_cloud_path()
+        # # if no Onedrive revert to standard Desktop
+        # # location: i.e. "C:/Users/username/Desktop
+        # if len(desktop) == 0:
+        #     desktop = pathlib.Path.home() / "Desktop"
+        # Fullname = os.path.join(desktop, FileName)
+
+        Fullname = Standard_Functions.GetFileDialog(
+            Filter="Archive (*.zip)",
+            parent=self.form,
+            DefaultPath=os.path.join(Parameters_SaveAndRestore.SAVE_DIRECTORY, FileName),
+            SaveAs=True,
+        )
 
         with ZipFile(Fullname, "w") as zipObj:
             for File in Files:
