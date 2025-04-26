@@ -62,7 +62,11 @@ class SaveAndRestore:
             Button = QAction(mw)
             Button.setText(translate("FreeCAD SaveAndRestore", "Save and restore..."))
             Button.setToolTip(translate("FreeCAD SaveAndRestore", "Save and restore FreeCAD's setting files"))
-            Button.triggered.connect(self.loadDialog)
+
+            def LoadDialog():
+                self.loadDialog
+
+            Button.connect(Button, SIGNAL("triggered()"), LoadDialog)
 
             # Add the button to the tools menu
             for action in MenuBar.children():

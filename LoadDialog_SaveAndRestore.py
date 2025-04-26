@@ -52,6 +52,7 @@ import Standard_Functions_SaveAndRestore as Standard_Functions
 import pathlib
 from zipfile import ZipFile
 import Parameters_SaveAndRestore
+import StyleMapping_SaveAndRestore
 
 # Get the resources
 pathUI = os.path.join(os.path.dirname(__file__), "Resources", "ui")
@@ -172,18 +173,68 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         return
 
     def EnableToolbars(self):
-        ToolBarGroup = App.ParamGet("User parameter:BaseApp/MainWindow/Toolbars")
-
-        ToolBarStates = ToolBarGroup.getBools()
-
-        for ToolBar in ToolBarStates:
-            ToolBar.setBool(True)
+        WBList = Gui.listWorkbenches()
+        self.loadAllWorkbenches(
+            AutoHide=False,
+            FinishMessage=translate("FreeCAD SaveAndResore", "All workbenches activated"),
+        )
+        for WB in WBList:
+            for tb in mw.findChildren(QToolBar):
+                tb.show()
 
         answer = Standard_Functions.RestartDialog(includeIcons=True)
         if answer == "yes":
             Standard_Functions.restart_freecad()
-
         return
+
+    def loadAllWorkbenches(self, AutoHide=True, HideOnly=False, FinishMessage=""):
+        lbl = QLabel(translate("FreeCAD Ribbon", "Loading workbench … (…/…)"))
+        lbl.setWindowFlags(Qt.WindowType.Dialog | Qt.WindowType.WindowStaysOnTopHint)
+        lbl.setMinimumSize(300, 20)
+        lbl.setContentsMargins(3, 3, 3, 3)
+
+        # Get the stylesheet from the main window and use it for this form
+        (
+            lbl.setStyleSheet(
+                "background-color: "
+                + StyleMapping_SaveAndRestore.ReturnStyleItem("Background_Color")
+                + ";color: "
+                + StyleMapping_SaveAndRestore.ReturnStyleItem("FontColor")
+                + ";"
+            )
+        )
+
+        if HideOnly is False:
+            activeWorkbench = Gui.activeWorkbench().name()
+            lbl.show()
+            lst = Gui.listWorkbenches()
+            for i, wb in enumerate(lst):
+                msg = (
+                    translate("FreeCAD Ribbon", "Loading workbench ")
+                    + wb
+                    + " ("
+                    + str(i + 1)
+                    + "/"
+                    + str(len(lst))
+                    + ")"
+                )
+                print(msg)
+                lbl.setText(msg)
+                geo = lbl.geometry()
+                geo.setSize(lbl.sizeHint())
+                lbl.setGeometry(geo)
+                lbl.repaint()
+                Gui.updateGui()  # Probably slower with this, because it redraws the entire GUI with all tool buttons changed etc. but allows the label to actually be updated, and it looks nice and gives a quick overview of all the workbenches…
+                try:
+                    Gui.activateWorkbench(wb)
+                except Exception:
+                    pass
+            if FinishMessage != "":
+                lbl.setText(FinishMessage)
+                print(FinishMessage)
+            Gui.activateWorkbench(activeWorkbench)
+        if AutoHide is True or HideOnly is True:
+            lbl.hide()
 
 
 def main():
