@@ -41,20 +41,16 @@ import sys
 import json
 from datetime import datetime
 import shutil
-import Standard_Functions_RIbbon as StandardFunctions
-import Parameters_Ribbon
+import Standard_Functions_SaveAndRestore as StandardFunctions
+import Parameters_SaveAndRestore
 import webbrowser
 import time
 
 # Get the resources
-pathIcons = Parameters_Ribbon.ICON_LOCATION
-pathStylSheets = Parameters_Ribbon.STYLESHEET_LOCATION
-pathUI = Parameters_Ribbon.UI_LOCATION
-pathBackup = Parameters_Ribbon.BACKUP_LOCATION
+pathIcons = Parameters_SaveAndRestore.ICON_LOCATION
+pathUI = Parameters_SaveAndRestore.UI_LOCATION
 sys.path.append(pathIcons)
-sys.path.append(pathStylSheets)
 sys.path.append(pathUI)
-sys.path.append(pathBackup)
 
 
 def DarkMode():
@@ -104,9 +100,7 @@ def DarkMode():
                     # Get all the tag elements
                     elements = []
                     namespaces = {"i": "https://wiki.freecad.org/Package_Metadata"}
-                    elements = treeRoot.findall(
-                        ".//i:content/i:preferencepack/i:tag", namespaces
-                    )
+                    elements = treeRoot.findall(".//i:content/i:preferencepack/i:tag", namespaces)
 
                     # go throug all tags. If 'dark' in the element text, this is a dark theme
                     for element in elements:
@@ -131,20 +125,7 @@ def ReturnStyleItem(ControlName, ShowCustomIcon=False, IgnoreOverlay=False):
 
     ControlName (string):
         "Background_Color" returns string,
-        "Border_Color" returns string,
         "FontColor" returns string,
-        "ApplicationButton_Background" returns string,
-        "FontColor" returns string,
-        "UpdateColor" returns string,
-        "DevelopColor" returns string,
-        "ScrollLeftButton_Tab returns QIcon",
-        "ScrollRightButton_Tab" returns QIcon,
-        "ScrollLeftButton_Category" returns QIcon,
-        "ScrollRightButton_Category" returns QIcon,
-        "OptionButton" returns QIcon,
-        "PinButton_open" returns QIcon,
-        "PinButton_closed" returns QIcon,
-        "TitleBarButtons": returns list with icons,
     """
     # define a result holder and a dict for the StyleMapping file
     result = "none"
@@ -160,63 +141,11 @@ def ReturnStyleItem(ControlName, ShowCustomIcon=False, IgnoreOverlay=False):
     if IsInList is False:
         currentStyleSheet = "none"
 
-    ListIcons = [
-        "ScrollLeftButton_Tab",
-        "ScrollRightButton_Tab",
-        "ScrollLeftButton_Category",
-        "ScrollRightButton_Category",
-        "OptionButton",
-        "PinButton_open",
-        "PinButton_closed",
-    ]
-
-    isIcon = False
-    for control in ListIcons:
-        if control == ControlName:
-            isIcon = True
-
     try:
-        if ControlName == "TitleBarButtons":
-            return StyleMapping["Stylesheets"][ControlName]
-        if isIcon is True:
-            result = None
-            PixmapName = ""
-            if Parameters_Ribbon.CUSTOM_ICONS_ENABLED is True or ShowCustomIcon is True:
-                PixmapName = StyleMapping["Stylesheets"][ControlName]
-            else:
-                PixmapName = ""
-            if PixmapName == "" or PixmapName is None:
-                PixmapName = StyleMapping_default["Stylesheets"][currentStyleSheet][
-                    ControlName
-                ]
-                if PixmapName == "" or PixmapName is None:
-                    PixmapName = StyleMapping_default["Stylesheets"][""][ControlName]
-            if os.path.exists(PixmapName):
-                pixmap = QPixmap(PixmapName)
-            else:
-                pixmap = QPixmap(os.path.join(pathIcons, PixmapName))
-            result = QIcon()
-            result.addPixmap(pixmap)
-            return result
-        if isIcon is False:
-            result = ""
-
-            if Parameters_Ribbon.CUSTOM_COLORS_ENABLED is True:
-                result = StyleMapping["Stylesheets"][ControlName]
-            if (
-                Parameters_Ribbon.BUTTON_BACKGROUND_ENABLED is False
-                and Parameters_Ribbon.USE_FC_OVERLAY is True
-                and ControlName == "Background_Color"
-                and IgnoreOverlay is False
-            ):
-                result = "none"
-            if result == "" or result is None:
-                result = StyleMapping_default["Stylesheets"][currentStyleSheet][
-                    ControlName
-                ]
-                if result == "" or result is None:
-                    result = StyleMapping_default["Stylesheets"][""][ControlName]
-            return result
+        result = StyleMapping_default["Stylesheets"][currentStyleSheet][ControlName]
+        if result == "" or result is None:
+            result = StyleMapping_default["Stylesheets"][""][ControlName]
+        return result
     except Exception as e:
         print(e)
         return None
@@ -242,22 +171,11 @@ def ReturnStyleSheet(
     """
     StyleSheet = ""
     try:
-        BorderColor = ReturnStyleItem("Border_Color")
         BackgroundColor = ReturnStyleItem("Background_Color")
-        ApplicationButton = ReturnStyleItem("ApplicationButton_Background")
-        if HoverColor == "":
-            HoverColor = ReturnStyleItem("Background_Color_Hover")
         FontColor = ReturnStyleItem("FontColor")
 
-        AppColor_1 = ApplicationButton
-        AppColor_2 = ApplicationButton
-        AppColor_3 = ApplicationButton
-        AppBorder_1 = BorderColor
-        AppBorder_2 = BorderColor
-        if BackgroundColor is not None and BorderColor is not None:
+        if BackgroundColor is not None:
             if control.lower() == "toolbutton":
-                if Parameters_Ribbon.BORDER_TRANSPARANT is True:
-                    BorderColor = BackgroundColor
                 StyleSheet = (
                     """QLayout {spacing: 0px}"""
                     + """QToolButton, QTextEdit {
@@ -429,28 +347,6 @@ def ReturnTitleBarIcons():
     return Icons
 
 
-# Used when custom colors are enabled
-StyleMapping = {
-    "Stylesheets": {
-        "Background_Color": "",
-        "Background_Color_Hover": Parameters_Ribbon.COLOR_BACKGROUND_HOVER,
-        "Border_Color": Parameters_Ribbon.COLOR_BORDERS,
-        "ApplicationButton_Background": Parameters_Ribbon.COLOR_APPLICATION_BUTTON_BACKGROUND,
-        "FontColor": Parameters_Ribbon.COLOR_BORDERS,  # Set the font and border equal when custom colors is enabled
-        "UpdateColor": ReturnUpdateColor(),
-        "DevelopColor": ReturnDevelopColor(),
-        "ScrollLeftButton_Tab": Parameters_Ribbon.SCROLL_LEFT_BUTTON_TAB,
-        "ScrollRightButton_Tab": Parameters_Ribbon.SCROLL_RIGHT_BUTTON_TAB,
-        "ScrollLeftButton_Category": Parameters_Ribbon.SCROLL_LEFT_BUTTON_CATEGORY,
-        "ScrollRightButton_Category": Parameters_Ribbon.SCROLL_RIGHT_BUTTON_CATEGORY,
-        "OptionButton": Parameters_Ribbon.OPTION_BUTTON,
-        "PinButton_open": Parameters_Ribbon.PIN_BUTTON_OPEN,
-        "PinButton_closed": Parameters_Ribbon.PIN_BUTTON_CLOSED,
-        "TitleBarButtons": ReturnTitleBarIcons(),
-    }
-}
-
-
 StyleMapping_default = {
     "Stylesheets": {
         "": {
@@ -481,9 +377,7 @@ StyleMapping_default = {
             "ScrollLeftButton_Tab": GetIconBasedOnTag("ScrollLeftButton_Tab"),
             "ScrollRightButton_Tab": GetIconBasedOnTag("ScrollRightButton_Tab"),
             "ScrollLeftButton_Category": GetIconBasedOnTag("ScrollLeftButton_Category"),
-            "ScrollRightButton_Category": GetIconBasedOnTag(
-                "ScrollRightButton_Category"
-            ),
+            "ScrollRightButton_Category": GetIconBasedOnTag("ScrollRightButton_Category"),
             "OptionButton": GetIconBasedOnTag("OptionButton"),
             "PinButton_open": GetIconBasedOnTag("PinButton_open"),
             "PinButton_closed": GetIconBasedOnTag("PinButton_closed"),

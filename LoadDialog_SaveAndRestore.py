@@ -188,7 +188,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         return
 
     def loadAllWorkbenches(self, AutoHide=True, HideOnly=False, FinishMessage=""):
-        lbl = QLabel(translate("FreeCAD Ribbon", "Loading workbench … (…/…)"))
+        lbl = QLabel(translate("FreeCAD SaveAndResore", "Loading workbench … (…/…)"))
         lbl.setWindowFlags(Qt.WindowType.Dialog | Qt.WindowType.WindowStaysOnTopHint)
         lbl.setMinimumSize(300, 20)
         lbl.setContentsMargins(3, 3, 3, 3)
@@ -210,7 +210,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             lst = Gui.listWorkbenches()
             for i, wb in enumerate(lst):
                 msg = (
-                    translate("FreeCAD Ribbon", "Loading workbench ")
+                    translate("FreeCAD SaveAndResore", "Loading workbench ")
                     + wb
                     + " ("
                     + str(i + 1)
