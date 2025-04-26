@@ -77,6 +77,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         # this will create a Qt widget from our ui file
         self.form = Gui.PySideUic.loadUi(os.path.join(pathUI, "ui_Dialog.ui"))
 
+        # Connect the save function
         def on_saveSettings_clicked():
             self.SaveSettings()
 
@@ -84,6 +85,16 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             self.form.saveSettings,
             SIGNAL("clicked()"),
             on_saveSettings_clicked,
+        )
+
+        # Connect the restore function
+        def on_RestoreSettings_clicked():
+            self.RestoreSettings()
+
+        self.form.restoreSettings.connect(
+            self.form.restoreSettings,
+            SIGNAL("clicked()"),
+            on_RestoreSettings_clicked,
         )
         return
 
