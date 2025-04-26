@@ -42,6 +42,7 @@ from PySide6.QtWidgets import (
     QSizePolicy,
     QRadioButton,
     QLabel,
+    QCheckBox,
 )
 from PySide6.QtCore import Qt, SIGNAL, Signal, QObject, QThread, QSize
 import sys
@@ -77,7 +78,6 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         self.form = Gui.PySideUic.loadUi(os.path.join(pathUI, "ui_Dialog.ui"))
 
         def on_saveSettings_clicked():
-            print(translate("FreeCAD SaveAndRestore", "Settings saved"))
             self.SaveSettings()
 
         self.form.saveSettings.connect(
@@ -91,34 +91,32 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         UserConfig = App.getUserConfigDir() + "user.cfg"
         SystemConfig = App.getUserConfigDir() + "system.cfg"
 
-        Files = [UserConfig, SystemConfig]
+        Files = []
+        if self.form.IncludeUser_Save.checkState() == Qt.CheckState.Checked:
+            Files.append(UserConfig)
+        if self.form.IncludeSystem_Save.checkState() == Qt.CheckState.Checked:
+            Files.append(SystemConfig)
 
-        now = datetime.now()
-        Prefix = now.strftime("%Y_%m_%d_%H_%M_%S")
+        if len(Files) > 0:
+            now = datetime.now()
+            Prefix = now.strftime("%Y_%m_%d_%H_%M_%S")
 
-        # Define the filename
-        FileName = f"{Prefix} - FreeCAD Settings.zip"
+            # Define the filename
+            FileName = f"{Prefix} - FreeCAD Settings.zip"
 
-        # # assume onedrive is present, desktop will be one layer below
-        # # something like "C:/Users/username/Onedrive - company name/Desktop"
-        # desktop = Standard_Functions.find_cloud_path()
-        # # if no Onedrive revert to standard Desktop
-        # # location: i.e. "C:/Users/username/Desktop
-        # if len(desktop) == 0:
-        #     desktop = pathlib.Path.home() / "Desktop"
-        # Fullname = os.path.join(desktop, FileName)
+            Fullname = Standard_Functions.GetFileDialog(
+                Filter="Archive (*.zip)",
+                parent=self.form,
+                DefaultPath=os.path.join(Parameters_SaveAndRestore.SAVE_DIRECTORY, FileName),
+                SaveAs=True,
+            )
 
-        Fullname = Standard_Functions.GetFileDialog(
-            Filter="Archive (*.zip)",
-            parent=self.form,
-            DefaultPath=os.path.join(Parameters_SaveAndRestore.SAVE_DIRECTORY, FileName),
-            SaveAs=True,
-        )
-
-        with ZipFile(Fullname, "w") as zipObj:
-            for File in Files:
-                zipObj.write(File, File.split(os.sep)[-1])
-
+            with ZipFile(Fullname, "w") as zipObj:
+                for File in Files:
+                    zipObj.write(File, File.split(os.sep)[-1])
+            print(translate("FreeCAD SaveAndRestore", "Settings saved"))
+        else:
+            print(translate("FreeCAD SaveAndRestore", "No settings selected to save"))
         return
 
 
