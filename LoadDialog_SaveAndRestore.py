@@ -73,7 +73,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         super(LoadDialog, self).__init__()
 
         # this will create a Qt widget from our ui file
-        self.form = Gui.PySideUic.loadUi(os.path.join(pathUI, "Dialog.ui"))
+        self.form = Gui.PySideUic.loadUi(os.path.join(pathUI, "ui_Dialog.ui"))
 
         self.form.saveSettings.connect(
             self.form.saveSettings,
@@ -113,6 +113,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
 
 
 def main():
+    print("tried to load the form")
     # Get the form
     Dialog = LoadDialog().form
     # Show the form
