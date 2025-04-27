@@ -87,6 +87,7 @@ class SaveAndRestore:
                 # Run macro only once by disconnecting the signal at first call
                 Gui.getMainWindow().workbenchActivated.disconnect(runStartup)
 
+                self.WriteResetList()
                 self.DetectAddOnChange()
 
         # # Connect the function that runs the macro to the appropriate signal
@@ -163,14 +164,14 @@ class SaveAndRestore:
                             if name == "ADDON_DISABLED":
                                 ToolBarReset = True
                                 WB_ResetList.remove(AddOn)
-                                with open(os.path.join(os.path.dirname(__file__), "ResetList.json"), "w") as outfile:
+                                with open(os.path.join(path, "SaveAndRestore", "ResetList.json"), "w") as outfile:
                                     json.dump(WB_ResetList, outfile, indent=4)
                                 outfile.close()
                                 break
                         break
 
         # Write the current addon list
-        with open(os.path.join(os.path.dirname(__file__), "WBList.json"), "w") as outfile:
+        with open(os.path.join(path, "SaveAndRestore", "WBList.json"), "w") as outfile:
             json.dump(CurrentAddOnList, outfile, indent=4)
         outfile.close()
 
@@ -185,6 +186,59 @@ class SaveAndRestore:
             if Anwser == "yes":
                 LoadDialog_SaveAndRestore.main()
         return
+
+    def WriteResetList(self):
+        # Get the folder with add-ons
+        path = os.path.dirname(__file__)
+
+        # The list with add-ons for which this applies
+        WbToLookFor = ["FreeCAD-Ribbon"]
+
+        # Get the folder with add-ons
+        for i in range(2):
+            # Starting point
+            path = os.path.dirname(path)
+
+        # Go through the sub-folders and add them to the list
+        CurrentAddOnList = []
+        for root, dirs, files in os.walk(path):
+            # remove the path from the root and split the remaining path so that only the add-on folder remains
+            # Add this to a list if it is not in yet
+            subdir = root.replace(path + os.sep, "").split(os.sep, 1)[0]
+            # Add the path again to get a full path
+            subdir = os.path.normpath(path + os.sep + subdir)
+
+            # Check if the sub directory is already in the addon list
+            isInList = False
+            for AddOn in CurrentAddOnList:
+                if AddOn == subdir:
+                    isInList = True
+                    break
+            # Add the subdirectory to the current addon list
+            if isInList is False and os.path.exists(subdir):
+                CurrentAddOnList.append(subdir)
+
+            # If there is already a WBlist, read it to compare
+            FileName = os.path.join(path, "SaveAndRestore", "WBList.json")
+            if os.path.exists(FileName):
+                PreviousAddOnList = []
+                with open(FileName, "r") as file:
+                    PreviousAddOnList = json.load(file)
+                    file.close()
+
+                # Check if an add-on is installed
+                for AddOn in CurrentAddOnList:
+                    isInList = False
+                    for PreviousAddon in PreviousAddOnList:
+                        if AddOn == PreviousAddon:
+                            isInList = True
+
+                    if isInList is False:
+                        if WbToLookFor.__contains__(AddOn):
+                            # Write the reset list
+                            with open(os.path.join(path, "SaveAndRestore", "ResetList.json"), "w") as outfile:
+                                json.dump(CurrentAddOnList, outfile, indent=4)
+                            outfile.close()
 
 
 class run:
