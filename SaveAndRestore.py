@@ -100,19 +100,18 @@ class SaveAndRestore:
     def DetectAddOnChange(self):
         # Get the folder with add-ons
         path = os.path.dirname(__file__)
-
-        FileName = os.path.join(path, "SaveAndRestore", "ResetList.json")
-        WB_ResetList = []
-        with open(FileName, "r") as file:
-            WB_ResetList.append(json.load(file))
-        file.close()
-
-        ToolBarReset = False
-
         # Get the folder with add-ons
         for i in range(2):
             # Starting point
             path = os.path.dirname(path)
+
+        FileName = os.path.join(path, "SaveAndRestore", "ResetList.json")
+        WB_ResetList = []
+        with open(FileName, "r") as file:
+            WB_ResetList = json.load(file)
+        file.close()
+
+        ToolBarReset = False
 
         # Go through the sub-folders and add them to the list
         CurrentAddOnList = []
@@ -163,7 +162,7 @@ class SaveAndRestore:
                         for name in os.listdir(AddOn):
                             if name == "ADDON_DISABLED":
                                 ToolBarReset = True
-                                WB_ResetList.remove(AddOn)
+                                WB_ResetList.remove(AddOn.rsplit(os.sep, 1)[1])
                                 with open(os.path.join(path, "SaveAndRestore", "ResetList.json"), "w") as outfile:
                                     json.dump(WB_ResetList, outfile, indent=4)
                                 outfile.close()

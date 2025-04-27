@@ -80,12 +80,9 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
 
         # Connect the restore ToolBars function
         def on_EnableToolbars_clicked():
-            StyleSheet = "background-color: "
-            +StyleMapping_SaveAndRestore.ReturnStyleItem("Background_Color")
-            +";color: "
-            +StyleMapping_SaveAndRestore.ReturnStyleItem("FontColor")
-            +";"
-            Standard_Functions.EnableToolbars(StyleSheet=StyleSheet)
+            StyleSheet = f"background-color: {StyleMapping_SaveAndRestore.ReturnStyleItem("Background_Color")};color: {StyleMapping_SaveAndRestore.ReturnStyleItem("FontColor")};"
+            
+            Standard_Functions.EnableToolbars(StyleSheet=StyleSheet, FinishMessage="Toolbars enabled")
 
         self.form.restoreToolbars.connect(
             self.form.restoreToolbars,

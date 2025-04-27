@@ -941,27 +941,8 @@ def find_cloud_path(Folder="Desktop"):
         return pathlib.Path.home() / Folder
 
 
-def EnableToolbars(StyleSheet=None):
-    from PySide6.QtWidgets import QToolBar
-
-    WBList = Gui.listWorkbenches()
-    loadAllWorkbenches(
-        AutoHide=False,
-        FinishMessage=translate("FreeCAD SaveAndResore", "All workbenches activated"),
-        StyleSheet=StyleSheet,
-    )
-    for WB in WBList:
-        for tb in mw.findChildren(QToolBar):
-            tb.show()
-
-    answer = RestartDialog(includeIcons=True)
-    if answer == "yes":
-        restart_freecad()
-    return
-
-
-def loadAllWorkbenches(AutoHide=True, HideOnly=False, FinishMessage="", StyleSheet=None):
-    from PySide6.QtWidgets import QLabel
+def EnableToolbars(FinishMessage="", StyleSheet=None):
+    from PySide6.QtWidgets import QLabel, QToolBar
     from PySide6.QtCore import Qt
 
     lbl = QLabel(translate("FreeCAD SaveAndResore", "Loading workbench … (…/…)"))
@@ -973,34 +954,39 @@ def loadAllWorkbenches(AutoHide=True, HideOnly=False, FinishMessage="", StyleShe
     if StyleSheet is not None:
         lbl.setStyleSheet(StyleSheet)
 
-    if HideOnly is False:
-        activeWorkbench = Gui.activeWorkbench().name()
-        lbl.show()
-        lst = Gui.listWorkbenches()
-        for i, wb in enumerate(lst):
-            msg = (
-                translate("FreeCAD SaveAndResore", "Loading workbench ")
-                + wb
-                + " ("
-                + str(i + 1)
-                + "/"
-                + str(len(lst))
-                + ")"
-            )
-            print(msg)
-            lbl.setText(msg)
-            geo = lbl.geometry()
-            geo.setSize(lbl.sizeHint())
-            lbl.setGeometry(geo)
-            lbl.repaint()
-            Gui.updateGui()  # Probably slower with this, because it redraws the entire GUI with all tool buttons changed etc. but allows the label to actually be updated, and it looks nice and gives a quick overview of all the workbenches…
-            try:
-                Gui.activateWorkbench(wb)
-            except Exception:
-                pass
-        if FinishMessage != "":
-            lbl.setText(FinishMessage)
-            print(FinishMessage)
-        Gui.activateWorkbench(activeWorkbench)
-    if AutoHide is True or HideOnly is True:
-        lbl.hide()
+    activeWorkbench = Gui.activeWorkbench().name()
+    lbl.show()
+    lst = Gui.listWorkbenches()
+    for i, wb in enumerate(lst):
+        msg = (
+            translate("FreeCAD SaveAndResore", "Loading workbench ")
+            + wb
+            + " ("
+            + str(i + 1)
+            + "/"
+            + str(len(lst))
+            + ")"
+        )
+        print(msg)
+        lbl.setText(msg)
+        geo = lbl.geometry()
+        geo.setSize(lbl.sizeHint())
+        lbl.setGeometry(geo)
+        lbl.repaint()
+        Gui.updateGui()  # Probably slower with this, because it redraws the entire GUI with all tool buttons changed etc. but allows the label to actually be updated, and it looks nice and gives a quick overview of all the workbenches…
+        try:
+            Gui.activateWorkbench(wb)
+            for WB in lst:
+                for tb in mw.findChildren(QToolBar):
+                    tb.show()
+        except Exception:
+            pass
+    if FinishMessage != "":
+        lbl.setText(FinishMessage)
+        print(FinishMessage)
+    Gui.activateWorkbench(activeWorkbench)
+    answer = RestartDialog(includeIcons=True)
+    if answer == "yes":
+        restart_freecad()
+
+    return
