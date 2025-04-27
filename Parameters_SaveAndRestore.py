@@ -83,11 +83,11 @@ class Settings:
     #
     #
     def SetStringSetting(settingName: str, value: str):
-        if value.lower() == "none":
+        if str(value).lower() == "none":
             value = ""
         if value == "":
             value = DefaultSettings[settingName]
-        preferences.SetString(settingName, value)
+        preferences.SetString(settingName, str(value))
         return
 
     def SetBoolSetting(settingName: str, value: bool):
