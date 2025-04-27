@@ -30,6 +30,7 @@ import json
 from PySide6.QtCore import Qt, QTimer, QSize, QSettings, SIGNAL
 from PySide6.QtGui import QGuiApplication, QAction
 from PySide6.QtWidgets import QMainWindow, QLabel, QSizePolicy, QApplication, QToolButton, QStyle, QMenuBar, QMenu
+from time import sleep
 
 import Standard_Functions_SaveAndRestore as Standard_Functions
 import LoadDialog_SaveAndRestore
@@ -51,48 +52,62 @@ class SaveAndRestore:
         self.ApplicationMenus()
 
     def ApplicationMenus(self):
-        try:
-            # get the menubar
-            MenuBar: QMenuBar = mw.menuBar()
+        # try:
+        # get the menubar
+        MenuBar: QMenuBar = mw.menuBar()
 
-            # Add a button for the Save and Restore dialog
-            Button = QAction(mw)
-            Button.setText(translate("FreeCAD SaveAndRestore", "Save and restore..."))
-            Button.setObjectName("SaveAndRestore")
-            Button.setToolTip(translate("FreeCAD SaveAndRestore", "Save and restore FreeCAD's setting files"))
+        # Add a button for the Save and Restore dialog
+        Button = QAction(mw)
+        Button.setText(translate("FreeCAD SaveAndRestore", "Save and restore..."))
+        Button.setObjectName("SaveAndRestore")
+        Button.setToolTip(translate("FreeCAD SaveAndRestore", "Save and restore FreeCAD's setting files"))
 
-            def LoadDialog():
-                LoadDialog_SaveAndRestore.main()
+        def LoadDialog():
+            LoadDialog_SaveAndRestore.main()
 
-            Button.connect(Button, SIGNAL("triggered()"), LoadDialog)
+        Button.connect(Button, SIGNAL("triggered()"), LoadDialog)
 
-            # Add the button to the tools menu
-            def addMenu():
-                for child in MenuBar.children():
-                    if child.objectName() == "&Tools":
-                        isPresent = False
-                        for action in child.actions():
-                            if action.text() == "Save and restore...":
-                                isPresent = True
+        # Add the button to the tools menu
+        def addMenu():
+            for child in MenuBar.children():
+                if child.objectName() == "&Tools":
+                    isPresent = False
+                    for action in child.actions():
+                        if action.text() == "Save and restore...":
+                            isPresent = True
 
-                        if isPresent is False:
-                            child.addAction(Button)
+                    if isPresent is False:
+                        child.addAction(Button)
 
-            mw.workbenchActivated.connect(addMenu)
+        mw.workbenchActivated.connect(addMenu)
 
-            self.DetectAddOnChange()
+        def runStartup(name):
+            # Do not run when NoneWorkbench is activated because UI isn't yet completely there
+            if name != "NoneWorkbench":
+                # Run macro only once by disconnecting the signal at first call
+                Gui.getMainWindow().workbenchActivated.disconnect(runStartup)
 
-        except Exception:
-            pass
+                self.DetectAddOnChange()
+
+        # # Connect the function that runs the macro to the appropriate signal
+        mw.workbenchActivated.connect(runStartup)
+
+        # except Exception as e:
+        #     print(e)
         return
 
     def DetectAddOnChange(self):
-        WB_ResetList = [
-            "FreeCAD-Ribbon",
-        ]
+        # Get the folder with add-ons
+        path = os.path.dirname(__file__)
+
+        FileName = os.path.join(path, "SaveAndRestore", "ResetList.json")
+        WB_ResetList = []
+        with open(FileName, "r") as file:
+            WB_ResetList.append(json.load(file))
+        file.close()
+
         ToolBarReset = False
 
-        path = os.path.dirname(__file__)
         # Get the folder with add-ons
         for i in range(2):
             # Starting point
@@ -118,23 +133,25 @@ class SaveAndRestore:
                 CurrentAddOnList.append(subdir)
 
         # If there is already a WBlist, read it to compare
-        PreviousAddOnList = []
-        with open(os.path.join(os.path.dirname(__file__), "WBList.json"), "r") as file:
-            PreviousAddOnList = json.load(file)
-            file.close()
+        FileName = os.path.join(path, "SaveAndRestore", "WBList.json")
+        if os.path.exists(FileName):
+            PreviousAddOnList = []
+            with open(FileName, "r") as file:
+                PreviousAddOnList = json.load(file)
+                file.close()
 
-        # Check if an add-on is removed
-        for PreviousAddon in PreviousAddOnList:
-            isInList = False
-            for AddOn in CurrentAddOnList:
-                if AddOn == PreviousAddon:
-                    isInList = True
+            # Check if an add-on is removed
+            for PreviousAddon in PreviousAddOnList:
+                isInList = False
+                for AddOn in CurrentAddOnList:
+                    if AddOn == PreviousAddon:
+                        isInList = True
 
-            if isInList is False:
-                for WB in WB_ResetList:
-                    if WB in PreviousAddon:
-                        ToolBarReset = True
-                        break
+                if isInList is False:
+                    for WB in WB_ResetList:
+                        if WB in PreviousAddon:
+                            ToolBarReset = True
+                            break
 
         # Check if a WB is installed that is present in the resetList
         if ToolBarReset is False:
@@ -145,6 +162,10 @@ class SaveAndRestore:
                         for name in os.listdir(AddOn):
                             if name == "ADDON_DISABLED":
                                 ToolBarReset = True
+                                WB_ResetList.remove(AddOn)
+                                with open(os.path.join(os.path.dirname(__file__), "ResetList.json"), "w") as outfile:
+                                    json.dump(WB_ResetList, outfile, indent=4)
+                                outfile.close()
                                 break
                         break
 
@@ -156,17 +177,12 @@ class SaveAndRestore:
         if ToolBarReset is True:
             text = translate(
                 "FreeCAD SaveAndRestore",
-                """
-            a UI add-on is disabled or uninstalled. To enable all toolbars, click "Yes".\n
-            To load previous saved settings click "no".\n
-            To restore the toolbars manually, click cancel and close this dialog.
+                """an add-on is disabled or uninstalled. Do you want to open the "Save and restore" dialog to restore all toolbars or restore to previous saved settings?
             """,
             )
-            Anwser = Standard_Functions.Mbox(text=text, title="", style=3, IconType="Question")
+            Anwser = Standard_Functions.Mbox(text=text, title="", style=1, IconType="Question")
 
             if Anwser == "yes":
-                Standard_Functions.EnableToolbars()
-            if Anwser == "no":
                 LoadDialog_SaveAndRestore.main()
         return
 

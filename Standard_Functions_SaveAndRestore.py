@@ -941,7 +941,7 @@ def find_cloud_path(Folder="Desktop"):
         return pathlib.Path.home() / Folder
 
 
-def EnableToolbars(StyleSheet):
+def EnableToolbars(StyleSheet=None):
     from PySide6.QtWidgets import QToolBar
 
     WBList = Gui.listWorkbenches()
