@@ -28,9 +28,9 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import json
 import platform
-from PySide.QtCore import Qt, QTimer, QSize, QSettings, SIGNAL
-from PySide.QtGui import QGuiApplication, QAction
-from PySide.QtWidgets import QMainWindow, QLabel, QSizePolicy, QApplication, QToolButton, QStyle, QMenuBar, QMenu
+from PySide6.QtCore import Qt, QTimer, QSize, QSettings, SIGNAL
+from PySide6.QtGui import QGuiApplication, QAction
+from PySide6.QtWidgets import QMainWindow, QLabel, QSizePolicy, QApplication, QToolButton, QStyle, QMenuBar, QMenu
 from time import sleep
 
 import Standard_Functions_SaveAndRestore as Standard_Functions
@@ -85,8 +85,9 @@ class SaveAndRestore:
             # if you on macOS, add the ribbon menus to the menubar
             if platform.system().lower() == "darwin":
                 Button.setMenuRole(QAction.MenuRole.ApplicationSpecificRole)
-                child = MenuBar.children()[0]
-                child.addAction(Button)
+                for child in MenuBar.children():
+                    if child.objectName() == "&Tools":
+                        child.addAction(Button)
 
         mw.workbenchActivated.connect(addMenu)
 
