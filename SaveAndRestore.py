@@ -27,6 +27,7 @@ import os
 import FreeCAD as App
 import FreeCADGui as Gui
 import json
+import platform
 from PySide.QtCore import Qt, QTimer, QSize, QSettings, SIGNAL
 from PySide.QtGui import QGuiApplication, QAction
 from PySide.QtWidgets import QMainWindow, QLabel, QSizePolicy, QApplication, QToolButton, QStyle, QMenuBar, QMenu
@@ -61,6 +62,7 @@ class SaveAndRestore:
         Button.setText(translate("FreeCAD SaveAndRestore", "Save and restore..."))
         Button.setObjectName("SaveAndRestore")
         Button.setToolTip(translate("FreeCAD SaveAndRestore", "Save and restore FreeCAD's setting files"))
+        Button.setMenuRole(QAction.MenuRole.ApplicationSpecificRole)
 
         def LoadDialog():
             LoadDialog_SaveAndRestore.main()
@@ -69,15 +71,22 @@ class SaveAndRestore:
 
         # Add the button to the tools menu
         def addMenu():
-            for child in MenuBar.children():
-                if child.objectName() == "&Tools":
-                    isPresent = False
-                    for action in child.actions():
-                        if action.text() == "Save and restore...":
-                            isPresent = True
+            if platform.system().lower() != "darwin":
+                for child in MenuBar.children():
+                    if child.objectName() == "&Tools":
+                        isPresent = False
+                        for action in child.actions():
+                            if action.text() == "Save and restore...":
+                                isPresent = True
 
-                    if isPresent is False:
-                        child.addAction(Button)
+                        if isPresent is False:
+                            child.addAction(Button)
+
+            # if you on macOS, add the ribbon menus to the menubar
+            if platform.system().lower() == "darwin":
+                Button.setMenuRole(QAction.MenuRole.ApplicationSpecificRole)
+                child = MenuBar.children()[0]
+                child.addAction(Button)
 
         mw.workbenchActivated.connect(addMenu)
 
