@@ -27,9 +27,9 @@ import os
 import FreeCAD as App
 import FreeCADGui as Gui
 import json
-from PySide6.QtCore import Qt, QTimer, QSize, QSettings, SIGNAL
-from PySide6.QtGui import QGuiApplication, QAction
-from PySide6.QtWidgets import QMainWindow, QLabel, QSizePolicy, QApplication, QToolButton, QStyle, QMenuBar, QMenu
+from PySide.QtCore import Qt, QTimer, QSize, QSettings, SIGNAL
+from PySide.QtGui import QGuiApplication, QAction
+from PySide.QtWidgets import QMainWindow, QLabel, QSizePolicy, QApplication, QToolButton, QStyle, QMenuBar, QMenu
 from time import sleep
 
 import Standard_Functions_SaveAndRestore as Standard_Functions

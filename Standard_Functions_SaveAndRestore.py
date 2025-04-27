@@ -52,8 +52,8 @@ def Mbox(
     Icontype:                       string: NoIcon, Question, Warning, Critical. Default Information\n
     30 : OK (Non blocking)          (text, title, style)\n
     """
-    from PySide6.QtWidgets import QMessageBox, QInputDialog
-    from PySide6.QtCore import Qt
+    from PySide.QtWidgets import QMessageBox, QInputDialog
+    from PySide.QtCore import Qt
 
     Icon = QMessageBox.Icon.Information
     if IconType == "NoIcon":
@@ -367,7 +367,7 @@ def GetFileDialog(Filter="", parent=None, DefaultPath="", SaveAs: bool = True) -
         If True,  as SaveAs dialog will open and the file will be overwritten\n
         If False, an OpenFile dialog will be open and the file will be opened.\n
     """
-    from PySide6.QtWidgets import QFileDialog
+    from PySide.QtWidgets import QFileDialog
 
     file = ""
     if SaveAs is False:
@@ -942,8 +942,8 @@ def find_cloud_path(Folder="Desktop"):
 
 
 def EnableToolbars(FinishMessage="", StyleSheet=None):
-    from PySide6.QtWidgets import QLabel, QToolBar
-    from PySide6.QtCore import Qt
+    from PySide.QtWidgets import QLabel, QToolBar
+    from PySide.QtCore import Qt
 
     lbl = QLabel(translate("FreeCAD SaveAndResore", "Loading workbench … (…/…)"))
     lbl.setWindowFlags(Qt.WindowType.Dialog | Qt.WindowType.WindowStaysOnTopHint)

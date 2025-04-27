@@ -26,7 +26,7 @@ SOFTWARE.
 import FreeCAD as App
 import FreeCADGui as Gui
 import os
-from PySide6.QtCore import Qt, SIGNAL
+from PySide.QtCore import Qt, SIGNAL
 import sys
 from datetime import datetime
 import Standard_Functions_SaveAndRestore as Standard_Functions
