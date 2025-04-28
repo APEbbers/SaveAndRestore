@@ -53,59 +53,64 @@ class SaveAndRestore:
         self.ApplicationMenus()
 
     def ApplicationMenus(self):
-        # try:
-        # get the menubar
-        MenuBar: QMenuBar = mw.menuBar()
+        try:
+            # get the menubar
+            MenuBar: QMenuBar = mw.menuBar()
 
-        # Add a button for the Save and Restore dialog
-        Button = QAction(mw)
-        Button.setText(translate("FreeCAD SaveAndRestore", "Save and restore..."))
-        Button.setObjectName("SaveAndRestore")
-        Button.setToolTip(translate("FreeCAD SaveAndRestore", "Save and restore FreeCAD's setting files"))
-        # Button.setMenuRole(QAction.MenuRole.ApplicationSpecificRole)
+            # Add a button for the Save and Restore dialog
+            Button = QAction(mw)
+            Button.setText(translate("FreeCAD SaveAndRestore", "Save and restore..."))
+            Button.setObjectName("SaveAndRestore")
+            Button.setToolTip(translate("FreeCAD SaveAndRestore", "Save and restore FreeCAD's setting files"))
 
-        def LoadDialog():
-            LoadDialog_SaveAndRestore.main()
+            def LoadDialog():
+                LoadDialog_SaveAndRestore.main()
 
-        Button.connect(Button, SIGNAL("triggered()"), LoadDialog)
+            Button.connect(Button, SIGNAL("triggered()"), LoadDialog)
 
-        # Add the button to the tools menu
-        def addMenu():
-            if platform.system().lower() != "darwin":
-                for child in MenuBar.children():
-                    if child.objectName() == "&Tools":
-                        isPresent = False
-                        for action in child.actions():
-                            if action.text() == "Save and restore...":
-                                isPresent = True
+            # Add the button to the tools menu
+            def addMenu():
+                # If not on macOS, add the button to the tools menu
+                if platform.system().lower() != "darwin":
+                    for child in MenuBar.children():
+                        if child.objectName() == "&Tools":
+                            # Check if the button is already present
+                            isPresent = False
+                            for action in child.actions():
+                                if action.text() == "Save and restore...":
+                                    isPresent = True
+                            # If not present, add the button
+                            if isPresent is False:
+                                child.addAction(Button)
 
-                        if isPresent is False:
+                # If on macOS, add the button to the application menu. Tools menu is ignored for some reason.
+                if platform.system().lower() == "darwin":
+                    # Set the menu role to application specific
+                    Button.setMenuRole(QAction.MenuRole.ApplicationSpecificRole)
+                    for child in MenuBar.children():
+                        if child.objectName() == "&Tools":
                             child.addAction(Button)
+                            break
 
-            # if you on macOS, add the ribbon menus to the menubar
-            if platform.system().lower() == "darwin":
-                Button.setMenuRole(QAction.MenuRole.ApplicationSpecificRole)
-                for child in MenuBar.children():
-                    if child.objectName() == "&Tools":
-                        child.addAction(Button)
-                        break
+            # Connect the menu when a workbench is activated
+            mw.workbenchActivated.connect(addMenu)
 
-        mw.workbenchActivated.connect(addMenu)
+            def runStartup(name):
+                # Do not run when NoneWorkbench is activated because UI isn't yet completely there
+                if name != "NoneWorkbench":
+                    # Run macro only once by disconnecting the signal at first call
+                    Gui.getMainWindow().workbenchActivated.disconnect(runStartup)
 
-        def runStartup(name):
-            # Do not run when NoneWorkbench is activated because UI isn't yet completely there
-            if name != "NoneWorkbench":
-                # Run macro only once by disconnecting the signal at first call
-                Gui.getMainWindow().workbenchActivated.disconnect(runStartup)
+                    # Write the reset list
+                    self.WriteResetList()
+                    # Check if a addon is changed
+                    self.DetectAddOnChange()
 
-                self.WriteResetList()
-                self.DetectAddOnChange()
+            # # Connect the function that runs the macro to the appropriate signal
+            mw.workbenchActivated.connect(runStartup)
 
-        # # Connect the function that runs the macro to the appropriate signal
-        mw.workbenchActivated.connect(runStartup)
-
-        # except Exception as e:
-        #     print(e)
+        except Exception as e:
+            print(e)
         return
 
     def DetectAddOnChange(self):
@@ -116,12 +121,14 @@ class SaveAndRestore:
             # Starting point
             path = os.path.dirname(path)
 
+        # Create a list with addons, for which the toolbar must be reset
         FileName = os.path.join(path, "SaveAndRestore", "ResetList.json")
         WB_ResetList = []
         with open(FileName, "r") as file:
             WB_ResetList = json.load(file)
         file.close()
 
+        # Define a indicater for toolbar reset
         ToolBarReset = False
 
         # Go through the sub-folders and add them to the list
@@ -172,19 +179,23 @@ class SaveAndRestore:
                         # Check if the Addon is disabled
                         for name in os.listdir(AddOn):
                             if name == "ADDON_DISABLED":
+                                # The toolbars must be reset
                                 ToolBarReset = True
+                                # After reset, remove the addon from the list
                                 WB_ResetList.remove(AddOn.rsplit(os.sep, 1)[1])
+                                # Write the updated list to the resetlist.json
                                 with open(os.path.join(path, "SaveAndRestore", "ResetList.json"), "w") as outfile:
                                     json.dump(WB_ResetList, outfile, indent=4)
                                 outfile.close()
                                 break
                         break
 
-        # Write the current addon list
+        # Write the current addon list to compare on next startup
         with open(os.path.join(path, "SaveAndRestore", "WBList.json"), "w") as outfile:
             json.dump(CurrentAddOnList, outfile, indent=4)
         outfile.close()
 
+        # If toolbars must be reset, show a messeage to ask the user if they want to show the dialog
         if ToolBarReset is True:
             text = translate(
                 "FreeCAD SaveAndRestore",
