@@ -89,26 +89,41 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             SIGNAL("clicked()"),
             on_EnableToolbars_clicked,
         )
+
+        # Connect the clear button
+        def on_ClearSettings_clicked():
+            self.ClearSettings()
+
+        self.form.clearSettingsconnect(
+            self.form.clearSettings,
+            SIGNAL("clicked()"),
+            on_ClearSettings_clicked,
+        )
+
         return
 
     def SaveSettings(self):
+        # Define the paths for the config files
         UserConfig = App.getUserConfigDir() + "user.cfg"
         SystemConfig = App.getUserConfigDir() + "system.cfg"
 
+        # If checked, add the config files to the list
         Files = []
         if self.form.IncludeUser_Save.checkState() == Qt.CheckState.Checked:
             Files.append(UserConfig)
         if self.form.IncludeSystem_Save.checkState() == Qt.CheckState.Checked:
             Files.append(SystemConfig)
 
+        # If the file list is not empty, continue
         if len(Files) > 0:
+            # Define a prefix
             now = datetime.now()
             Prefix = now.strftime("%Y_%m_%d_%H_%M_%S")
 
             # Define the filename
             FileName = f"{Prefix} - FreeCAD Settings.zip"
 
-            # Get the file and location were the zip file must be saved
+            # Get the file and location were the zip file must be saved wit a saveas dialog
             Fullname = Standard_Functions.GetFileDialog(
                 Filter="Archive (*.zip)",
                 parent=self.form,
@@ -116,6 +131,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                 SaveAs=True,
             )
 
+            # Create the zipfile with the config files
             with ZipFile(Fullname, "w") as zipObj:
                 for File in Files:
                     zipObj.write(File, File.split(os.sep)[-1])
@@ -125,21 +141,25 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         return
 
     def RestoreSettings(self):
+        # Define the paths for the config files
         UserConfig = "user.cfg"
         SystemConfig = "system.cfg"
 
+        # If checked, add the config files to the list
         Files = []
         if self.form.IncludeUser_Restore.checkState() == Qt.CheckState.Checked:
             Files.append(UserConfig)
         if self.form.IncludeSystem_Restore.checkState() == Qt.CheckState.Checked:
             Files.append(SystemConfig)
 
+        # Select the zipfile with the config files via a file open dialog
         Fullname = Standard_Functions.GetFileDialog(
             Filter="Archive (*.zip)",
             parent=self.form,
             DefaultPath=Parameters_SaveAndRestore.SAVE_DIRECTORY,
             SaveAs=False,
         )
+        # If a file is selected, extract the zipfile and place the config files
         if Fullname is not None and Fullname != "":
             # loading the temp.zip and creating a zip object
             with ZipFile(Fullname, "r") as zipObj:
@@ -148,9 +168,33 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                 for File in Files:
                     zipObj.extract(File, App.getUserConfigDir())
 
+                # Show the restart dialog
                 answer = Standard_Functions.RestartDialog(includeIcons=True)
                 if answer == "yes":
                     Standard_Functions.restart_freecad()
+
+        return
+
+    def ClearSettings(self):
+        # Define the paths for the config files
+        UserConfig = "user.cfg"
+        SystemConfig = "system.cfg"
+
+        # If checked, add the config files to the list
+        Files = []
+        if self.form.IncludeUser_Clear.checkState() == Qt.CheckState.Checked:
+            Files.append(UserConfig)
+        if self.form.IncludeSystem_Clear.checkState() == Qt.CheckState.Checked:
+            Files.append(SystemConfig)
+
+        # Remove the file(s)
+        for File in Files:
+            os.remove(File)
+
+        # Show the restart dialog
+        answer = Standard_Functions.RestartDialog(includeIcons=True)
+        if answer == "yes":
+            Standard_Functions.restart_freecad()
 
         return
 

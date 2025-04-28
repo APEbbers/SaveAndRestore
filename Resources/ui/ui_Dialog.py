@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'ui_DialogQKUCTZ.ui'
+## Form generated from reading UI file 'ui_DialogWgpdRk.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -57,22 +57,9 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         if not Dialog.objectName():
             Dialog.setObjectName("Dialog")
-        Dialog.resize(275, 212)
-        self.gridLayout_5 = QGridLayout(Dialog)
-        self.gridLayout_5.setObjectName("gridLayout_5")
-        self.gridLayout_3 = QGridLayout()
-        self.gridLayout_3.setObjectName("gridLayout_3")
-        self.CloseButton = QPushButton(Dialog)
-        self.CloseButton.setObjectName("CloseButton")
-
-        self.gridLayout_3.addWidget(self.CloseButton, 0, 1, 1, 1)
-
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_3.addItem(self.horizontalSpacer, 0, 0, 1, 1)
-
-        self.gridLayout_5.addLayout(self.gridLayout_3, 6, 0, 1, 1)
-
+        Dialog.resize(419, 377)
+        self.gridLayout_6 = QGridLayout(Dialog)
+        self.gridLayout_6.setObjectName("gridLayout_6")
         self.groupBox = QGroupBox(Dialog)
         self.groupBox.setObjectName("groupBox")
         self.gridLayout = QGridLayout(self.groupBox)
@@ -95,7 +82,7 @@ class Ui_Dialog(object):
 
         self.gridLayout.addWidget(self.IncludeSystem_Save, 1, 1, 1, 1)
 
-        self.gridLayout_5.addWidget(self.groupBox, 0, 0, 1, 1)
+        self.gridLayout_6.addWidget(self.groupBox, 0, 0, 1, 1)
 
         self.groupBox1 = QGroupBox(Dialog)
         self.groupBox1.setObjectName("groupBox1")
@@ -119,11 +106,31 @@ class Ui_Dialog(object):
 
         self.gridLayout_2.addWidget(self.IncludeSystem_Restore, 1, 1, 1, 1)
 
-        self.gridLayout_5.addWidget(self.groupBox1, 1, 0, 1, 1)
+        self.gridLayout_6.addWidget(self.groupBox1, 1, 0, 1, 1)
 
-        self.verticalSpacer = QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.groupBox_2 = QGroupBox(Dialog)
+        self.groupBox_2.setObjectName("groupBox_2")
+        self.gridLayout_5 = QGridLayout(self.groupBox_2)
+        self.gridLayout_5.setObjectName("gridLayout_5")
+        self.IncludeUser_Clear = QCheckBox(self.groupBox_2)
+        self.IncludeUser_Clear.setObjectName("IncludeUser_Clear")
+        self.IncludeUser_Clear.setChecked(True)
 
-        self.gridLayout_5.addItem(self.verticalSpacer, 5, 0, 1, 1)
+        self.gridLayout_5.addWidget(self.IncludeUser_Clear, 0, 1, 1, 1)
+
+        self.clearSettings = QPushButton(self.groupBox_2)
+        self.clearSettings.setObjectName("clearSettings")
+        self.clearSettings.setMinimumSize(QSize(100, 50))
+
+        self.gridLayout_5.addWidget(self.clearSettings, 0, 0, 2, 1)
+
+        self.IncludeSystem_Clear = QCheckBox(self.groupBox_2)
+        self.IncludeSystem_Clear.setObjectName("IncludeSystem_Clear")
+        self.IncludeSystem_Clear.setChecked(True)
+
+        self.gridLayout_5.addWidget(self.IncludeSystem_Clear, 1, 1, 1, 1)
+
+        self.gridLayout_6.addWidget(self.groupBox_2, 2, 0, 1, 1)
 
         self.groupBox2 = QGroupBox(Dialog)
         self.groupBox2.setObjectName("groupBox2")
@@ -131,7 +138,7 @@ class Ui_Dialog(object):
         self.gridLayout_4.setObjectName("gridLayout_4")
         self.restoreToolbars = QPushButton(self.groupBox2)
         self.restoreToolbars.setObjectName("restoreToolbars")
-        self.restoreToolbars.setMinimumSize(QSize(100, 25))
+        self.restoreToolbars.setMinimumSize(QSize(120, 25))
 
         self.gridLayout_4.addWidget(self.restoreToolbars, 0, 0, 1, 1)
 
@@ -139,11 +146,24 @@ class Ui_Dialog(object):
 
         self.gridLayout_4.addItem(self.horizontalSpacer_2, 0, 1, 1, 1)
 
-        self.gridLayout_5.addWidget(self.groupBox2, 3, 0, 1, 1)
+        self.gridLayout_6.addWidget(self.groupBox2, 3, 0, 1, 1)
 
-        self.verticalSpacer_2 = QSpacerItem(20, 10, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.MinimumExpanding)
+        self.verticalSpacer = QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.gridLayout_5.addItem(self.verticalSpacer_2, 4, 0, 1, 1)
+        self.gridLayout_6.addItem(self.verticalSpacer, 4, 0, 1, 1)
+
+        self.gridLayout_3 = QGridLayout()
+        self.gridLayout_3.setObjectName("gridLayout_3")
+        self.CloseButton = QPushButton(Dialog)
+        self.CloseButton.setObjectName("CloseButton")
+
+        self.gridLayout_3.addWidget(self.CloseButton, 0, 1, 1, 1)
+
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_3.addItem(self.horizontalSpacer, 0, 0, 1, 1)
+
+        self.gridLayout_6.addLayout(self.gridLayout_3, 5, 0, 1, 1)
 
         self.retranslateUi(Dialog)
         self.CloseButton.clicked.connect(Dialog.close)
@@ -154,13 +174,16 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(QCoreApplication.translate("Dialog", "Save and restore", None))
-        self.CloseButton.setText(QCoreApplication.translate("Dialog", "Close", None))
         self.saveSettings.setText(QCoreApplication.translate("Dialog", "Save settings", None))
         self.IncludeUser_Save.setText(QCoreApplication.translate("Dialog", "Include user settings", None))
         self.IncludeSystem_Save.setText(QCoreApplication.translate("Dialog", "Include system settings", None))
         self.IncludeUser_Restore.setText(QCoreApplication.translate("Dialog", "Include user settings", None))
         self.restoreSettings.setText(QCoreApplication.translate("Dialog", "Restore settings", None))
         self.IncludeSystem_Restore.setText(QCoreApplication.translate("Dialog", "Include system settings", None))
+        self.IncludeUser_Clear.setText(QCoreApplication.translate("Dialog", "Include user settings", None))
+        self.clearSettings.setText(QCoreApplication.translate("Dialog", "Clear settings", None))
+        self.IncludeSystem_Clear.setText(QCoreApplication.translate("Dialog", "Include system settings", None))
         self.restoreToolbars.setText(QCoreApplication.translate("Dialog", "Restore toolbars", None))
+        self.CloseButton.setText(QCoreApplication.translate("Dialog", "Close", None))
 
     # retranslateUi
