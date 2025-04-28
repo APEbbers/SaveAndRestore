@@ -94,7 +94,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         def on_ClearSettings_clicked():
             self.ClearSettings()
 
-        self.form.clearSettingsconnect(
+        self.form.clearSettings.connect(
             self.form.clearSettings,
             SIGNAL("clicked()"),
             on_ClearSettings_clicked,
