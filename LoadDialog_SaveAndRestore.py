@@ -177,8 +177,8 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
 
     def ClearSettings(self):
         # Define the paths for the config files
-        UserConfig = "user.cfg"
-        SystemConfig = "system.cfg"
+        UserConfig = App.getUserConfigDir() + "user.cfg"
+        SystemConfig = App.getUserConfigDir() + "system.cfg"
 
         # If checked, add the config files to the list
         Files = []
