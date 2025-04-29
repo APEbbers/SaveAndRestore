@@ -148,7 +148,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                     )
                 )
         else:
-            print(translate("FreeCAD SaveAndRestore", "No settings selected to save"))
+            Standard_Functions.Mbox(translate("FreeCAD SaveAndRestore", "Please select at least one config file!", "Warning"))
         return
 
     def RestoreSettings(self):
@@ -171,34 +171,37 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             SaveAs=False,
         )
         # If a file is selected, extract the zipfile and place the config files
-        if Fullname is not None and Fullname != "":
-            # loading the temp.zip and creating a zip object
-            with ZipFile(Fullname, "r") as zipObj:
-                # Extracting all the members of the zip
-                # into a specific location.
-                counter = 0
-                for File in Files:
-                    try:
-                        zipObj.extract(File, App.getUserConfigDir())
-                    except Exception:
-                        counter = counter + 1
-                        Standard_Functions.Print(f"{File} not present in archive", "Warning")
-                        continue
-                if counter == len(Files):
-                    Standard_Functions.Print("There were no files to restore.", "Error")
-                    return
+        if len(Files) > 0:
+            if Fullname is not None and Fullname != "":
+                # loading the temp.zip and creating a zip object
+                with ZipFile(Fullname, "r") as zipObj:
+                    # Extracting all the members of the zip
+                    # into a specific location.
+                    counter = 0
+                    for File in Files:
+                        try:
+                            zipObj.extract(File, App.getUserConfigDir())
+                        except Exception:
+                            counter = counter + 1
+                            Standard_Functions.Print(f"{File} not present in archive", "Warning")
+                            continue
+                    if counter == len(Files):
+                        Standard_Functions.Print("There were no files to restore.", "Error")
+                        return
 
-                # Write the path to preferences
-                Parameters_SaveAndRestore.Settings.SetStringSetting("SaveDirectory", os.path.dirname(Fullname))
-                Parameters_SaveAndRestore.SAVE_DIRECTORY = os.path.dirname(Fullname)
+                    # Write the path to preferences
+                    Parameters_SaveAndRestore.Settings.SetStringSetting("SaveDirectory", os.path.dirname(Fullname))
+                    Parameters_SaveAndRestore.SAVE_DIRECTORY = os.path.dirname(Fullname)
 
-                # print a message
-                print(translate("FreeCAD SaveAndRestore", f'Settings restored from "{Fullname}"'))
+                    # print a message
+                    print(translate("FreeCAD SaveAndRestore", f'Settings restored from "{Fullname}"'))
 
-                # Show the restart dialog
-                answer = Standard_Functions.RestartDialog(includeIcons=True)
-                if answer == "yes":
-                    Standard_Functions.restart_freecad()
+                    # Show the restart dialog
+                    answer = Standard_Functions.RestartDialog(includeIcons=True)
+                    if answer == "yes":
+                        Standard_Functions.restart_freecad()
+        else:
+            Standard_Functions.Mbox(translate("FreeCAD SaveAndRestore", "Please select at least one config file!", "Warning"))
 
         return
 
@@ -214,14 +217,17 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         if self.form.IncludeSystem_Clear.checkState() == Qt.CheckState.Checked:
             Files.append(SystemConfig)
 
-        # Remove the file(s)
-        for File in Files:
-            pathlib.Path.unlink(File)
+        if len(Files) > 0:
+            # Remove the file(s)
+            for File in Files:
+                pathlib.Path.unlink(File)
 
-        # Show the restart dialog
-        answer = Standard_Functions.RestartDialog(includeIcons=True)
-        if answer == "yes":
-            Standard_Functions.restart_freecad()
+            # Show the restart dialog
+            answer = Standard_Functions.RestartDialog(includeIcons=True)
+            if answer == "yes":
+                Standard_Functions.restart_freecad()
+        else:
+            Standard_Functions.Mbox(translate("FreeCAD SaveAndRestore", "Please select at least one config file!", "Warning"))
 
         return
 
