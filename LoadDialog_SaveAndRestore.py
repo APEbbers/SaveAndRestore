@@ -176,7 +176,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             with ZipFile(Fullname, "r") as zipObj:
                 # Extracting all the members of the zip
                 # into a specific location.
-                counter = 1
+                counter = 0
                 for File in Files:
                     try:
                         zipObj.extract(File, App.getUserConfigDir())
