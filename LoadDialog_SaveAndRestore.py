@@ -171,7 +171,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                 DefaultPath=Parameters_SaveAndRestore.SAVE_DIRECTORY,
                 SaveAs=False,
             )
-            
+
             # Extract the zipfile and place the config files
             if Fullname is not None and Fullname != "":
                 # loading the temp.zip and creating a zip object
@@ -219,14 +219,17 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             Files.append(SystemConfig)
 
         if len(Files) > 0:
-            # Remove the file(s)
-            for File in Files:
-                pathlib.Path.unlink(File)
-
             # Show the restart dialog
-            answer = Standard_Functions.RestartDialog(includeIcons=True)
+            answer = Standard_Functions.Mbox(text=translate("FreeCAD SaveAndRestore","Do you really clear the settings?"), style=1)
             if answer == "yes":
-                Standard_Functions.restart_freecad()
+                # Remove the file(s)
+                for File in Files:
+                    pathlib.Path.unlink(File)
+
+                # Show the restart dialog
+                answer = Standard_Functions.RestartDialog(includeIcons=True)
+                if answer == "yes":
+                    Standard_Functions.restart_freecad()
         else:
             Standard_Functions.Mbox(translate("FreeCAD SaveAndRestore", "Please select at least one config file!", "Warning"))
 
