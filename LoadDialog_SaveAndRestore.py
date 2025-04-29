@@ -131,15 +131,19 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                 DefaultPath=os.path.join(Parameters_SaveAndRestore.SAVE_DIRECTORY, FileName),
                 SaveAs=True,
             )
+            if Fullname is not None and Fullname != "":
+                # Create the zipfile with the config files
+                with ZipFile(Fullname, "w") as zipObj:
+                    for File in Files:
+                        zipObj.write(File, File.split(os.sep)[-1])
 
-            # Write the path to preferences
-            Parameters_SaveAndRestore.Settings.SetStringSetting("SaveDirectory", os.path.dirname(Fullname))
+                # Write the path to preferences
+                Parameters_SaveAndRestore.Settings.SetStringSetting("SaveDirectory", os.path.dirname(Fullname))
+                Parameters_SaveAndRestore.SAVE_DIRECTORY = os.path.dirname(Fullname)
 
-            # Create the zipfile with the config files
-            with ZipFile(Fullname, "w") as zipObj:
-                for File in Files:
-                    zipObj.write(File, File.split(os.sep)[-1])
-            print(translate("FreeCAD SaveAndRestore", "Settings saved"))
+                print(
+                    translate("FreeCAD SaveAndRestore", f"Settings saved as {FileName} to {os.path.dirname(Fullname)}")
+                )
         else:
             print(translate("FreeCAD SaveAndRestore", "No settings selected to save"))
         return
@@ -179,6 +183,10 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
 
             # Write the path to preferences
             Parameters_SaveAndRestore.Settings.SetStringSetting("SaveDirectory", os.path.dirname(Fullname))
+            Parameters_SaveAndRestore.SAVE_DIRECTORY = os.path.dirname(Fullname)
+
+            # print a message
+            print(translate("FreeCAD SaveAndRestore", f"Settings restored from {Fullname}"))
 
         return
 
