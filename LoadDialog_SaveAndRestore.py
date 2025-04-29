@@ -33,6 +33,7 @@ import Standard_Functions_SaveAndRestore as Standard_Functions
 from zipfile import ZipFile
 import Parameters_SaveAndRestore
 import StyleMapping_SaveAndRestore
+import pathlib
 
 # Get the resources
 pathUI = os.path.join(os.path.dirname(__file__), "Resources", "ui")
@@ -131,6 +132,9 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                 SaveAs=True,
             )
 
+            # Write the path to preferences
+            Parameters_SaveAndRestore.Settings.SetStringSetting("SaveDirectory", os.path.dirname(Fullname))
+
             # Create the zipfile with the config files
             with ZipFile(Fullname, "w") as zipObj:
                 for File in Files:
@@ -173,6 +177,9 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                 if answer == "yes":
                     Standard_Functions.restart_freecad()
 
+            # Write the path to preferences
+            Parameters_SaveAndRestore.Settings.SetStringSetting("SaveDirectory", os.path.dirname(Fullname))
+
         return
 
     def ClearSettings(self):
@@ -189,7 +196,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
 
         # Remove the file(s)
         for File in Files:
-            os.remove(File)
+            pathlib.Path.unlink(File)
 
         # Show the restart dialog
         answer = Standard_Functions.RestartDialog(includeIcons=True)

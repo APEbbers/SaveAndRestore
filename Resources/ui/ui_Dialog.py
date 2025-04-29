@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'ui_DialogWgpdRk.ui'
+## Form generated from reading UI file 'ui_DialogQESraR.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -174,15 +174,37 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(QCoreApplication.translate("Dialog", "Save and restore", None))
+        # if QT_CONFIG(tooltip)
+        self.saveSettings.setToolTip(
+            QCoreApplication.translate("Dialog", 'Save "user.cfg" and "system.cfg" to a zipfile as backup.', None)
+        )
+        # endif // QT_CONFIG(tooltip)
         self.saveSettings.setText(QCoreApplication.translate("Dialog", "Save settings", None))
         self.IncludeUser_Save.setText(QCoreApplication.translate("Dialog", "Include user settings", None))
         self.IncludeSystem_Save.setText(QCoreApplication.translate("Dialog", "Include system settings", None))
         self.IncludeUser_Restore.setText(QCoreApplication.translate("Dialog", "Include user settings", None))
+        # if QT_CONFIG(tooltip)
+        self.restoreSettings.setToolTip(
+            QCoreApplication.translate("Dialog", 'Restore "user.cfg" and "system.cfg" from a backup.', None)
+        )
+        # endif // QT_CONFIG(tooltip)
         self.restoreSettings.setText(QCoreApplication.translate("Dialog", "Restore settings", None))
         self.IncludeSystem_Restore.setText(QCoreApplication.translate("Dialog", "Include system settings", None))
         self.IncludeUser_Clear.setText(QCoreApplication.translate("Dialog", "Include user settings", None))
+        # if QT_CONFIG(tooltip)
+        self.clearSettings.setToolTip(
+            QCoreApplication.translate(
+                "Dialog", 'Delete "user.cfg" and "system.cfg". FreeCAD creates new files after restart.', None
+            )
+        )
+        # endif // QT_CONFIG(tooltip)
         self.clearSettings.setText(QCoreApplication.translate("Dialog", "Clear settings", None))
         self.IncludeSystem_Clear.setText(QCoreApplication.translate("Dialog", "Include system settings", None))
+        # if QT_CONFIG(tooltip)
+        self.restoreToolbars.setToolTip(
+            QCoreApplication.translate("Dialog", "Restores all toolbars for every workbench.", None)
+        )
+        # endif // QT_CONFIG(tooltip)
         self.restoreToolbars.setText(QCoreApplication.translate("Dialog", "Restore toolbars", None))
         self.CloseButton.setText(QCoreApplication.translate("Dialog", "Close", None))
 

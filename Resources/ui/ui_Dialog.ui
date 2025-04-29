@@ -25,6 +25,9 @@
           <height>50</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>Save &quot;user.cfg&quot; and &quot;system.cfg&quot; to a zipfile as backup.</string>
+        </property>
         <property name="text">
          <string>Save settings</string>
         </property>
@@ -74,6 +77,9 @@
           <height>50</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>Restore &quot;user.cfg&quot; and &quot;system.cfg&quot; from a backup.</string>
+        </property>
         <property name="text">
          <string>Restore settings</string>
         </property>
@@ -113,6 +119,9 @@
           <height>50</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>Delete &quot;user.cfg&quot; and &quot;system.cfg&quot;. FreeCAD creates new files after restart.</string>
+        </property>
         <property name="text">
          <string>Clear settings</string>
         </property>
@@ -141,6 +150,9 @@
           <width>120</width>
           <height>25</height>
          </size>
+        </property>
+        <property name="toolTip">
+         <string>Restores all toolbars for every workbench.</string>
         </property>
         <property name="text">
          <string>Restore toolbars</string>
