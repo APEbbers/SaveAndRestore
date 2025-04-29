@@ -163,15 +163,16 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         if self.form.IncludeSystem_Restore.checkState() == Qt.CheckState.Checked:
             Files.append(SystemConfig)
 
-        # Select the zipfile with the config files via a file open dialog
-        Fullname = Standard_Functions.GetFileDialog(
-            Filter="Archive (*.zip)",
-            parent=self.form,
-            DefaultPath=Parameters_SaveAndRestore.SAVE_DIRECTORY,
-            SaveAs=False,
-        )
-        # If a file is selected, extract the zipfile and place the config files
+        # If at least one config file is checked, select the zipfile with the config files via a file open dialog
         if len(Files) > 0:
+            Fullname = Standard_Functions.GetFileDialog(
+                Filter="Archive (*.zip)",
+                parent=self.form,
+                DefaultPath=Parameters_SaveAndRestore.SAVE_DIRECTORY,
+                SaveAs=False,
+            )
+            
+            # Extract the zipfile and place the config files
             if Fullname is not None and Fullname != "":
                 # loading the temp.zip and creating a zip object
                 with ZipFile(Fullname, "r") as zipObj:
