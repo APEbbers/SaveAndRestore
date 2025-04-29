@@ -30,6 +30,7 @@ from PySide.QtCore import Qt, SIGNAL
 import sys
 from datetime import datetime
 import Standard_Functions_SaveAndRestore as Standard_Functions
+import zipfile
 from zipfile import ZipFile
 import Parameters_SaveAndRestore
 import StyleMapping_SaveAndRestore
@@ -175,8 +176,17 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             with ZipFile(Fullname, "r") as zipObj:
                 # Extracting all the members of the zip
                 # into a specific location.
+                counter = 1
                 for File in Files:
-                    zipObj.extract(File, App.getUserConfigDir())
+                    try:
+                        zipObj.extract(File, App.getUserConfigDir())
+                    except Exception:
+                        counter = counter + 1
+                        Standard_Functions.Print(f"{File} not present in archive", "Warning")
+                        continue
+                if counter == len(Files):
+                    Standard_Functions.Print("There were no files to restore.", "Error")
+                    return
 
                 # Write the path to preferences
                 Parameters_SaveAndRestore.Settings.SetStringSetting("SaveDirectory", os.path.dirname(Fullname))
