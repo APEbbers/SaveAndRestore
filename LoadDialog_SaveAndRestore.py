@@ -229,7 +229,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             answer = Standard_Functions.RestartDialog(
                 translate("FreeCAD SaveAndRestore", "Do you really clear the settings?"),
                 True,
-                "Reset settings and restart",
+                "clear and restart",
                 "Cancel",
             )
             if answer == "yes":
