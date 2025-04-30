@@ -175,42 +175,46 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                 DefaultPath=Parameters_SaveAndRestore.SAVE_DIRECTORY,
                 SaveAs=False,
             )
+            answer = Standard_Functions.RestartDialog(
+                translate("FreeCAD SaveAndRestore", "Do you really restore these settings?"),
+                True,
+                "Restore and restart",
+                "Cancel",
+            )
+            if answer == "yes":
+                # Extract the zipfile and place the config files
+                if Fullname is not None and Fullname != "":
+                    # loading the temp.zip and creating a zip object
+                    with ZipFile(Fullname, "r") as zipObj:
+                        # Extracting all the members of the zip
+                        # into a specific location.
+                        counter = 0
+                        for File in Files:
+                            # Delete the files first to be sure that the file will be from the zipfile.
+                            if platform.system() == "Windows":
+                                subprocess.run(os.path.join(os.path.dirname(__file__), "DeleteFile.bat") + " " + File)
+                            if platform.system() == "Linux" or platform.system() == "Darwin":
+                                subprocess.run(["bash", os.path.join(os.path.dirname(__file__), "DeleteFile.sh"), File])
 
-            # Extract the zipfile and place the config files
-            if Fullname is not None and Fullname != "":
-                # loading the temp.zip and creating a zip object
-                with ZipFile(Fullname, "r") as zipObj:
-                    # Extracting all the members of the zip
-                    # into a specific location.
-                    counter = 0
-                    for File in Files:
-                        # Delete the files first to be sure that the file will be from the zipfile.
-                        if platform.system() == "Windows":
-                            subprocess.run(os.path.join(os.path.dirname(__file__), "DeleteFile.bat") + " " + File)
-                        if platform.system() == "Linux" or platform.system() == "Darwin":
-                            subprocess.run(["bash", os.path.join(os.path.dirname(__file__), "DeleteFile.sh"), File])
+                            # Extract the file from the zip file into the config directory
+                            try:
+                                zipObj.extract(File, App.getUserConfigDir())
+                            except Exception:
+                                counter = counter + 1
+                                Standard_Functions.Print(f"{File} not present in archive", "Warning")
+                                continue
+                        if counter == len(Files):
+                            Standard_Functions.Print("There were no files to restore.", "Error")
+                            return
 
-                        # Extract the file from the zip file into the config directory
-                        try:
-                            zipObj.extract(File, App.getUserConfigDir())
-                        except Exception:
-                            counter = counter + 1
-                            Standard_Functions.Print(f"{File} not present in archive", "Warning")
-                            continue
-                    if counter == len(Files):
-                        Standard_Functions.Print("There were no files to restore.", "Error")
-                        return
+                        # Write the path to preferences
+                        Parameters_SaveAndRestore.Settings.SetStringSetting("SaveDirectory", os.path.dirname(Fullname))
+                        Parameters_SaveAndRestore.SAVE_DIRECTORY = os.path.dirname(Fullname)
 
-                    # Write the path to preferences
-                    Parameters_SaveAndRestore.Settings.SetStringSetting("SaveDirectory", os.path.dirname(Fullname))
-                    Parameters_SaveAndRestore.SAVE_DIRECTORY = os.path.dirname(Fullname)
+                        # print a message
+                        print(translate("FreeCAD SaveAndRestore", f'Settings restored from "{Fullname}"'))
 
-                    # print a message
-                    print(translate("FreeCAD SaveAndRestore", f'Settings restored from "{Fullname}"'))
-
-                    # Show the restart dialog
-                    answer = Standard_Functions.RestartDialog(includeIcons=True)
-                    if answer == "yes":
+                        # Restart FreeCAD
                         Standard_Functions.restart_freecad()
         else:
             Standard_Functions.Mbox(
