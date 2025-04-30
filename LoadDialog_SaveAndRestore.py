@@ -27,6 +27,7 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import os
 from PySide6.QtCore import Qt, SIGNAL, QProcess
+from PySide6.QtWidgets import QApplication
 import sys
 from datetime import datetime
 import Standard_Functions_SaveAndRestore as Standard_Functions
@@ -34,10 +35,8 @@ import zipfile
 from zipfile import ZipFile
 import Parameters_SaveAndRestore
 import StyleMapping_SaveAndRestore
-import pathlib
-import time
-
-import DeleteFiles
+import platform
+import subprocess
 
 # Get the resources
 pathUI = os.path.join(os.path.dirname(__file__), "Resources", "ui")
@@ -227,31 +226,34 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
 
         if len(Files) > 0:
             # Show the restart dialog
-            answer = Standard_Functions.Mbox(
-                text=translate("FreeCAD SaveAndRestore", "Do you really clear the settings?"), style=1
+            answer = Standard_Functions.RestartDialog(
+                translate("FreeCAD SaveAndRestore", "Do you really clear the settings?"),
+                True,
+                "Reset settings and restart",
+                "Cancel",
             )
             if answer == "yes":
+                # Set the wait cursor
+                QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
                 # Remove the file(s)
-                # for File in Files:
-                #     pathlib.Path.unlink(File)
-                #     QProcess.startDetached(DeleteFiles.DeleteFile(File))
-                self.start_process()
+                for File in Files:
+                    if platform.system() == "Windows":
+                        subprocess.run(os.path.join(os.path.dirname(__file__), "DeleteFile.bat") + " " + File)
+                    if platform.system() == "Linux" or platform.system() == "Darwin":
+                        subprocess.run(os.path.join(os.path.dirname(__file__), "DeleteFile.sh") + " " + File)
 
-                # Show the restart dialog
-                answer = Standard_Functions.RestartDialog(includeIcons=True)
-                if answer == "yes":
-                    Standard_Functions.restart_freecad()
+                # Return to the normal cursor
+                QApplication.setOverrideCursor(Qt.CursorShape.ArrowCursor)
+
+                # Restart FreeCAD
+                Standard_Functions.restart_freecad()
         else:
+            QApplication.setOverrideCursor(Qt.CursorShape.ArrowCursor)
             Standard_Functions.Mbox(
                 translate("FreeCAD SaveAndRestore", "Please select at least one config file!", "Warning")
             )
 
         return
-
-    def start_process(self):
-        self.message("Executing process.")
-        self.p = QProcess()  # Keep a reference to the QProcess (e.g. on self) while it's running.
-        self.p.startDetached("python3", ["DeleteFiles.py"])
 
 
 def main():

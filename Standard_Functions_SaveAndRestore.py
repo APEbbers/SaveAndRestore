@@ -169,7 +169,7 @@ def Mbox(
         return
 
 
-def RestartDialog(message="", includeIcons=False):
+def RestartDialog(message="", includeIcons=False, YesText="", NoText=""):
     """_summary_
         shows a restart dialog
     Returns:
@@ -177,6 +177,11 @@ def RestartDialog(message="", includeIcons=False):
         otherwise returns 'no'
     """
     from PySide.QtWidgets import QMessageBox
+
+    if YesText == "":
+        YesText = translate("FreeCAD SaveAndRestore", "Restart now")
+    if NoText == "":
+        NoText = translate("FreeCAD SaveAndRestore", "Restart later")
 
     # Save the preferences before restarting
     App.saveParameter()
@@ -196,8 +201,8 @@ def RestartDialog(message="", includeIcons=False):
     # Set the buttons and default button
     msgBox.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
     msgBox.setDefaultButton(QMessageBox.StandardButton.No)
-    msgBox.button(QMessageBox.StandardButton.Yes).setText(translate("FreeCAD SaveAndRestore", "Restart now"))
-    msgBox.button(QMessageBox.StandardButton.No).setText(translate("FreeCAD SaveAndRestore", "Restart later"))
+    msgBox.button(QMessageBox.StandardButton.Yes).setText(YesText)
+    msgBox.button(QMessageBox.StandardButton.No).setText(NoText)
     if includeIcons is True:
         msgBox.button(QMessageBox.StandardButton.No).setIcon(Gui.getIcon("edit_Cancel.svg"))
         msgBox.button(QMessageBox.StandardButton.Yes).setIcon(Gui.getIcon("edit_OK.svg"))
