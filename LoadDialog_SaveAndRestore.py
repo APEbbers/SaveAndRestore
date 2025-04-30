@@ -182,6 +182,9 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                 "Cancel",
             )
             if answer == "yes":
+                # Set the wait cursor
+                QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
+
                 # Extract the zipfile and place the config files
                 if Fullname is not None and Fullname != "":
                     # loading the temp.zip and creating a zip object
@@ -213,6 +216,9 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
 
                         # print a message
                         print(translate("FreeCAD SaveAndRestore", f'Settings restored from "{Fullname}"'))
+
+                        # Return to the normal cursor
+                        QApplication.setOverrideCursor(Qt.CursorShape.ArrowCursor)
 
                         # Restart FreeCAD
                         Standard_Functions.restart_freecad()
