@@ -184,6 +184,13 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                     # into a specific location.
                     counter = 0
                     for File in Files:
+                        # Delete the files first to be sure that the file will be from the zipfile.
+                        if platform.system() == "Windows":
+                            subprocess.run(os.path.join(os.path.dirname(__file__), "DeleteFile.bat") + " " + File)
+                        if platform.system() == "Linux" or platform.system() == "Darwin":
+                            subprocess.run(["bash", os.path.join(os.path.dirname(__file__), "DeleteFile.sh"), File])
+
+                        # Extract the file from the zip file into the config directory
                         try:
                             zipObj.extract(File, App.getUserConfigDir())
                         except Exception:
