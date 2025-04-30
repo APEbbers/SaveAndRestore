@@ -26,7 +26,7 @@ SOFTWARE.
 import FreeCAD as App
 import FreeCADGui as Gui
 import os
-from PySide.QtCore import Qt, SIGNAL
+from PySide6.QtCore import Qt, SIGNAL, QProcess
 import sys
 from datetime import datetime
 import Standard_Functions_SaveAndRestore as Standard_Functions
@@ -35,6 +35,9 @@ from zipfile import ZipFile
 import Parameters_SaveAndRestore
 import StyleMapping_SaveAndRestore
 import pathlib
+import time
+
+import DeleteFiles
 
 # Get the resources
 pathUI = os.path.join(os.path.dirname(__file__), "Resources", "ui")
@@ -148,7 +151,9 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                     )
                 )
         else:
-            Standard_Functions.Mbox(translate("FreeCAD SaveAndRestore", "Please select at least one config file!", "Warning"))
+            Standard_Functions.Mbox(
+                translate("FreeCAD SaveAndRestore", "Please select at least one config file!", "Warning")
+            )
         return
 
     def RestoreSettings(self):
@@ -202,7 +207,9 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                     if answer == "yes":
                         Standard_Functions.restart_freecad()
         else:
-            Standard_Functions.Mbox(translate("FreeCAD SaveAndRestore", "Please select at least one config file!", "Warning"))
+            Standard_Functions.Mbox(
+                translate("FreeCAD SaveAndRestore", "Please select at least one config file!", "Warning")
+            )
 
         return
 
@@ -220,20 +227,31 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
 
         if len(Files) > 0:
             # Show the restart dialog
-            answer = Standard_Functions.Mbox(text=translate("FreeCAD SaveAndRestore","Do you really clear the settings?"), style=1)
+            answer = Standard_Functions.Mbox(
+                text=translate("FreeCAD SaveAndRestore", "Do you really clear the settings?"), style=1
+            )
             if answer == "yes":
                 # Remove the file(s)
-                for File in Files:
-                    pathlib.Path.unlink(File)
+                # for File in Files:
+                #     pathlib.Path.unlink(File)
+                #     QProcess.startDetached(DeleteFiles.DeleteFile(File))
+                self.start_process()
 
                 # Show the restart dialog
                 answer = Standard_Functions.RestartDialog(includeIcons=True)
                 if answer == "yes":
                     Standard_Functions.restart_freecad()
         else:
-            Standard_Functions.Mbox(translate("FreeCAD SaveAndRestore", "Please select at least one config file!", "Warning"))
+            Standard_Functions.Mbox(
+                translate("FreeCAD SaveAndRestore", "Please select at least one config file!", "Warning")
+            )
 
         return
+
+    def start_process(self):
+        self.message("Executing process.")
+        self.p = QProcess()  # Keep a reference to the QProcess (e.g. on self) while it's running.
+        self.p.startDetached("python3", ["DeleteFiles.py"])
 
 
 def main():
