@@ -26,8 +26,8 @@ SOFTWARE.
 import FreeCAD as App
 import FreeCADGui as Gui
 import os
-from PySide6.QtCore import Qt, SIGNAL, QProcess
-from PySide6.QtWidgets import QApplication
+from PySide.QtCore import Qt, SIGNAL, QProcess
+from PySide.QtWidgets import QApplication
 import sys
 from datetime import datetime
 import Standard_Functions_SaveAndRestore as Standard_Functions
@@ -240,7 +240,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                     if platform.system() == "Windows":
                         subprocess.run(os.path.join(os.path.dirname(__file__), "DeleteFile.bat") + " " + File)
                     if platform.system() == "Linux" or platform.system() == "Darwin":
-                        subprocess.run(os.path.join(os.path.dirname(__file__), "DeleteFile.sh") + " " + File)
+                        subprocess.run(["bash", os.path.join(os.path.dirname(__file__), "DeleteFile.sh"), File])
 
                 # Return to the normal cursor
                 QApplication.setOverrideCursor(Qt.CursorShape.ArrowCursor)
