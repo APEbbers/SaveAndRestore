@@ -178,8 +178,8 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             answer = Standard_Functions.RestartDialog(
                 translate("FreeCAD SaveAndRestore", "Do you really restore these settings?"),
                 True,
-                "Restore and restart",
-                "Cancel",
+                translate("FreeCAD SaveAndRestore", "Restore and restart"),
+                translate("FreeCAD SaveAndRestore", "Cancel"),
             )
             if answer == "yes":
                 # Set the wait cursor
@@ -246,8 +246,8 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             answer = Standard_Functions.RestartDialog(
                 translate("FreeCAD SaveAndRestore", "Do you really clear the settings?"),
                 True,
-                "clear and restart",
-                "Cancel",
+                translate("FreeCAD SaveAndRestore", "Clear and restart"),
+                translate("FreeCAD SaveAndRestore", "Cancel"),
             )
             if answer == "yes":
                 # Set the wait cursor
