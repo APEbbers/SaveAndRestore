@@ -94,7 +94,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
 
             StyleSheet = f"""background-color: {StyleMapping_SaveAndRestore.ReturnStyleItem("Background_Color")};color: {StyleMapping_SaveAndRestore.ReturnStyleItem("FontColor")};"""
 
-            self.EnableToolbars(StyleSheet=StyleSheet, FinishMessage="Toolbars enabled")
+            self.EnableToolbars(FinishMessage="Toolbars enabled", StyleSheet=StyleSheet)
 
         self.form.restoreToolbars.connect(
             self.form.restoreToolbars,
@@ -280,7 +280,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
 
         return
 
-    def EnableToolbars(FinishMessage="", StyleSheet=None):
+    def EnableToolbars(self, FinishMessage="", StyleSheet=None):
         # Show the restart dialog
         answer = Standard_Functions.RestartDialog(
             translate("FreeCAD SaveAndRestore", "Do you really want to restore all toolbars?"),
