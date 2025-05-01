@@ -27,7 +27,7 @@ import FreeCAD as App
 import FreeCADGui as Gui
 import os
 from PySide.QtCore import Qt, SIGNAL, QProcess
-from PySide.QtWidgets import QApplication, QLabel, QToolBar
+from PySide.QtWidgets import QApplication, QLabel, QToolBar, QMenu
 import sys
 from datetime import datetime
 import Standard_Functions_SaveAndRestore as Standard_Functions
@@ -37,6 +37,7 @@ import Parameters_SaveAndRestore
 import StyleMapping_SaveAndRestore
 import platform
 import subprocess
+import webbrowser
 
 # Get the resources
 pathUI = os.path.join(os.path.dirname(__file__), "Resources", "ui")
@@ -56,6 +57,8 @@ mw = Gui.getMainWindow()
 
 class LoadDialog(ui_Dialog.Ui_Dialog):
 
+    ReproAdress: str = ""
+
     def __init__(self):
         super(LoadDialog, self).__init__()
 
@@ -66,6 +69,10 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         self.form.setWindowFlag(Qt.WindowType.WindowMinMaxButtonsHint, False)
         self.form.setWindowFlag(Qt.WindowType.WindowCloseButtonHint, True)
         self.form.setWindowFlag(Qt.WindowType.WindowMinimizeButtonHint, True)
+
+        # Get the address of the repository address
+        PackageXML = os.path.join(os.path.dirname(__file__), "package.xml")
+        self.ReproAdress = Standard_Functions.ReturnXML_Value(PackageXML, "url", "type", "repository")
 
         # Connect the save function
         def on_saveSettings_clicked():
@@ -111,6 +118,20 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             SIGNAL("clicked()"),
             on_ClearSettings_clicked,
         )
+
+        # Connect the help buttons
+        def Help():
+            self.on_Helpbutton_clicked(self)
+
+        self.form.HelpButton.connect(self.form.HelpButton, SIGNAL("clicked()"), Help)
+
+        # Get the icon from the FreeCAD help
+        helpMenu = mw.findChildren(QMenu, "&Help")[0]
+        helpAction = helpMenu.actions()[0]
+        helpIcon = helpAction.icon()
+        # Set the help icon
+        if helpIcon is not None:
+            self.form.HelpButton.setIcon(helpIcon)
 
         return
 
@@ -336,6 +357,15 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             # Restart FreeCAD
             Standard_Functions.restart_freecad()
 
+        return
+
+    def on_Helpbutton_clicked(self):
+        if self.ReproAdress != "" or self.ReproAdress is not None:
+            if not self.ReproAdress.endswith("/"):
+                self.ReproAdress = self.ReproAdress + "/"
+
+            Adress = self.ReproAdress + "wiki"
+            webbrowser.open(Adress, new=2, autoraise=True)
         return
 
 
