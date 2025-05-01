@@ -26,8 +26,8 @@ SOFTWARE.
 import FreeCAD as App
 import FreeCADGui as Gui
 import os
-from PySide6.QtCore import Qt, SIGNAL, QProcess
-from PySide6.QtWidgets import QApplication
+from PySide.QtCore import Qt, SIGNAL, QProcess
+from PySide.QtWidgets import QApplication, QLabel, QToolBar
 import sys
 from datetime import datetime
 import Standard_Functions_SaveAndRestore as Standard_Functions
@@ -94,7 +94,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
 
             StyleSheet = f"""background-color: {StyleMapping_SaveAndRestore.ReturnStyleItem("Background_Color")};color: {StyleMapping_SaveAndRestore.ReturnStyleItem("FontColor")};"""
 
-            Standard_Functions.EnableToolbars(StyleSheet=StyleSheet, FinishMessage="Toolbars enabled")
+            self.EnableToolbars(StyleSheet=StyleSheet, FinishMessage="Toolbars enabled")
 
         self.form.restoreToolbars.connect(
             self.form.restoreToolbars,
@@ -277,6 +277,64 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             Standard_Functions.Mbox(
                 translate("FreeCAD SaveAndRestore", "Please select at least one config file!", "Warning")
             )
+
+        return
+
+    def EnableToolbars(FinishMessage="", StyleSheet=None):
+        # Show the restart dialog
+        answer = Standard_Functions.RestartDialog(
+            translate("FreeCAD SaveAndRestore", "Do you really want to restore all toolbars?"),
+            True,
+            translate("FreeCAD SaveAndRestore", "Restore and restart"),
+            translate("FreeCAD SaveAndRestore", "Cancel"),
+        )
+        if answer == "yes":
+            lbl = QLabel(translate("FreeCAD SaveAndResore", "Loading workbench … (…/…)"))
+            lbl.setWindowFlags(Qt.WindowType.Dialog | Qt.WindowType.WindowStaysOnTopHint)
+            lbl.setMinimumSize(300, 20)
+            lbl.setContentsMargins(3, 3, 3, 3)
+
+            # Get the stylesheet from the main window and use it for this form
+            if StyleSheet is not None:
+                lbl.setStyleSheet(StyleSheet)
+
+            lbl.show()
+            lst = Gui.listWorkbenches()
+            for i, wb in enumerate(lst):
+                msg = (
+                    translate("FreeCAD SaveAndResore", "Loading workbench ")
+                    + wb
+                    + " ("
+                    + str(i + 1)
+                    + "/"
+                    + str(len(lst))
+                    + ")"
+                )
+                print(msg)
+                lbl.setText(msg)
+                geo = lbl.geometry()
+                geo.setSize(lbl.sizeHint())
+                lbl.setGeometry(geo)
+                lbl.repaint()
+                Gui.updateGui()  # Probably slower with this, because it redraws the entire GUI with all tool buttons changed etc. but allows the label to actually be updated, and it looks nice and gives a quick overview of all the workbenches…
+                try:
+                    Gui.activateWorkbench(wb)
+                    Workbench = Gui.activeWorkbench()
+                    for ToolbarName in Workbench.listToolbars():
+                        ToolBar = mw.findChild(QToolBar, ToolbarName)
+                        ToolBar.setEnabled(True)
+                        ToolBar.show()
+                    Gui.updateGui()
+                except Exception:
+                    pass
+
+            # Print an message
+            if FinishMessage != "":
+                lbl.setText(FinishMessage)
+                print(FinishMessage)
+
+            # Restart FreeCAD
+            Standard_Functions.restart_freecad()
 
         return
 
