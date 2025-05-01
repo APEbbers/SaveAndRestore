@@ -345,8 +345,14 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                         ToolBar = mw.findChild(QToolBar, ToolbarName)
                         ToolBar.setEnabled(True)
                         ToolBar.show()
+
+                        preferences = App.ParamGet("User parameter:BaseApp/MainWindow/ToolBars")
+                        preferences.SetBool(ToolbarName, True)
+                        App.saveParameter()
+
                     Gui.updateGui()
-                except Exception:
+                except Exception as e:
+                    print(e)
                     pass
 
             # Print an message

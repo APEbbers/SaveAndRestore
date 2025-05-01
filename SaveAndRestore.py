@@ -173,9 +173,9 @@ class SaveAndRestore:
 
         # Check if a WB is installed that is present in the resetList
         if ToolBarReset is False:
-            for AddOn in CurrentAddOnList:
-                for WB in WB_ResetList:
-                    if WB in AddOn:
+            for WB in WB_ResetList:
+                for AddOn in CurrentAddOnList:
+                    if WB in AddOn and WB != "":
                         # Check if the Addon is disabled
                         for name in os.listdir(AddOn):
                             if name == "ADDON_DISABLED":
@@ -269,16 +269,16 @@ class SaveAndRestore:
                         print("got here")
                         resetList.append(AddOn)
 
-                # Check if the Addon is disabled
-                for name in os.listdir(AddOn):
-                    if name == "ADDON_DISABLED":
-                        isInList_2 = False
-                        for WbToLook in WbToLookFor:
-                            if WbToLook == os.path.basename(AddOn):
-                                isInList_2 = True
+                # # Check if the Addon is disabled
+                # for name in os.listdir(AddOn):
+                #     if name == "ADDON_DISABLED":
+                #         isInList_2 = False
+                #         for WbToLook in WbToLookFor:
+                #             if WbToLook == os.path.basename(AddOn):
+                #                 isInList_2 = True
 
-                            if isInList_2 is True:
-                                resetList.append(AddOn)
+                #             if isInList_2 is True:
+                #                 resetList.append(AddOn)
 
             # Check if an add-on is removed
             for AddOn in PreviousAddOnList:
