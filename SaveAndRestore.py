@@ -179,15 +179,18 @@ class SaveAndRestore:
                         # Check if the Addon is disabled
                         for name in os.listdir(AddOn):
                             if name == "ADDON_DISABLED":
-                                # The toolbars must be reset
-                                ToolBarReset = True
-                                # After reset, remove the addon from the list
-                                WB_ResetList.remove(AddOn.rsplit(os.sep, 1)[1])
-                                # Write the updated list to the resetlist.json
-                                with open(os.path.join(path, "SaveAndRestore", "ResetList.json"), "w") as outfile:
-                                    json.dump(WB_ResetList, outfile, indent=4)
-                                outfile.close()
-                                break
+                                try:
+                                    # The toolbars must be reset
+                                    ToolBarReset = True
+                                    # After reset, remove the addon from the list
+                                    WB_ResetList.remove(WB)
+                                    # Write the updated list to the resetlist.json
+                                    with open(os.path.join(path, "SaveAndRestore", "ResetList.json"), "w") as outfile:
+                                        json.dump(WB_ResetList, outfile, indent=4)
+                                    outfile.close()
+                                    break
+                                except Exception:
+                                    pass
                         break
 
         # If toolbars must be reset, show a messeage to ask the user if they want to show the dialog
