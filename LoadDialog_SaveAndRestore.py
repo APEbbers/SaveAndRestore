@@ -121,7 +121,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
 
         # Connect the help buttons
         def Help():
-            self.on_Helpbutton_clicked(self)
+            self.on_Helpbutton_clicked()
 
         self.form.HelpButton.connect(self.form.HelpButton, SIGNAL("clicked()"), Help)
 
