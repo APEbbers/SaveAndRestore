@@ -979,13 +979,16 @@ def EnableToolbars(FinishMessage="", StyleSheet=None):
         lbl.setGeometry(geo)
         lbl.repaint()
         Gui.updateGui()  # Probably slower with this, because it redraws the entire GUI with all tool buttons changed etc. but allows the label to actually be updated, and it looks nice and gives a quick overview of all the workbenches…
-        try:
-            Gui.activateWorkbench(wb)
-            for WB in lst:
-                for tb in mw.findChildren(QToolBar):
-                    tb.show()
-        except Exception:
-            pass
+        # try:
+        Gui.activateWorkbench(wb)
+        Workbench = Gui.activeWorkbench()
+        for ToolbarName in Workbench.listToolbars():
+            ToolBar = mw.findChild(QToolBar, ToolbarName)
+            ToolBar.setEnabled(True)
+            ToolBar.show()
+        Gui.updateGui()
+        # except Exception:
+        #     pass
     if FinishMessage != "":
         lbl.setText(FinishMessage)
         print(FinishMessage)

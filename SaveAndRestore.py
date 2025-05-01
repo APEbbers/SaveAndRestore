@@ -182,7 +182,7 @@ class SaveAndRestore:
                                 # The toolbars must be reset
                                 ToolBarReset = True
                                 # After reset, remove the addon from the list
-                                WB_ResetList.remove(AddOn.rsplit(os.sep, 1)[1])
+                                WB_ResetList.remove(WB)
                                 # Write the updated list to the resetlist.json
                                 with open(os.path.join(path, "SaveAndRestore", "ResetList.json"), "w") as outfile:
                                     json.dump(WB_ResetList, outfile, indent=4)
@@ -212,6 +212,8 @@ class SaveAndRestore:
         # Get the folder with add-ons
         path = os.path.dirname(__file__)
 
+        resetList = []
+
         # The list with add-ons for which this applies
         WbToLookFor = ["FreeCAD-Ribbon"]
 
@@ -239,27 +241,48 @@ class SaveAndRestore:
             if isInList is False and os.path.exists(subdir):
                 CurrentAddOnList.append(subdir)
 
-            # If there is already a WBlist, read it to compare
-            FileName = os.path.join(path, "SaveAndRestore", "WBList.json")
-            if os.path.exists(FileName):
-                PreviousAddOnList = []
-                with open(FileName, "r") as file:
-                    PreviousAddOnList = json.load(file)
-                    file.close()
+        # If there is already a WBlist, read it to compare
+        FileName = os.path.join(path, "SaveAndRestore", "WBList.json")
+        if os.path.exists(FileName):
+            PreviousAddOnList = []
+            with open(FileName, "r") as file:
+                PreviousAddOnList = json.load(file)
+                file.close()
 
-                # Check if an add-on is installed
-                for AddOn in CurrentAddOnList:
-                    isInList = False
-                    for PreviousAddon in PreviousAddOnList:
-                        if AddOn == PreviousAddon:
-                            isInList = True
+            # Check if an add-on is installed
+            for AddOn in CurrentAddOnList:
+                isInList = False
+                for PreviousAddon in PreviousAddOnList:
+                    if AddOn == PreviousAddon:
+                        isInList = True
 
-                    if isInList is False:
-                        if WbToLookFor.__contains__(AddOn):
-                            # Write the reset list
-                            with open(os.path.join(path, "SaveAndRestore", "ResetList.json"), "w") as outfile:
-                                json.dump(CurrentAddOnList, outfile, indent=4)
-                            outfile.close()
+                if isInList is False:
+                    isInList_2 = False
+                    for WbToLook in WbToLookFor:
+                        if WbToLook == AddOn:
+                            isInList_2 = True
+
+                    if isInList_2 is True:
+                        print("got here")
+                        resetList.append(AddOn)
+
+                # Check if the Addon is disabled
+                for name in os.listdir(AddOn):
+                    if name == "ADDON_DISABLED":
+                        isInList_2 = False
+                        for WbToLook in WbToLookFor:
+                            if WbToLook == os.path.basename(AddOn):
+                                isInList_2 = True
+
+                            if isInList_2 is True:
+                                resetList.append(AddOn)
+                            print(AddOn + ", " + str(isInList_2))
+
+        # Write the reset list
+        with open(os.path.join(path, "SaveAndRestore", "ResetList.json"), "w") as outfile:
+            json.dump(resetList, outfile, indent=4)
+
+        return
 
 
 class run:

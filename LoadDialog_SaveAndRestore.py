@@ -26,8 +26,8 @@ SOFTWARE.
 import FreeCAD as App
 import FreeCADGui as Gui
 import os
-from PySide.QtCore import Qt, SIGNAL, QProcess
-from PySide.QtWidgets import QApplication
+from PySide6.QtCore import Qt, SIGNAL, QProcess
+from PySide6.QtWidgets import QApplication
 import sys
 from datetime import datetime
 import Standard_Functions_SaveAndRestore as Standard_Functions
@@ -62,6 +62,11 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         # this will create a Qt widget from our ui file
         self.form = Gui.PySideUic.loadUi(os.path.join(pathUI, "ui_Dialog.ui"))
 
+        self.form.setWindowFlags(Qt.WindowType.WindowStaysOnTopHint | Qt.WindowType.CustomizeWindowHint)
+        self.form.setWindowFlag(Qt.WindowType.WindowMinMaxButtonsHint, False)
+        self.form.setWindowFlag(Qt.WindowType.WindowCloseButtonHint, True)
+        self.form.setWindowFlag(Qt.WindowType.WindowMinimizeButtonHint, True)
+
         # Connect the save function
         def on_saveSettings_clicked():
             self.SaveSettings()
@@ -84,6 +89,9 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
 
         # Connect the restore ToolBars function
         def on_EnableToolbars_clicked():
+            # Hide the dialog
+            self.form.hide()
+
             StyleSheet = f"""background-color: {StyleMapping_SaveAndRestore.ReturnStyleItem("Background_Color")};color: {StyleMapping_SaveAndRestore.ReturnStyleItem("FontColor")};"""
 
             Standard_Functions.EnableToolbars(StyleSheet=StyleSheet, FinishMessage="Toolbars enabled")
