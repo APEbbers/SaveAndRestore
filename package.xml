@@ -15,7 +15,7 @@
 
   <pythonmin>3.8.0</pythonmin>
 
-  <url type="website">https://github.com/APEbbers/SaveAndRestore/wiki</url>
+  <url type="website">https://github.com/APEbbers/SaveAndRestore</url>
 
   <url branch="main" type="repository">https://github.com/APEbbers/SaveAndRestore</url>
 
