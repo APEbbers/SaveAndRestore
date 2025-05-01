@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <package format="1" xmlns="https://wiki.freecad.org/Package_Metadata">
 
-  <name>Save and restore</name>
+  <name>SaveAndRestore</name>
 
   <description>A simple addon to save and restore your settings</description>
 
