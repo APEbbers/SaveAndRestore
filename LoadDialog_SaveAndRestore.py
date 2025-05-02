@@ -134,6 +134,16 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         if helpIcon is not None:
             self.form.HelpButton.setIcon(helpIcon)
 
+        # Connect the safe mode button
+        def on_StartSafeMode_clicked():
+            self.StartSafeMode()
+
+        self.form.clearSettings.connect(
+            self.form.clearSettings,
+            SIGNAL("clicked()"),
+            on_StartSafeMode_clicked,
+        )
+
         return
 
     def SaveSettings(self):
@@ -384,6 +394,14 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             Adress = self.ReproAdress + "wiki"
             webbrowser.open(Adress, new=2, autoraise=True)
         return
+
+    def StartSafeMode(self):
+        args = QApplication.arguments()[1:]
+        args.append("--safe-mode")
+        args.append(f"-P --{os.path.join(os.path.dirname(__file__), 'SaveAndRestore.py')}")
+
+        if Gui.getMainWindow().close():
+            QProcess.startDetached(QApplication.applicationFilePath(), args)
 
 
 def main():
