@@ -138,8 +138,8 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         def on_StartSafeMode_clicked():
             self.StartSafeMode()
 
-        self.form.clearSettings.connect(
-            self.form.clearSettings,
+        self.form.startSafeMode.connect(
+            self.form.startSafeMode,
             SIGNAL("clicked()"),
             on_StartSafeMode_clicked,
         )

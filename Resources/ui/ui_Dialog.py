@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'ui_DialogbTWLyO.ui'
+## Form generated from reading UI file 'ui_DialoggyjCoG.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.3
 ##
@@ -32,7 +32,7 @@ class Ui_Dialog(object):
         self.gridLayout.setObjectName(u"gridLayout")
         self.saveSettings = QPushButton(self.groupBox)
         self.saveSettings.setObjectName(u"saveSettings")
-        self.saveSettings.setMinimumSize(QSize(100, 50))
+        self.saveSettings.setMinimumSize(QSize(200, 50))
 
         self.gridLayout.addWidget(self.saveSettings, 0, 0, 2, 1)
 
@@ -63,7 +63,7 @@ class Ui_Dialog(object):
 
         self.restoreSettings = QPushButton(self.groupBox1)
         self.restoreSettings.setObjectName(u"restoreSettings")
-        self.restoreSettings.setMinimumSize(QSize(100, 50))
+        self.restoreSettings.setMinimumSize(QSize(200, 50))
 
         self.gridLayout_2.addWidget(self.restoreSettings, 0, 0, 2, 1)
 
@@ -88,7 +88,7 @@ class Ui_Dialog(object):
 
         self.clearSettings = QPushButton(self.groupBox_2)
         self.clearSettings.setObjectName(u"clearSettings")
-        self.clearSettings.setMinimumSize(QSize(100, 50))
+        self.clearSettings.setMinimumSize(QSize(200, 50))
 
         self.gridLayout_5.addWidget(self.clearSettings, 0, 0, 2, 1)
 
@@ -107,7 +107,7 @@ class Ui_Dialog(object):
         self.gridLayout_4.setObjectName(u"gridLayout_4")
         self.restoreToolbars = QPushButton(self.groupBox2)
         self.restoreToolbars.setObjectName(u"restoreToolbars")
-        self.restoreToolbars.setMinimumSize(QSize(120, 25))
+        self.restoreToolbars.setMinimumSize(QSize(200, 30))
 
         self.gridLayout_4.addWidget(self.restoreToolbars, 0, 0, 1, 1)
 
@@ -115,11 +115,11 @@ class Ui_Dialog(object):
 
         self.gridLayout_4.addItem(self.horizontalSpacer_2, 0, 2, 1, 1)
 
-        self.StartSafeMode = QPushButton(self.groupBox2)
-        self.StartSafeMode.setObjectName(u"StartSafeMode")
-        self.StartSafeMode.setMinimumSize(QSize(170, 25))
+        self.startSafeMode = QPushButton(self.groupBox2)
+        self.startSafeMode.setObjectName(u"startSafeMode")
+        self.startSafeMode.setMinimumSize(QSize(200, 30))
 
-        self.gridLayout_4.addWidget(self.StartSafeMode, 1, 0, 1, 1)
+        self.gridLayout_4.addWidget(self.startSafeMode, 1, 0, 1, 1)
 
 
         self.gridLayout_6.addWidget(self.groupBox2, 3, 0, 1, 1)
@@ -178,7 +178,7 @@ class Ui_Dialog(object):
         self.restoreToolbars.setToolTip(QCoreApplication.translate("Dialog", u"Restores all toolbars for every workbench.", None))
 #endif // QT_CONFIG(tooltip)
         self.restoreToolbars.setText(QCoreApplication.translate("Dialog", u"Restore toolbars", None))
-        self.StartSafeMode.setText(QCoreApplication.translate("Dialog", u"Start FreeCAD in SafeMode", None))
+        self.startSafeMode.setText(QCoreApplication.translate("Dialog", u"Start FreeCAD in SafeMode", None))
         self.CloseButton.setText(QCoreApplication.translate("Dialog", u"Close", None))
         self.HelpButton.setText(QCoreApplication.translate("Dialog", u"Help", None))
     # retranslateUi
