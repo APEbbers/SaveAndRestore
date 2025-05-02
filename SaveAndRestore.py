@@ -24,7 +24,7 @@ SOFTWARE.
 """
 
 import os
-from stat import S_IWUSR, S_IREAD
+from stat import S_IWUSR, S_IREAD, S_IWGRP, S_IRGRP
 
 import FreeCAD as App
 import FreeCADGui as Gui
