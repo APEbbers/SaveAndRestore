@@ -39,6 +39,7 @@ import StyleMapping_SaveAndRestore
 import platform
 import subprocess
 import webbrowser
+import shutil
 
 # Get the resources
 pathUI = os.path.join(os.path.dirname(__file__), "Resources", "ui")
@@ -227,31 +228,48 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
 
                 # Extract the zipfile and place the config files
                 if Fullname is not None and Fullname != "":
-                    # loading the temp.zip and creating a zip object
-                    with ZipFile(Fullname, "r") as zipObj:
-                        # Extracting all the members of the zip
-                        # into a specific location.
-                        counter = 0
-                        for File in Files:
-                            # Delete the files first to be sure that the file will be from the zipfile.
-                            if platform.system() == "Windows":
-                                subprocess.run(os.path.join(os.path.dirname(__file__), "DeleteFile.bat") + " " + File)
-                            if platform.system() == "Linux" or platform.system() == "Darwin":
-                                subprocess.run(["bash", os.path.join(os.path.dirname(__file__), "DeleteFile.sh"), File])
+                    if not platform.system() == "Darwin":
+                        # loading the temp.zip and creating a zip object
+                        with ZipFile(Fullname, "r") as zipObj:
+                            # Extracting all the members of the zip
+                            # into a specific location.
+                            counter = 0
+                            for File in Files:
+                                # Delete the files first to be sure that the file will be from the zipfile.
+                                if platform.system() == "Windows":
+                                    subprocess.run(
+                                        os.path.join(os.path.dirname(__file__), "DeleteFile.bat") + " " + File
+                                    )
+                                if platform.system() == "Linux" or platform.system() == "Darwin":
+                                    subprocess.run(
+                                        ["bash", os.path.join(os.path.dirname(__file__), "DeleteFile.sh"), File]
+                                    )
 
-                            # Extract the file from the zip file into the config directory
-                            try:
-                                zipObj.extract(File, App.getUserConfigDir())
+                                # Extract the file from the zip file into the config directory
+                                try:
+                                    zipObj.extract(File, App.getUserConfigDir())
+
+                                    # Set the file to read only to prevent from FreeCAD from overwrite the file after shutdown
+                                    os.chmod(File, S_IREAD)
+                                except Exception:
+                                    counter = counter + 1
+                                    Standard_Functions.Print(f"{File} not present in archive", "Warning")
+                                    continue
+                            if counter == len(Files):
+                                Standard_Functions.Print("There were no files to restore.", "Error")
+                                return
+
+                        if platform.system() == "Darwin":
+                            ZipFile.extractall(Fullname)
+                            for File in Files:
+                                # Delete the files first to be sure that the file will be from the zipfile.
+                                subprocess.run(["bash", os.path.join(os.path.dirname(__file__), "DeleteFile.sh"), File])
+                                shutil.copy(os.path.join(Fullname, os.path.basename(File)), os.path.dirname(File))
 
                                 # Set the file to read only to prevent from FreeCAD from overwrite the file after shutdown
                                 os.chmod(File, S_IREAD)
-                            except Exception:
-                                counter = counter + 1
-                                Standard_Functions.Print(f"{File} not present in archive", "Warning")
-                                continue
-                        if counter == len(Files):
-                            Standard_Functions.Print("There were no files to restore.", "Error")
-                            return
+
+                            os.rmdir(Fullname)
 
                         # Write the path to preferences
                         Parameters_SaveAndRestore.Settings.SetStringSetting("SaveDirectory", os.path.dirname(Fullname))
