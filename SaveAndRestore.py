@@ -52,14 +52,13 @@ class SaveAndRestore:
         """
         super().__init__()
 
-        if platform.system() == "Linux" or platform.system() == "Darwin":
-            # Define the paths for the config files
-            UserConfig = App.getUserConfigDir() + "user.cfg"
-            SystemConfig = App.getUserConfigDir() + "system.cfg"
+        # Make sure that the config files are read/write
+        UserConfig = App.getUserConfigDir() + "user.cfg"
+        SystemConfig = App.getUserConfigDir() + "system.cfg"
+        os.chmod(UserConfig, S_IWUSR | S_IREAD | S_IWGRP | S_IRGRP)
+        os.chmod(SystemConfig, S_IWUSR | S_IREAD | S_IWGRP | S_IRGRP)
 
-            os.chmod(UserConfig, S_IWUSR|S_IREAD|S_IWGRP|S_IRGRP)
-            os.chmod(SystemConfig, S_IWUSR|S_IREAD|S_IWGRP|S_IRGRP)
-
+        # Create the application menu
         self.ApplicationMenus()
 
     def ApplicationMenus(self):
