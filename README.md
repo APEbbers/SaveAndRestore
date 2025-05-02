@@ -1,5 +1,5 @@
 # SaveAndRestore  
-![image](https://github.com/user-attachments/assets/05f7a5f7-7cb3-4521-8c57-1e8a32b38cef)
+![image](https://github.com/user-attachments/assets/be89c805-8419-45be-b468-9471fd552530)  
   
 A simple addon to save and restore your settings. With this addon you can:
 - Create a backup for the user.cfg and system.cfg files.
