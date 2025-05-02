@@ -229,6 +229,9 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                             if platform.system() == "Linux" or platform.system() == "Darwin":
                                 subprocess.run(["bash", os.path.join(os.path.dirname(__file__), "DeleteFile.sh"), File])
 
+                                # Set the file to read only to prevent from FreeCAD from overwrite the file after shutdown
+                                os.chmod(File, S_IREAD)
+
                             # Extract the file from the zip file into the config directory
                             try:
                                 zipObj.extract(File, App.getUserConfigDir())
