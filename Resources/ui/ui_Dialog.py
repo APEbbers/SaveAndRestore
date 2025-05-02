@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'ui_DialoggyjCoG.ui'
+## Form generated from reading UI file 'ui_DialogahyIKZ.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.3
 ##
@@ -217,7 +217,7 @@ class Ui_Dialog(object):
         )
         # endif // QT_CONFIG(tooltip)
         self.restoreToolbars.setText(QCoreApplication.translate("Dialog", "Restore toolbars", None))
-        self.startSafeMode.setText(QCoreApplication.translate("Dialog", "Start FreeCAD in SafeMode", None))
+        self.startSafeMode.setText(QCoreApplication.translate("Dialog", "Start FreeCAD in safe mode", None))
         self.CloseButton.setText(QCoreApplication.translate("Dialog", "Close", None))
         self.HelpButton.setText(QCoreApplication.translate("Dialog", "Help", None))
 

@@ -181,7 +181,7 @@
          </size>
         </property>
         <property name="text">
-         <string>Start FreeCAD in SafeMode</string>
+         <string>Start FreeCAD in safe mode</string>
         </property>
        </widget>
       </item>
