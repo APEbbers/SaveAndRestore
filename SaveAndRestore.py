@@ -24,6 +24,8 @@ SOFTWARE.
 """
 
 import os
+from stat import S_IWUSR, S_IREAD
+
 import FreeCAD as App
 import FreeCADGui as Gui
 import json
@@ -49,6 +51,14 @@ class SaveAndRestore:
         Constructor
         """
         super().__init__()
+
+        if platform.system() == "Linux" or platform.system() == "Darwin":
+            # Define the paths for the config files
+            UserConfig = App.getUserConfigDir() + "user.cfg"
+            SystemConfig = App.getUserConfigDir() + "system.cfg"
+
+            os.chmod(UserConfig, S_IWUSR|S_IREAD|S_IWGRP|S_IRGRP)
+            os.chmod(SystemConfig, S_IWUSR|S_IREAD|S_IWGRP|S_IRGRP)
 
         self.ApplicationMenus()
 

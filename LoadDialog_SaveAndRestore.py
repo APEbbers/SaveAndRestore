@@ -26,6 +26,7 @@ SOFTWARE.
 import FreeCAD as App
 import FreeCADGui as Gui
 import os
+from stat import S_IREAD, S_IRGRP, S_IROTH
 from PySide.QtCore import Qt, SIGNAL, QProcess
 from PySide.QtWidgets import QApplication, QLabel, QToolBar, QMenu
 import sys
@@ -287,6 +288,12 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                         subprocess.run(os.path.join(os.path.dirname(__file__), "DeleteFile.bat") + " " + File)
                     if platform.system() == "Linux" or platform.system() == "Darwin":
                         subprocess.run(["bash", os.path.join(os.path.dirname(__file__), "DeleteFile.sh"), File])
+
+                        with open(File, "w") as file:
+                            pass
+                        
+                        # Set the file to read only to prevent from FreeCAD from overwrite the file after shutdown
+                        os.chmod(File, S_IREAD)
 
                 # Return to the normal cursor
                 QApplication.setOverrideCursor(Qt.CursorShape.ArrowCursor)
