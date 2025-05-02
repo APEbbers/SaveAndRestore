@@ -41,6 +41,7 @@ import subprocess
 import webbrowser
 import shutil
 import time
+import stat
 
 # Get the resources
 pathUI = os.path.join(os.path.dirname(__file__), "Resources", "ui")
@@ -242,9 +243,13 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                             for File in Files:
                                 # Delete the files first to be sure that the file will be from the zipfile.
                                 if platform.system() == "Windows":
-                                    subprocess.run(os.path.join(os.path.dirname(__file__), "DeleteFile.bat") + " " + File)
+                                    subprocess.run(
+                                        os.path.join(os.path.dirname(__file__), "DeleteFile.bat") + " " + File
+                                    )
                                 if platform.system() == "Linux" or platform.system() == "Darwin":
-                                    subprocess.run(["bash", os.path.join(os.path.dirname(__file__), "DeleteFile.sh"), File])
+                                    subprocess.run(
+                                        ["bash", os.path.join(os.path.dirname(__file__), "DeleteFile.sh"), File]
+                                    )
 
                                 # Extract the file from the zip file into the config directory
                                 try:
@@ -261,8 +266,6 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                                 return
 
                         if platform.system() == "Darwin":
-                            ZIP_MAC_SYSTEM = 7
-
                             ZipFile.extractall(Fullname)
                             for File in Files:
                                 # Delete the files first to be sure that the file will be from the zipfile.
@@ -441,20 +444,31 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
     #     if unix_attributes:
     #         os.chmod(extracted_path, unix_attributes)
 
-    def WriteZip_MacOS(self, zipname, filename):
-        zip = zipfile.ZipFile(zipname, 'w', zipfile.ZIP_DEFLATED)
+    def WriteZip_MacOS(self, NewArchive_FullPath, FileToArchive):
+        ZIP_MAC_SYSTEM = 7  # macOS
+        zipInfo = zipfile.ZipInfo(NewArchive_FullPath)
+        zipInfo.create_system = ZIP_MAC_SYSTEM
+        unix_st_mode = (
+            stat.S_IFLNK
+            | stat.S_IRUSR
+            | stat.S_IWUSR
+            | stat.S_IXUSR
+            | stat.S_IRGRP
+            | stat.S_IWGRP
+            | stat.S_IXGRP
+            | stat.S_IROTH
+            | stat.S_IWOTH
+            | stat.S_IXOTH
+        )
+        zipInfo.external_attr = unix_st_mode << 16
 
-        f = open(filename, 'r')
-        bytes = f.read()
-        f.close()
+        mode = "w"
+        if os.path.exists(NewArchive_FullPath):
+            mode = "a"
+        with ZipFile(NewArchive_FullPath, mode) as zipObj:
+            zipObj.writestr(zipInfo, FileToArchive)
 
-        info = zipfile.ZipInfo(filename)
-        info.date_time = time.localtime()
-        info.external_attr = 0100755 << 16L
-
-        zip.writestr(info, bytes, zipfile.ZIP_DEFLATED)
-
-        zip.close()
+        return
 
 
 def main():
