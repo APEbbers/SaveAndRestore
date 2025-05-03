@@ -244,11 +244,11 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                                 # Delete the files first to be sure that the file will be from the zipfile.
                                 if platform.system() == "Windows":
                                     subprocess.run(
-                                        os.path.join(os.path.dirname(__file__), "DeleteFile.bat") + " " + File
+                                        os.path.join(os.path.dirname(__file__), "DeleteFile.bat") + " " + App.getUserConfigDir() + File
                                     )
                                 if platform.system() == "Linux" or platform.system() == "Darwin":
                                     subprocess.run(
-                                        ["bash", os.path.join(os.path.dirname(__file__), "DeleteFile.sh"), File]
+                                        ["bash", os.path.join(os.path.dirname(__file__), "DeleteFile.sh"), App.getUserConfigDir() + File]
                                     )
 
                                 # Extract the file from the zip file into the config directory
@@ -256,7 +256,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                                     zipObj.extract(File, App.getUserConfigDir())
 
                                     # Set the file to read only to prevent from FreeCAD from overwrite the file after shutdown
-                                    os.chmod(File, S_IREAD)
+                                    os.chmod(App.getUserConfigDir() + File, S_IREAD)
                                 except Exception:
                                     counter = counter + 1
                                     Standard_Functions.Print(f"{File} not present in archive", "Warning")
@@ -268,14 +268,19 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                     if platform.system() == "Darwin":
                         counter = 0
                         for File in Files:
-                            args = [Fullname.replace(".zip", "y"), {os.path.basename(File)}, os.path.dirname(File)]
-                            subprocess.run(os.path.join(os.path.dirname(__file__), "MoveFile.sh") + " " + args)
-
                             self.extract_with_permission(
                                 ZipFile(Fullname), os.path.basename(File), os.path.dirname(Fullname)
                             )
-                            try:
-                                subprocess.run(["bash", os.path.join(os.path.dirname(__file__), "DeleteFile.sh"), File])
+                            time.sleep(1)
+                            try:                                                                                            
+                                subprocess.run(["bash", "DeleteFile.sh", App.getUserConfigDir() + File])
+                                                        
+
+                                shutil.move(os.path.join(os.path.dirname(Fullname), os.path.basename(File)), App.getUserConfigDir() + File)
+                                time.sleep(1)
+                                # Set the file to read only to prevent from FreeCAD from overwrite the file after shutdown
+                                # os.chmod(App.getUserConfigDir() + File, S_IREAD)
+
                             except Exception as e:
                                 print(e)
                                 counter = counter + 1
@@ -339,7 +344,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                         pass
 
                     # Set the file to read only to prevent from FreeCAD from overwrite the file after shutdown
-                    os.chmod(File, S_IREAD)
+                    os.chmod(App.getUserConfigDir() + File, S_IREAD)
 
                 # Return to the normal cursor
                 QApplication.setOverrideCursor(Qt.CursorShape.ArrowCursor)
