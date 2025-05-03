@@ -192,9 +192,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             Parameters_SaveAndRestore.SAVE_DIRECTORY = os.path.dirname(Fullname)
 
             print(
-                translate(
-                    "FreeCAD SaveAndRestore", f'Settings saved as "{FileName}" to "{os.path.dirname(Fullname)}"'
-                )
+                translate("FreeCAD SaveAndRestore", f'Settings saved as "{FileName}" to "{os.path.dirname(Fullname)}"')
             )
         else:
             Standard_Functions.Mbox(
@@ -270,11 +268,14 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                     if platform.system() == "Darwin":
                         counter = 0
                         for File in Files:
-                            self.extract_with_permission(ZipFile(Fullname), os.path.basename(File), os.path.dirname(File))
+                            args = [Fullname.replace(".zip", "y"), {os.path.basename(File)}, os.path.dirname(File)]
+                            subprocess.run(os.path.join(os.path.dirname(__file__), "MoveFile.sh") + " " + args)
+
+                            self.extract_with_permission(
+                                ZipFile(Fullname), os.path.basename(File), os.path.dirname(Fullname)
+                            )
                             try:
-                                subprocess.run(
-                                        ["bash", os.path.join(os.path.dirname(__file__), "DeleteFile.sh"), File]
-                                    )
+                                subprocess.run(["bash", os.path.join(os.path.dirname(__file__), "DeleteFile.sh"), File])
                             except Exception as e:
                                 print(e)
                                 counter = counter + 1
@@ -454,10 +455,9 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                     unix_attributes = info.external_attr >> 16
                 if unix_attributes:
                     os.chmod(extracted_path, unix_attributes)
-        
+
         return
-                
-                
+
     def WriteZip_MacOS(self, NewArchive_FullPath, FileToArchive):
         ZIP_MAC_SYSTEM = 7  # macOS
         zipInfo = zipfile.ZipInfo(os.path.basename(FileToArchive))
