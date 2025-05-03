@@ -179,23 +179,23 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             )
             if Fullname is not None and Fullname != "":
                 # Create the zipfile with the config files
-                if not platform.system() == "Darwin":
-                    with ZipFile(Fullname, "w") as zipObj:
-                        for File in Files:
-                            zipObj.write(File, File.split(os.sep)[-1])
-                if platform.system() == "Darwin":
+                # if not platform.system() == "Darwin":
+                with ZipFile(Fullname, "w") as zipObj:
                     for File in Files:
-                        self.WriteZip_MacOS(Fullname, File)
+                        zipObj.write(File, File.split(os.sep)[-1])
+                # if platform.system() == "Darwin":
+                # for File in Files:
+                #     self.WriteZip_MacOS(Fullname, File)
 
-                # Write the path to preferences
-                Parameters_SaveAndRestore.Settings.SetStringSetting("SaveDirectory", os.path.dirname(Fullname))
-                Parameters_SaveAndRestore.SAVE_DIRECTORY = os.path.dirname(Fullname)
+            # Write the path to preferences
+            Parameters_SaveAndRestore.Settings.SetStringSetting("SaveDirectory", os.path.dirname(Fullname))
+            Parameters_SaveAndRestore.SAVE_DIRECTORY = os.path.dirname(Fullname)
 
-                print(
-                    translate(
-                        "FreeCAD SaveAndRestore", f'Settings saved as "{FileName}" to "{os.path.dirname(Fullname)}"'
-                    )
+            print(
+                translate(
+                    "FreeCAD SaveAndRestore", f'Settings saved as "{FileName}" to "{os.path.dirname(Fullname)}"'
                 )
+            )
         else:
             Standard_Functions.Mbox(
                 translate("FreeCAD SaveAndRestore", "Please select at least one config file!", "Warning")
@@ -228,6 +228,8 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                 translate("FreeCAD SaveAndRestore", "Restore and restart"),
                 translate("FreeCAD SaveAndRestore", "Cancel"),
             )
+            if answer == "no":
+                return
             if answer == "yes":
                 # Set the wait cursor
                 QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
@@ -265,36 +267,41 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                                 Standard_Functions.Print("There were no files to restore.", "Error")
                                 return
 
-                        if platform.system() == "Darwin":
-                            ZipFile.extractall(Fullname)
-                            for File in Files:
-                                # Delete the files first to be sure that the file will be from the zipfile.
-                                subprocess.run(["bash", os.path.join(os.path.dirname(__file__), "DeleteFile.sh"), File])
-                                shutil.copy(os.path.join(Fullname, os.path.basename(File)), os.path.dirname(File))
+                    if platform.system() == "Darwin":
+                        counter = 0
+                        for File in Files:
+                            self.extract_with_permission(ZipFile(Fullname), os.path.basename(File), os.path.dirname(File))
+                            try:
+                                subprocess.run(
+                                        ["bash", os.path.join(os.path.dirname(__file__), "DeleteFile.sh"), File]
+                                    )
+                            except Exception as e:
+                                print(e)
+                                counter = counter + 1
+                                Standard_Functions.Print(f"{File} not present in archive", "Warning")
+                                continue
+                        if counter == len(Files):
+                            Standard_Functions.Print("There were no files to restore.", "Error")
+                            return
 
-                                # Set the file to read only to prevent from FreeCAD from overwrite the file after shutdown
-                                os.chmod(File, S_IREAD)
+                    # Write the path to preferences
+                    Parameters_SaveAndRestore.Settings.SetStringSetting("SaveDirectory", os.path.dirname(Fullname))
+                    Parameters_SaveAndRestore.SAVE_DIRECTORY = os.path.dirname(Fullname)
 
-                            os.rmdir(Fullname)
+                    # print a message
+                    print(translate("FreeCAD SaveAndRestore", f'Settings restored from "{Fullname}"'))
 
-                        # Write the path to preferences
-                        Parameters_SaveAndRestore.Settings.SetStringSetting("SaveDirectory", os.path.dirname(Fullname))
-                        Parameters_SaveAndRestore.SAVE_DIRECTORY = os.path.dirname(Fullname)
+                    # Return to the normal cursor
+                    QApplication.setOverrideCursor(Qt.CursorShape.ArrowCursor)
 
-                        # print a message
-                        print(translate("FreeCAD SaveAndRestore", f'Settings restored from "{Fullname}"'))
+                    # Restart FreeCAD
+                    Standard_Functions.restart_freecad()
+            else:
+                Standard_Functions.Mbox(
+                    translate("FreeCAD SaveAndRestore", "Please select at least one config file!", "Warning")
+                )
 
-                        # Return to the normal cursor
-                        QApplication.setOverrideCursor(Qt.CursorShape.ArrowCursor)
-
-                        # Restart FreeCAD
-                        Standard_Functions.restart_freecad()
-        else:
-            Standard_Functions.Mbox(
-                translate("FreeCAD SaveAndRestore", "Please select at least one config file!", "Warning")
-            )
-
-        return
+            return
 
     def ClearSettings(self):
         # Define the paths for the config files
@@ -427,26 +434,33 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         if Gui.getMainWindow().close():
             QProcess.startDetached(QApplication.applicationFilePath(), args)
 
-    # def extract_all_with_permission(zipfile, target_dir, ZIP_SYSTEM=7):
-    #     for info in zipfile.infolist():
-    #         extracted_path = zipfile.extract(info, target_dir)
+    def extract_all_with_permission(self, zipfile, target_dir, ZIP_SYSTEM=3):
+        for info in zipfile.infolist():
+            extracted_path = zipfile.extract(info, target_dir)
 
-    #         if info.create_system == ZIP_SYSTEM:
-    #             unix_attributes = info.external_attr >> 16
-    #         if unix_attributes:
-    #             os.chmod(extracted_path, unix_attributes)
+            if info.create_system == ZIP_SYSTEM:
+                unix_attributes = info.external_attr >> 16
+            if unix_attributes:
+                os.chmod(extracted_path, unix_attributes)
+        return
 
-    # def extract_with_permission(zipfile, filename, target_dir, ZIP_SYSTEM=7):
-    #     extracted_path = zipfile.extract(filename, target_dir)
+    def extract_with_permission(self, zipfile: ZipFile, filename: str, target_dir: str, ZIP_SYSTEM=3):
+        print(zipfile.infolist())
+        for info in zipfile.infolist():
+            if filename in info.filename:
+                extracted_path = zipfile.extract(info, target_dir)
 
-    #     if filename.create_system == ZIP_SYSTEM:
-    #         unix_attributes = filename.external_attr >> 16
-    #     if unix_attributes:
-    #         os.chmod(extracted_path, unix_attributes)
-
+                if info.create_system == ZIP_SYSTEM:
+                    unix_attributes = info.external_attr >> 16
+                if unix_attributes:
+                    os.chmod(extracted_path, unix_attributes)
+        
+        return
+                
+                
     def WriteZip_MacOS(self, NewArchive_FullPath, FileToArchive):
         ZIP_MAC_SYSTEM = 7  # macOS
-        zipInfo = zipfile.ZipInfo(NewArchive_FullPath)
+        zipInfo = zipfile.ZipInfo(os.path.basename(FileToArchive))
         zipInfo.create_system = ZIP_MAC_SYSTEM
         unix_st_mode = (
             stat.S_IFLNK
@@ -466,7 +480,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         if os.path.exists(NewArchive_FullPath):
             mode = "a"
         with ZipFile(NewArchive_FullPath, mode) as zipObj:
-            zipObj.writestr(zipInfo, FileToArchive)
+            zipObj.writestr(zipInfo, NewArchive_FullPath)
 
         return
 
