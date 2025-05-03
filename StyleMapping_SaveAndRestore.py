@@ -104,7 +104,9 @@ def DarkMode():
                     # Get all the tag elements
                     elements = []
                     namespaces = {"i": "https://wiki.freecad.org/Package_Metadata"}
-                    elements = treeRoot.findall(".//i:content/i:preferencepack/i:tag", namespaces)
+                    elements = treeRoot.findall(
+                        ".//i:content/i:preferencepack/i:tag", namespaces
+                    )
 
                     # go throug all tags. If 'dark' in the element text, this is a dark theme
                     for element in elements:

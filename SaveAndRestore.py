@@ -32,7 +32,16 @@ import json
 import platform
 from PySide.QtCore import Qt, QTimer, QSize, QSettings, SIGNAL
 from PySide.QtGui import QGuiApplication, QAction
-from PySide.QtWidgets import QMainWindow, QLabel, QSizePolicy, QApplication, QToolButton, QStyle, QMenuBar, QMenu
+from PySide.QtWidgets import (
+    QMainWindow,
+    QLabel,
+    QSizePolicy,
+    QApplication,
+    QToolButton,
+    QStyle,
+    QMenuBar,
+    QMenu,
+)
 from time import sleep
 
 import Standard_Functions_SaveAndRestore as Standard_Functions
@@ -70,7 +79,11 @@ class SaveAndRestore:
             Button = QAction(mw)
             Button.setText(translate("FreeCAD SaveAndRestore", "Save and restore..."))
             Button.setObjectName("SaveAndRestore")
-            Button.setToolTip(translate("FreeCAD SaveAndRestore", "Save and restore FreeCAD's setting files"))
+            Button.setToolTip(
+                translate(
+                    "FreeCAD SaveAndRestore", "Save and restore FreeCAD's setting files"
+                )
+            )
 
             def LoadDialog():
                 LoadDialog_SaveAndRestore.main()
@@ -194,7 +207,12 @@ class SaveAndRestore:
                                     # After reset, remove the addon from the list
                                     WB_ResetList.remove(WB)
                                     # Write the updated list to the resetlist.json
-                                    with open(os.path.join(path, "SaveAndRestore", "ResetList.json"), "w") as outfile:
+                                    with open(
+                                        os.path.join(
+                                            path, "SaveAndRestore", "ResetList.json"
+                                        ),
+                                        "w",
+                                    ) as outfile:
                                         json.dump(WB_ResetList, outfile, indent=4)
                                     outfile.close()
                                     break
@@ -209,11 +227,15 @@ class SaveAndRestore:
                 """an add-on is disabled or uninstalled. Do you want to open the "Save and restore" dialog to restore all toolbars or restore to previous saved settings?
             """,
             )
-            Anwser = Standard_Functions.Mbox(text=text, title="", style=1, IconType="Question")
+            Anwser = Standard_Functions.Mbox(
+                text=text, title="", style=1, IconType="Question"
+            )
 
             if Anwser == "yes":
                 # Write the current addon list to compare on next startup
-                with open(os.path.join(path, "SaveAndRestore", "WBList.json"), "w") as outfile:
+                with open(
+                    os.path.join(path, "SaveAndRestore", "WBList.json"), "w"
+                ) as outfile:
                     json.dump(CurrentAddOnList, outfile, indent=4)
                 outfile.close()
 
@@ -306,7 +328,9 @@ class SaveAndRestore:
                         resetList.append(AddOn)
 
         # Write the reset list
-        with open(os.path.join(path, "SaveAndRestore", "ResetList.json"), "w") as outfile:
+        with open(
+            os.path.join(path, "SaveAndRestore", "ResetList.json"), "w"
+        ) as outfile:
             json.dump(resetList, outfile, indent=4)
 
         return
