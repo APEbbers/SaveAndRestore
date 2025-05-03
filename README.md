@@ -18,5 +18,3 @@ MacOS:
 
 This addon can be installed via the Addon Manager.
 
-## know limitations
-- Currently the restore function is not working on MacOS. This is a rights issue.
