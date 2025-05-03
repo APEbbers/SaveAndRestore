@@ -17,3 +17,6 @@ MacOS:
 ![image](https://github.com/user-attachments/assets/41211f2a-53cc-456e-ac90-81bd85d992b1)
 
 This addon can be installed via the Addon Manager.
+
+## know limitations
+- Currently the restore function is not working on MacOS. This is a rights issue.
