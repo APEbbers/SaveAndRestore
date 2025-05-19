@@ -69,14 +69,18 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         # this will create a Qt widget from our ui file
         self.form = Gui.PySideUic.loadUi(os.path.join(pathUI, "ui_Dialog.ui"))
 
-        self.form.setWindowFlags(Qt.WindowType.WindowStaysOnTopHint | Qt.WindowType.CustomizeWindowHint)
+        self.form.setWindowFlags(
+            Qt.WindowType.WindowStaysOnTopHint | Qt.WindowType.CustomizeWindowHint
+        )
         self.form.setWindowFlag(Qt.WindowType.WindowMinMaxButtonsHint, False)
         self.form.setWindowFlag(Qt.WindowType.WindowCloseButtonHint, True)
         self.form.setWindowFlag(Qt.WindowType.WindowMinimizeButtonHint, True)
 
         # Get the address of the repository address
         PackageXML = os.path.join(os.path.dirname(__file__), "package.xml")
-        self.ReproAdress = Standard_Functions.ReturnXML_Value(PackageXML, "url", "type", "repository")
+        self.ReproAdress = Standard_Functions.ReturnXML_Value(
+            PackageXML, "url", "type", "repository"
+        )
 
         # Connect the save function
         def on_saveSettings_clicked():
@@ -174,7 +178,9 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             Fullname = Standard_Functions.GetFileDialog(
                 Filter="Archive (*.zip)",
                 parent=self.form,
-                DefaultPath=os.path.join(Parameters_SaveAndRestore.SAVE_DIRECTORY, FileName),
+                DefaultPath=os.path.join(
+                    Parameters_SaveAndRestore.SAVE_DIRECTORY, FileName
+                ),
                 SaveAs=True,
             )
             if Fullname is not None and Fullname != "":
@@ -188,7 +194,9 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                 #     self.WriteZip_MacOS(Fullname, File)
 
             # Write the path to preferences
-            Parameters_SaveAndRestore.Settings.SetStringSetting("SaveDirectory", os.path.dirname(Fullname))
+            Parameters_SaveAndRestore.Settings.SetStringSetting(
+                "SaveDirectory", os.path.dirname(Fullname)
+            )
             Parameters_SaveAndRestore.SAVE_DIRECTORY = os.path.dirname(Fullname)
 
             print(
@@ -232,7 +240,10 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             if Fullname != "" and Fullname is not None:
                 self.form.hide()
                 answer = Standard_Functions.RestartDialog(
-                    translate("FreeCAD SaveAndRestore", "Do you really restore these settings?"),
+                    translate(
+                        "FreeCAD SaveAndRestore",
+                        "Do you really restore these settings?",
+                    ),
                     True,
                     translate("FreeCAD SaveAndRestore", "Restore and restart"),
                     translate("FreeCAD SaveAndRestore", "Cancel"),
@@ -255,12 +266,18 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                                     # Delete the files first to be sure that the file will be from the zipfile.
                                     if platform.system() == "Windows":
                                         subprocess.run(
-                                            os.path.join(os.path.dirname(__file__), "DeleteFile.bat")
+                                            os.path.join(
+                                                os.path.dirname(__file__),
+                                                "DeleteFile.bat",
+                                            )
                                             + " "
                                             + App.getUserConfigDir()
                                             + File
                                         )
-                                    if platform.system() == "Linux" or platform.system() == "Darwin":
+                                    if (
+                                        platform.system() == "Linux"
+                                        or platform.system() == "Darwin"
+                                    ):
                                         subprocess.run(
                                             [
                                                 "bash",
@@ -276,19 +293,27 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                                     try:
                                         for info in zipObj.infolist():
                                             if File in info.filename:
-                                                zipObj.extract(info, App.getUserConfigDir())
+                                                zipObj.extract(
+                                                    info, App.getUserConfigDir()
+                                                )
 
                                         # Set the file to read only to prevent from FreeCAD from overwrite the file after shutdown
                                         os.chmod(App.getUserConfigDir() + File, S_IREAD)
                                     except Exception as e:
                                         print(e)
                                         counter = counter + 1
-                                        Standard_Functions.Print(f"{File} not present in archive", "Warning")
+                                        Standard_Functions.Print(
+                                            f"{File} not present in archive", "Warning"
+                                        )
                                         continue
                                 if counter == len(Files):
-                                    Standard_Functions.Print("There were no files to restore.", "Error")
+                                    Standard_Functions.Print(
+                                        "There were no files to restore.", "Error"
+                                    )
                                     # Return to the normal cursor
-                                    QApplication.setOverrideCursor(Qt.CursorShape.ArrowCursor)
+                                    QApplication.setOverrideCursor(
+                                        Qt.CursorShape.ArrowCursor
+                                    )
                                     return
 
                         if platform.system() == "Darwin":
@@ -325,17 +350,27 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                                 except Exception as e:
                                     print(e)
                                     counter = counter + 1
-                                    Standard_Functions.Print(f"{File} not present in archive", "Warning")
+                                    Standard_Functions.Print(
+                                        f"{File} not present in archive", "Warning"
+                                    )
                                     continue
                             if counter == len(Files):
-                                Standard_Functions.Print("There were no files to restore.", "Error")
+                                Standard_Functions.Print(
+                                    "There were no files to restore.", "Error"
+                                )
                                 # Return to the normal cursor
-                                QApplication.setOverrideCursor(Qt.CursorShape.ArrowCursor)
+                                QApplication.setOverrideCursor(
+                                    Qt.CursorShape.ArrowCursor
+                                )
                                 return
 
                         # Write the path to preferences
-                        Parameters_SaveAndRestore.Settings.SetStringSetting("SaveDirectory", os.path.dirname(Fullname))
-                        Parameters_SaveAndRestore.SAVE_DIRECTORY = os.path.dirname(Fullname)
+                        Parameters_SaveAndRestore.Settings.SetStringSetting(
+                            "SaveDirectory", os.path.dirname(Fullname)
+                        )
+                        Parameters_SaveAndRestore.SAVE_DIRECTORY = os.path.dirname(
+                            Fullname
+                        )
 
                         # print a message
                         print(
@@ -378,7 +413,9 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         if len(Files) > 0:
             # Show the restart dialog
             answer = Standard_Functions.RestartDialog(
-                translate("FreeCAD SaveAndRestore", "Do you really clear the settings?"),
+                translate(
+                    "FreeCAD SaveAndRestore", "Do you really clear the settings?"
+                ),
                 True,
                 translate("FreeCAD SaveAndRestore", "Clear and restart"),
                 translate("FreeCAD SaveAndRestore", "Cancel"),
@@ -389,12 +426,18 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                 # Remove the file(s)
                 for File in Files:
                     if platform.system() == "Windows":
-                        subprocess.run(os.path.join(os.path.dirname(__file__), "DeleteFile.bat") + " " + File)
+                        subprocess.run(
+                            os.path.join(os.path.dirname(__file__), "DeleteFile.bat")
+                            + " "
+                            + File
+                        )
                     if platform.system() == "Linux" or platform.system() == "Darwin":
                         subprocess.run(
                             [
                                 "bash",
-                                os.path.join(os.path.dirname(__file__), "DeleteFile.sh"),
+                                os.path.join(
+                                    os.path.dirname(__file__), "DeleteFile.sh"
+                                ),
                                 File,
                             ]
                         )
@@ -426,14 +469,20 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
     def EnableToolbars(self, FinishMessage="", StyleSheet=None):
         # Show the restart dialog
         answer = Standard_Functions.RestartDialog(
-            translate("FreeCAD SaveAndRestore", "Do you really want to restore all toolbars?"),
+            translate(
+                "FreeCAD SaveAndRestore", "Do you really want to restore all toolbars?"
+            ),
             True,
             translate("FreeCAD SaveAndRestore", "Restore and restart"),
             translate("FreeCAD SaveAndRestore", "Cancel"),
         )
         if answer == "yes":
-            lbl = QLabel(translate("FreeCAD SaveAndResore", "Loading workbench … (…/…)"))
-            lbl.setWindowFlags(Qt.WindowType.Dialog | Qt.WindowType.WindowStaysOnTopHint)
+            lbl = QLabel(
+                translate("FreeCAD SaveAndResore", "Loading workbench … (…/…)")
+            )
+            lbl.setWindowFlags(
+                Qt.WindowType.Dialog | Qt.WindowType.WindowStaysOnTopHint
+            )
             lbl.setMinimumSize(300, 20)
             lbl.setContentsMargins(3, 3, 3, 3)
 
@@ -468,7 +517,9 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                         ToolBar.setEnabled(True)
                         ToolBar.show()
 
-                        preferences = App.ParamGet("User parameter:BaseApp/MainWindow/ToolBars")
+                        preferences = App.ParamGet(
+                            "User parameter:BaseApp/MainWindow/ToolBars"
+                        )
                         preferences.SetBool(ToolbarName, True)
                         App.saveParameter()
 
@@ -499,7 +550,9 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
     def StartSafeMode(self):
         args = QApplication.arguments()[1:]
         args.append("--safe-mode")
-        args.append(f"-P --{os.path.join(os.path.dirname(__file__), 'SaveAndRestore.py')}")
+        args.append(
+            f"-P --{os.path.join(os.path.dirname(__file__), 'SaveAndRestore.py')}"
+        )
 
         if Gui.getMainWindow().close():
             QProcess.startDetached(QApplication.applicationFilePath(), args)
@@ -514,7 +567,9 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                 os.chmod(extracted_path, unix_attributes)
         return
 
-    def extract_with_permission(self, zipfile: ZipFile, filename: str, target_dir: str, ZIP_SYSTEM=3):
+    def extract_with_permission(
+        self, zipfile: ZipFile, filename: str, target_dir: str, ZIP_SYSTEM=3
+    ):
         for info in zipfile.infolist():
             if filename in info.filename:
                 extracted_path = zipfile.extract(info, target_dir)
