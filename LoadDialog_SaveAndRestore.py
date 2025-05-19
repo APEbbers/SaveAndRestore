@@ -227,6 +227,8 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         if self.form.IncludeSystem_Restore.checkState() == Qt.CheckState.Checked:
             Files.append(SystemConfig)
 
+        print(Files)
+
         # If at least one config file is checked, select the zipfile with the config files via a file open dialog
         if len(Files) > 0:
             Fullname = Standard_Functions.GetFileDialog(
@@ -235,61 +237,118 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                 DefaultPath=Parameters_SaveAndRestore.SAVE_DIRECTORY,
                 SaveAs=False,
             )
-            answer = Standard_Functions.RestartDialog(
-                translate(
-                    "FreeCAD SaveAndRestore", "Do you really restore these settings?"
-                ),
-                True,
-                translate("FreeCAD SaveAndRestore", "Restore and restart"),
-                translate("FreeCAD SaveAndRestore", "Cancel"),
-            )
-            if answer == "no":
-                return
-            if answer == "yes":
-                # Set the wait cursor
-                QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
+            if Fullname != "" and Fullname is not None:
+                self.form.hide()
+                answer = Standard_Functions.RestartDialog(
+                    translate(
+                        "FreeCAD SaveAndRestore",
+                        "Do you really restore these settings?",
+                    ),
+                    True,
+                    translate("FreeCAD SaveAndRestore", "Restore and restart"),
+                    translate("FreeCAD SaveAndRestore", "Cancel"),
+                )
+                if answer == "no":
+                    return
+                if answer == "yes":
+                    # Set the wait cursor
+                    QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
-                # Extract the zipfile and place the config files
-                if Fullname is not None and Fullname != "":
-                    if not platform.system() == "Darwin":
-                        # loading the temp.zip and creating a zip object
-                        with ZipFile(Fullname, "r") as zipObj:
-                            # Extracting all the members of the zip
-                            # into a specific location.
+                    # Extract the zipfile and place the config files
+                    if Fullname is not None and Fullname != "":
+                        if not platform.system() == "Darwin":
+                            # loading the temp.zip and creating a zip object
+                            with ZipFile(Fullname, "r") as zipObj:
+                                # Extracting all the members of the zip
+                                # into a specific location.
+                                counter = 0
+                                for File in Files:
+                                    # Delete the files first to be sure that the file will be from the zipfile.
+                                    if platform.system() == "Windows":
+                                        subprocess.run(
+                                            os.path.join(
+                                                os.path.dirname(__file__),
+                                                "DeleteFile.bat",
+                                            )
+                                            + " "
+                                            + App.getUserConfigDir()
+                                            + File
+                                        )
+                                    if (
+                                        platform.system() == "Linux"
+                                        or platform.system() == "Darwin"
+                                    ):
+                                        subprocess.run(
+                                            [
+                                                "bash",
+                                                os.path.join(
+                                                    os.path.dirname(__file__),
+                                                    "DeleteFile.sh",
+                                                ),
+                                                App.getUserConfigDir() + File,
+                                            ]
+                                        )
+
+                                    # Extract the file from the zip file into the config directory
+                                    try:
+                                        for info in zipObj.infolist():
+                                            if File in info.filename:
+                                                zipObj.extract(
+                                                    info, App.getUserConfigDir()
+                                                )
+
+                                        # Set the file to read only to prevent from FreeCAD from overwrite the file after shutdown
+                                        os.chmod(App.getUserConfigDir() + File, S_IREAD)
+                                    except Exception as e:
+                                        print(e)
+                                        counter = counter + 1
+                                        Standard_Functions.Print(
+                                            f"{File} not present in archive", "Warning"
+                                        )
+                                        continue
+                                if counter == len(Files):
+                                    Standard_Functions.Print(
+                                        "There were no files to restore.", "Error"
+                                    )
+                                    # Return to the normal cursor
+                                    QApplication.setOverrideCursor(
+                                        Qt.CursorShape.ArrowCursor
+                                    )
+                                    return
+
+                        if platform.system() == "Darwin":
                             counter = 0
                             for File in Files:
-                                # Delete the files first to be sure that the file will be from the zipfile.
-                                if platform.system() == "Windows":
-                                    subprocess.run(
-                                        os.path.join(
-                                            os.path.dirname(__file__), "DeleteFile.bat"
-                                        )
-                                        + " "
-                                        + App.getUserConfigDir()
-                                        + File
-                                    )
-                                if (
-                                    platform.system() == "Linux"
-                                    or platform.system() == "Darwin"
-                                ):
+                                self.extract_with_permission(
+                                    ZipFile(Fullname),
+                                    os.path.basename(File),
+                                    os.path.dirname(Fullname),
+                                )
+                                time.sleep(1)
+                                try:
+                                    # Delete the current files
                                     subprocess.run(
                                         [
                                             "bash",
-                                            os.path.join(
-                                                os.path.dirname(__file__),
-                                                "DeleteFile.sh",
-                                            ),
+                                            "DeleteFile.sh",
                                             App.getUserConfigDir() + File,
                                         ]
                                     )
 
-                                # Extract the file from the zip file into the config directory
-                                try:
-                                    zipObj.extract(File, App.getUserConfigDir())
-
+                                    # Move the extracted files to the config location
+                                    shutil.move(
+                                        os.path.join(
+                                            os.path.dirname(Fullname),
+                                            os.path.basename(File),
+                                        ),
+                                        App.getUserConfigDir() + File,
+                                    )
+                                    time.sleep(1)
                                     # Set the file to read only to prevent from FreeCAD from overwrite the file after shutdown
-                                    os.chmod(File, S_IREAD)
-                                except Exception:
+                                    # os.chmod(App.getUserConfigDir() + File, S_IREAD)
+
+                                except Exception as e:
+                                    print(e)
                                     counter = counter + 1
                                     Standard_Functions.Print(
                                         f"{File} not present in archive", "Warning"
@@ -299,71 +358,33 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                                 Standard_Functions.Print(
                                     "There were no files to restore.", "Error"
                                 )
+                                # Return to the normal cursor
+                                QApplication.setOverrideCursor(
+                                    Qt.CursorShape.ArrowCursor
+                                )
                                 return
 
-                    if platform.system() == "Darwin":
-                        counter = 0
-                        for File in Files:
-                            self.extract_with_permission(
-                                ZipFile(Fullname),
-                                os.path.basename(File),
-                                os.path.dirname(Fullname),
-                            )
-                            time.sleep(1)
-                            try:
-                                # Delete the current files
-                                subprocess.run(
-                                    [
-                                        "bash",
-                                        "DeleteFile.sh",
-                                        App.getUserConfigDir() + File,
-                                    ]
-                                )
-
-                                # Move the extracted files to the config location
-                                shutil.move(
-                                    os.path.join(
-                                        os.path.dirname(Fullname),
-                                        os.path.basename(File),
-                                    ),
-                                    App.getUserConfigDir() + File,
-                                )
-                                time.sleep(1)
-                                # Set the file to read only to prevent from FreeCAD from overwrite the file after shutdown
-                                # os.chmod(App.getUserConfigDir() + File, S_IREAD)
-
-                            except Exception as e:
-                                print(e)
-                                counter = counter + 1
-                                Standard_Functions.Print(
-                                    f"{File} not present in archive", "Warning"
-                                )
-                                continue
-                        if counter == len(Files):
-                            Standard_Functions.Print(
-                                "There were no files to restore.", "Error"
-                            )
-                            return
-
-                    # Write the path to preferences
-                    Parameters_SaveAndRestore.Settings.SetStringSetting(
-                        "SaveDirectory", os.path.dirname(Fullname)
-                    )
-                    Parameters_SaveAndRestore.SAVE_DIRECTORY = os.path.dirname(Fullname)
-
-                    # print a message
-                    print(
-                        translate(
-                            "FreeCAD SaveAndRestore",
-                            f'Settings restored from "{Fullname}"',
+                        # Write the path to preferences
+                        Parameters_SaveAndRestore.Settings.SetStringSetting(
+                            "SaveDirectory", os.path.dirname(Fullname)
                         )
-                    )
+                        Parameters_SaveAndRestore.SAVE_DIRECTORY = os.path.dirname(
+                            Fullname
+                        )
 
-                    # Return to the normal cursor
-                    QApplication.setOverrideCursor(Qt.CursorShape.ArrowCursor)
+                        # print a message
+                        print(
+                            translate(
+                                "FreeCAD SaveAndRestore",
+                                f'Settings restored from "{Fullname}"',
+                            )
+                        )
 
-                    # Restart FreeCAD
-                    Standard_Functions.restart_freecad()
+                        # Return to the normal cursor
+                        QApplication.setOverrideCursor(Qt.CursorShape.ArrowCursor)
+
+                        # Restart FreeCAD
+                        Standard_Functions.restart_freecad()
             else:
                 Standard_Functions.Mbox(
                     translate(
@@ -373,6 +394,8 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                     )
                 )
 
+            # Return to the normal cursor
+            QApplication.setOverrideCursor(Qt.CursorShape.ArrowCursor)
             return
 
     def ClearSettings(self):
@@ -547,7 +570,6 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
     def extract_with_permission(
         self, zipfile: ZipFile, filename: str, target_dir: str, ZIP_SYSTEM=3
     ):
-        print(zipfile.infolist())
         for info in zipfile.infolist():
             if filename in info.filename:
                 extracted_path = zipfile.extract(info, target_dir)
