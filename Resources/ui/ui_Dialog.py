@@ -142,7 +142,9 @@ class Ui_Dialog(object):
 
         self.gridLayout_4.addWidget(self.restoreToolbars, 0, 0, 1, 1)
 
-        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_2 = QSpacerItem(
+            40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
+        )
 
         self.gridLayout_4.addItem(self.horizontalSpacer_2, 0, 2, 1, 1)
 
@@ -154,13 +156,17 @@ class Ui_Dialog(object):
 
         self.gridLayout_6.addWidget(self.groupBox2, 3, 0, 1, 1)
 
-        self.verticalSpacer = QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer = QSpacerItem(
+            20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding
+        )
 
         self.gridLayout_6.addItem(self.verticalSpacer, 4, 0, 1, 1)
 
         self.gridLayout_3 = QGridLayout()
         self.gridLayout_3.setObjectName("gridLayout_3")
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer = QSpacerItem(
+            40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
+        )
 
         self.gridLayout_3.addItem(self.horizontalSpacer, 0, 1, 1, 1)
 
@@ -184,40 +190,74 @@ class Ui_Dialog(object):
     # setupUi
 
     def retranslateUi(self, Dialog):
-        Dialog.setWindowTitle(QCoreApplication.translate("Dialog", "Save and restore", None))
+        Dialog.setWindowTitle(
+            QCoreApplication.translate("Dialog", "Save and restore", None)
+        )
         # if QT_CONFIG(tooltip)
         self.saveSettings.setToolTip(
-            QCoreApplication.translate("Dialog", 'Save "user.cfg" and "system.cfg" to a zipfile as backup.', None)
-        )
-        # endif // QT_CONFIG(tooltip)
-        self.saveSettings.setText(QCoreApplication.translate("Dialog", "Save settings", None))
-        self.IncludeUser_Save.setText(QCoreApplication.translate("Dialog", "Include user settings", None))
-        self.IncludeSystem_Save.setText(QCoreApplication.translate("Dialog", "Include system settings", None))
-        self.IncludeUser_Restore.setText(QCoreApplication.translate("Dialog", "Include user settings", None))
-        # if QT_CONFIG(tooltip)
-        self.restoreSettings.setToolTip(
-            QCoreApplication.translate("Dialog", 'Restore "user.cfg" and "system.cfg" from a backup.', None)
-        )
-        # endif // QT_CONFIG(tooltip)
-        self.restoreSettings.setText(QCoreApplication.translate("Dialog", "Restore settings", None))
-        self.IncludeSystem_Restore.setText(QCoreApplication.translate("Dialog", "Include system settings", None))
-        self.IncludeUser_Clear.setText(QCoreApplication.translate("Dialog", "Include user settings", None))
-        # if QT_CONFIG(tooltip)
-        self.clearSettings.setToolTip(
             QCoreApplication.translate(
-                "Dialog", 'Delete "user.cfg" and "system.cfg". FreeCAD creates new files after restart.', None
+                "Dialog",
+                'Save "user.cfg" and "system.cfg" to a zipfile as backup.',
+                None,
             )
         )
         # endif // QT_CONFIG(tooltip)
-        self.clearSettings.setText(QCoreApplication.translate("Dialog", "Clear settings", None))
-        self.IncludeSystem_Clear.setText(QCoreApplication.translate("Dialog", "Include system settings", None))
+        self.saveSettings.setText(
+            QCoreApplication.translate("Dialog", "Save settings", None)
+        )
+        self.IncludeUser_Save.setText(
+            QCoreApplication.translate("Dialog", "Include user settings", None)
+        )
+        self.IncludeSystem_Save.setText(
+            QCoreApplication.translate("Dialog", "Include system settings", None)
+        )
+        self.IncludeUser_Restore.setText(
+            QCoreApplication.translate("Dialog", "Include user settings", None)
+        )
         # if QT_CONFIG(tooltip)
-        self.restoreToolbars.setToolTip(
-            QCoreApplication.translate("Dialog", "Restores all toolbars for every workbench.", None)
+        self.restoreSettings.setToolTip(
+            QCoreApplication.translate(
+                "Dialog", 'Restore "user.cfg" and "system.cfg" from a backup.', None
+            )
         )
         # endif // QT_CONFIG(tooltip)
-        self.restoreToolbars.setText(QCoreApplication.translate("Dialog", "Restore toolbars", None))
-        self.startSafeMode.setText(QCoreApplication.translate("Dialog", "Start FreeCAD in safe mode", None))
+        self.restoreSettings.setText(
+            QCoreApplication.translate("Dialog", "Restore settings", None)
+        )
+        self.IncludeSystem_Restore.setText(
+            QCoreApplication.translate("Dialog", "Include system settings", None)
+        )
+        self.IncludeUser_Clear.setText(
+            QCoreApplication.translate("Dialog", "Include user settings", None)
+        )
+        # if QT_CONFIG(tooltip)
+        self.clearSettings.setToolTip(
+            QCoreApplication.translate(
+                "Dialog",
+                'Delete "user.cfg" and "system.cfg". FreeCAD creates new files after restart.',
+                None,
+            )
+        )
+        # endif // QT_CONFIG(tooltip)
+        self.clearSettings.setText(
+            QCoreApplication.translate("Dialog", "Clear settings", None)
+        )
+        self.IncludeSystem_Clear.setText(
+            QCoreApplication.translate("Dialog", "Include system settings", None)
+        )
+        # if QT_CONFIG(tooltip)
+        self.restoreToolbars.setToolTip(
+            QCoreApplication.translate(
+                "Dialog", "Restores all toolbars for every workbench.", None
+            )
+        )
+        # endif // QT_CONFIG(tooltip)
+        self.restoreToolbars.setText(
+            QCoreApplication.translate("Dialog", "Restore toolbars", None)
+        )
+        self.startSafeMode.setText(
+            QCoreApplication.translate("Dialog", "Start FreeCAD in safe mode", None)
+        )
         self.CloseButton.setText(QCoreApplication.translate("Dialog", "Close", None))
         self.HelpButton.setText(QCoreApplication.translate("Dialog", "Help", None))
 
