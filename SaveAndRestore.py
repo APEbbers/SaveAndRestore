@@ -138,10 +138,12 @@ class SaveAndRestore:
     def DetectAddOnChange(self):
         # Get the folder with add-ons
         path = os.path.dirname(__file__)
-        # Get the folder with add-ons
-        for i in range(2):
-            # Starting point
-            path = os.path.dirname(path)
+        # Make sure you get the Mod folder
+        path = path.split("SaveAndRestore")[0]
+        # # Get the folder with add-ons
+        # for i in range(2):
+        #     # Starting point
+        #     path = os.path.dirname(path)
 
         # Create a list with addons, for which the toolbar must be reset
         FileName = os.path.join(path, "SaveAndRestore", "ResetList.json")
@@ -245,16 +247,18 @@ class SaveAndRestore:
     def WriteResetList(self):
         # Get the folder with add-ons
         path = os.path.dirname(__file__)
+        # Make sure you get the Mod folder
+        path = path.split("SaveAndRestore")[0]
 
         resetList = []
 
         # The list with add-ons for which this applies
         WbToLookFor = ["FreeCAD-Ribbon"]
 
-        # Get the folder with add-ons
-        for i in range(2):
-            # Starting point
-            path = os.path.dirname(path)
+        # # Get the folder with add-ons
+        # for i in range(2):
+        #     # Starting point
+        #     path = os.path.dirname(path)
 
         # Go through the sub-folders and add them to the list
         CurrentAddOnList = []
