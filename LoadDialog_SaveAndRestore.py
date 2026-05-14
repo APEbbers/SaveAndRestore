@@ -101,6 +101,26 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             SIGNAL("clicked()"),
             on_RestoreSettings_clicked,
         )
+        
+        # Connect the Addon backup function
+        def on_BackupMod_clicked():
+            self.BackupMod()
+            
+        self.form.BackupMod.connect(
+            self.form.BackupMod,
+            SIGNAL("clicked()"),
+            on_BackupMod_clicked,
+        )
+        
+        # Connect the Addon restore function
+        def on_RestoreMod_clicked():
+            self.RestoreMod()
+            
+        self.form.RestoreMod.connect(
+            self.form.RestoreMod,
+            SIGNAL("clicked()"),
+            on_RestoreMod_clicked,
+        )   
 
         # Connect the restore ToolBars function
         def on_EnableToolbars_clicked():
@@ -150,6 +170,16 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             SIGNAL("clicked()"),
             on_StartSafeMode_clicked,
         )
+        
+        # Connect the open Mod dir function
+        def on_OpenModDir_clicked():
+            self.OpenModDir()
+            
+        self.form.OpenModDir.connect(
+            self.form.OpenModDir,
+            SIGNAL("clicked()"),
+            on_OpenModDir_clicked,
+        )   
 
         return
 
@@ -466,6 +496,14 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
 
         return
 
+    def BackupMod(self):
+        # ToDO
+        return
+    
+    def RestoreMod(self):
+        # ToDO
+        return
+
     def EnableToolbars(self, FinishMessage="", StyleSheet=None):
         # Show the restart dialog
         answer = Standard_Functions.RestartDialog(
@@ -556,6 +594,14 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
 
         if Gui.getMainWindow().close():
             QProcess.startDetached(QApplication.applicationFilePath(), args)
+
+    def OpenModDir(self):
+        ModDir = os.path.join(App.getUserAppDataDir(), "Mod")
+        if platform.system() == "Darwin" or platform.system() == "Linux":
+            subprocess.Popen(['xdg-open', ModDir])
+        if platform.system() == "Windows":
+            os.startfile(ModDir)
+        return
 
     def extract_all_with_permission(self, zipfile, target_dir, ZIP_SYSTEM=3):
         for info in zipfile.infolist():
