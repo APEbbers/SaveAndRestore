@@ -32,8 +32,8 @@ from PySide.QtWidgets import QApplication, QLabel, QToolBar, QMenu
 import sys
 from datetime import datetime
 import Standard_Functions_SaveAndRestore as Standard_Functions
-import zipfile
-from zipfile import ZipFile
+import zipfile_SaveAndRestore
+from zipfile_SaveAndRestore import ZipFile
 import Parameters_SaveAndRestore
 import StyleMapping_SaveAndRestore
 import platform
@@ -583,7 +583,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
 
     def WriteZip_MacOS(self, NewArchive_FullPath, FileToArchive):
         ZIP_MAC_SYSTEM = 7  # macOS
-        zipInfo = zipfile.ZipInfo(os.path.basename(FileToArchive))
+        zipInfo = zipfile_SaveAndRestore.ZipInfo(os.path.basename(FileToArchive))
         zipInfo.create_system = ZIP_MAC_SYSTEM
         unix_st_mode = (
             stat.S_IFLNK
