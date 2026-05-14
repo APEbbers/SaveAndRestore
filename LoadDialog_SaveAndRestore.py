@@ -257,8 +257,6 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         if self.form.IncludeSystem_Restore.checkState() == Qt.CheckState.Checked:
             Files.append(SystemConfig)
 
-        print(Files)
-
         # If at least one config file is checked, select the zipfile with the config files via a file open dialog
         if len(Files) > 0:
             Fullname = Standard_Functions.GetFileDialog(
@@ -497,11 +495,192 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         return
 
     def BackupMod(self):
-        # ToDO
+        ModDir = os.path.join(App.getUserAppDataDir(), "Mod")
+        
+        # Define a prefix
+        now = datetime.now()
+        Prefix = now.strftime("%Y_%m_%d_%H_%M_%S")
+
+        # Define the filename
+        FileName = f"{Prefix} - FreeCAD Addons.zip"
+
+        # Get the file and location were the zip file must be saved wit a saveas dialog
+        Fullname = Standard_Functions.GetFileDialog(
+            Filter="Archive (*.zip)",
+            parent=self.form,
+            DefaultPath=os.path.join(
+                Parameters_SaveAndRestore.SAVE_DIRECTORY, FileName
+            ),
+            SaveAs=True,
+        )
+        if Fullname is not None and Fullname != "":
+            # Create the zipfile with the config files
+            # if not platform.system() == "Darwin":
+            with ZipFile(Fullname, "w") as zipObj:
+                zipObj.write(ModDir, ModDir.split(os.sep)[-1])
+            # if platform.system() == "Darwin":
+            # for File in Files:
+            #     self.WriteZip_MacOS(Fullname, File)
+
+        # Write the path to preferences
+        Parameters_SaveAndRestore.Settings.SetStringSetting(
+            "SaveDirectory", os.path.dirname(Fullname)
+        )
+        Parameters_SaveAndRestore.SAVE_DIRECTORY = os.path.dirname(Fullname)
+
+        print(
+            translate(
+                "FreeCAD SaveAndRestore",
+                f'Settings saved as "{FileName}" to "{os.path.dirname(Fullname)}"',
+            )
+        )
         return
     
     def RestoreMod(self):
-        # ToDO
+        ModDir = os.path.join(App.getUserAppDataDir(), "Mod")
+        
+        Fullname = Standard_Functions.GetFileDialog(
+            Filter="Archive (*.zip)",
+            parent=self.form,
+            DefaultPath=Parameters_SaveAndRestore.SAVE_DIRECTORY,
+            SaveAs=False,
+        )
+        if Fullname != "" and Fullname is not None:
+            self.form.hide()
+            answer = Standard_Functions.RestartDialog(
+                translate(
+                    "FreeCAD SaveAndRestore",
+                    "Do you really restore these settings?",
+                ),
+                True,
+                translate("FreeCAD SaveAndRestore", "Restore and restart"),
+                translate("FreeCAD SaveAndRestore", "Cancel"),
+            )
+            if answer == "no":
+                return
+            if answer == "yes":
+                # Set the wait cursor
+                QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
+
+                # Extract the zipfile and place the config files
+                if Fullname is not None and Fullname != "":
+                    if not platform.system() == "Darwin":
+                        # loading the temp.zip and creating a zip object
+                        with ZipFile(Fullname, "r") as zipObj:
+                            # Extracting all the members of the zip
+                            # into a specific location.
+                            counter = 0
+                            # Delete the files first to be sure that the file will be from the zipfile.
+                            if platform.system() == "Windows":
+                                subprocess.run(
+                                    os.path.join(
+                                        os.path.dirname(__file__),
+                                        "DeleteFile.bat",
+                                    )
+                                    + " "
+                                    + ModDir
+                                )
+                            if (
+                                platform.system() == "Linux"
+                                or platform.system() == "Darwin"
+                            ):
+                                subprocess.run(
+                                    [
+                                        "bash",
+                                        os.path.join(
+                                            os.path.dirname(__file__),
+                                            "DeleteFile.sh",
+                                        ),
+                                        ModDir,
+                                    ]
+                                )
+
+                            # Extract the file from the zip file into the config directory
+                            try:
+                                for info in zipObj.infolist():
+                                    if ModDir in info.filename:
+                                        zipObj.extract(
+                                            info, ModDir
+                                        )
+
+                                # Set the file to read only to prevent from FreeCAD from overwrite the file after shutdown
+                                os.chmod(ModDir, S_IREAD)
+                            except Exception as e:
+                                print(e)
+                                Standard_Functions.Print(
+                                    f"{ModDir} not present in archive", "Warning"
+                                )
+                                # Return to the normal cursor
+                                QApplication.setOverrideCursor(
+                                    Qt.CursorShape.ArrowCursor
+                                )
+                                return
+
+                    if platform.system() == "Darwin":
+                        counter = 0
+                        self.extract_with_permission(
+                            ZipFile(Fullname),
+                            os.path.basename(ModDir),
+                            os.path.dirname(Fullname),
+                        )
+                        time.sleep(1)
+                        try:
+                            # Delete the current files
+                            subprocess.run(
+                                [
+                                    "bash",
+                                    "DeleteFile.sh",
+                                    ModDir,
+                                ]
+                            )
+
+                            # Move the extracted files to the config location
+                            shutil.move(
+                                os.path.join(
+                                    os.path.dirname(Fullname),
+                                    os.path.basename(ModDir),
+                                ),
+                                ModDir,
+                            )
+                            time.sleep(1)
+                            # Set the file to read only to prevent from FreeCAD from overwrite the file after shutdown
+                            # os.chmod(App.getUserConfigDir() + File, S_IREAD)
+
+                        except Exception as e:
+                            print(e)
+                            Standard_Functions.Print(
+                                f"{ModDir} not present in archive", "Warning"
+                            )
+                        # Return to the normal cursor
+                        QApplication.setOverrideCursor(
+                            Qt.CursorShape.ArrowCursor
+                        )
+                        return
+
+                    # Write the path to preferences
+                    Parameters_SaveAndRestore.Settings.SetStringSetting(
+                        "SaveDirectory", os.path.dirname(Fullname)
+                    )
+                    Parameters_SaveAndRestore.SAVE_DIRECTORY = os.path.dirname(
+                        Fullname
+                    )
+
+                    # print a message
+                    print(
+                        translate(
+                            "FreeCAD SaveAndRestore",
+                            f'Settings restored from "{Fullname}"',
+                        )
+                    )
+
+                    # Return to the normal cursor
+                    QApplication.setOverrideCursor(Qt.CursorShape.ArrowCursor)
+
+                    # Restart FreeCAD
+                    Standard_Functions.restart_freecad()
+        
+        # Return to the normal cursor
+        QApplication.setOverrideCursor(Qt.CursorShape.ArrowCursor)
         return
 
     def EnableToolbars(self, FinishMessage="", StyleSheet=None):
