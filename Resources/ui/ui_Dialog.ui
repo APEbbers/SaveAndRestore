@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>419</width>
-    <height>542</height>
+    <height>496</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,6 +17,21 @@
    <item row="5" column="0">
     <widget class="QGroupBox" name="groupBox">
      <layout class="QGridLayout" name="gridLayout_4">
+      <property name="leftMargin">
+       <number>3</number>
+      </property>
+      <property name="topMargin">
+       <number>3</number>
+      </property>
+      <property name="rightMargin">
+       <number>3</number>
+      </property>
+      <property name="bottomMargin">
+       <number>3</number>
+      </property>
+      <property name="spacing">
+       <number>3</number>
+      </property>
       <item row="1" column="0">
        <widget class="QPushButton" name="startSafeMode">
         <property name="minimumSize">
@@ -91,6 +106,21 @@
    <item row="2" column="0">
     <widget class="QGroupBox" name="groupBox_2">
      <layout class="QGridLayout" name="gridLayout_5">
+      <property name="leftMargin">
+       <number>3</number>
+      </property>
+      <property name="topMargin">
+       <number>3</number>
+      </property>
+      <property name="rightMargin">
+       <number>3</number>
+      </property>
+      <property name="bottomMargin">
+       <number>3</number>
+      </property>
+      <property name="spacing">
+       <number>3</number>
+      </property>
       <item row="0" column="1">
        <widget class="QCheckBox" name="IncludeUser_Clear">
         <property name="text">
@@ -133,6 +163,21 @@
    <item row="0" column="0">
     <widget class="QGroupBox" name="groupBox">
      <layout class="QGridLayout" name="gridLayout">
+      <property name="leftMargin">
+       <number>3</number>
+      </property>
+      <property name="topMargin">
+       <number>3</number>
+      </property>
+      <property name="rightMargin">
+       <number>3</number>
+      </property>
+      <property name="bottomMargin">
+       <number>3</number>
+      </property>
+      <property name="spacing">
+       <number>3</number>
+      </property>
       <item row="0" column="0" rowspan="2">
        <widget class="QPushButton" name="saveSettings">
         <property name="minimumSize">
@@ -178,6 +223,21 @@
       <string/>
      </property>
      <layout class="QGridLayout" name="gridLayout_7">
+      <property name="leftMargin">
+       <number>3</number>
+      </property>
+      <property name="topMargin">
+       <number>3</number>
+      </property>
+      <property name="rightMargin">
+       <number>3</number>
+      </property>
+      <property name="bottomMargin">
+       <number>3</number>
+      </property>
+      <property name="spacing">
+       <number>3</number>
+      </property>
       <item row="0" column="0">
        <widget class="QPushButton" name="BackupMod">
         <property name="minimumSize">
@@ -241,6 +301,21 @@
    <item row="1" column="0">
     <widget class="QGroupBox" name="groupBox">
      <layout class="QGridLayout" name="gridLayout_2">
+      <property name="leftMargin">
+       <number>3</number>
+      </property>
+      <property name="topMargin">
+       <number>3</number>
+      </property>
+      <property name="rightMargin">
+       <number>3</number>
+      </property>
+      <property name="bottomMargin">
+       <number>3</number>
+      </property>
+      <property name="spacing">
+       <number>3</number>
+      </property>
       <item row="0" column="1">
        <widget class="QCheckBox" name="IncludeUser_Restore">
         <property name="text">
@@ -286,6 +361,21 @@
       <string/>
      </property>
      <layout class="QGridLayout" name="gridLayout_8">
+      <property name="leftMargin">
+       <number>3</number>
+      </property>
+      <property name="topMargin">
+       <number>3</number>
+      </property>
+      <property name="rightMargin">
+       <number>3</number>
+      </property>
+      <property name="bottomMargin">
+       <number>3</number>
+      </property>
+      <property name="spacing">
+       <number>3</number>
+      </property>
       <item row="0" column="0">
        <widget class="QPushButton" name="RestoreMod">
         <property name="minimumSize">

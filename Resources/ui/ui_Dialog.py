@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'ui_DialogwCBiia.ui'
+## Form generated from reading UI file 'ui_DialogEozdNS.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.11.0
 ##
@@ -23,13 +23,15 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         if not Dialog.objectName():
             Dialog.setObjectName(u"Dialog")
-        Dialog.resize(419, 542)
+        Dialog.resize(419, 496)
         self.gridLayout_6 = QGridLayout(Dialog)
         self.gridLayout_6.setObjectName(u"gridLayout_6")
         self.groupBox = QGroupBox(Dialog)
         self.groupBox.setObjectName(u"groupBox")
         self.gridLayout_4 = QGridLayout(self.groupBox)
+        self.gridLayout_4.setSpacing(3)
         self.gridLayout_4.setObjectName(u"gridLayout_4")
+        self.gridLayout_4.setContentsMargins(3, 3, 3, 3)
         self.startSafeMode = QPushButton(self.groupBox)
         self.startSafeMode.setObjectName(u"startSafeMode")
         self.startSafeMode.setMinimumSize(QSize(200, 30))
@@ -62,7 +64,9 @@ class Ui_Dialog(object):
         self.groupBox_2 = QGroupBox(Dialog)
         self.groupBox_2.setObjectName(u"groupBox_2")
         self.gridLayout_5 = QGridLayout(self.groupBox_2)
+        self.gridLayout_5.setSpacing(3)
         self.gridLayout_5.setObjectName(u"gridLayout_5")
+        self.gridLayout_5.setContentsMargins(3, 3, 3, 3)
         self.IncludeUser_Clear = QCheckBox(self.groupBox_2)
         self.IncludeUser_Clear.setObjectName(u"IncludeUser_Clear")
         self.IncludeUser_Clear.setChecked(True)
@@ -87,7 +91,9 @@ class Ui_Dialog(object):
         self.groupBox1 = QGroupBox(Dialog)
         self.groupBox1.setObjectName(u"groupBox1")
         self.gridLayout = QGridLayout(self.groupBox1)
+        self.gridLayout.setSpacing(3)
         self.gridLayout.setObjectName(u"gridLayout")
+        self.gridLayout.setContentsMargins(3, 3, 3, 3)
         self.saveSettings = QPushButton(self.groupBox1)
         self.saveSettings.setObjectName(u"saveSettings")
         self.saveSettings.setMinimumSize(QSize(200, 50))
@@ -112,7 +118,9 @@ class Ui_Dialog(object):
         self.groupBox_3 = QGroupBox(Dialog)
         self.groupBox_3.setObjectName(u"groupBox_3")
         self.gridLayout_7 = QGridLayout(self.groupBox_3)
+        self.gridLayout_7.setSpacing(3)
         self.gridLayout_7.setObjectName(u"gridLayout_7")
+        self.gridLayout_7.setContentsMargins(3, 3, 3, 3)
         self.BackupMod = QPushButton(self.groupBox_3)
         self.BackupMod.setObjectName(u"BackupMod")
         self.BackupMod.setMinimumSize(QSize(200, 50))
@@ -148,7 +156,9 @@ class Ui_Dialog(object):
         self.groupBox2 = QGroupBox(Dialog)
         self.groupBox2.setObjectName(u"groupBox2")
         self.gridLayout_2 = QGridLayout(self.groupBox2)
+        self.gridLayout_2.setSpacing(3)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
+        self.gridLayout_2.setContentsMargins(3, 3, 3, 3)
         self.IncludeUser_Restore = QCheckBox(self.groupBox2)
         self.IncludeUser_Restore.setObjectName(u"IncludeUser_Restore")
         self.IncludeUser_Restore.setChecked(True)
@@ -173,7 +183,9 @@ class Ui_Dialog(object):
         self.groupBox_4 = QGroupBox(Dialog)
         self.groupBox_4.setObjectName(u"groupBox_4")
         self.gridLayout_8 = QGridLayout(self.groupBox_4)
+        self.gridLayout_8.setSpacing(3)
         self.gridLayout_8.setObjectName(u"gridLayout_8")
+        self.gridLayout_8.setContentsMargins(3, 3, 3, 3)
         self.RestoreMod = QPushButton(self.groupBox_4)
         self.RestoreMod.setObjectName(u"RestoreMod")
         self.RestoreMod.setMinimumSize(QSize(200, 50))
