@@ -42,6 +42,7 @@ import webbrowser
 import shutil
 import time
 import stat
+import pathlib
 
 # Get the resources
 pathUI = os.path.join(os.path.dirname(__file__), "Resources", "ui")
@@ -495,7 +496,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         return
 
     def BackupMod(self):
-        ModDir = os.path.join(App.getUserAppDataDir(), "Mod")
+        ModDir = pathlib.Path(os.path.join(App.getUserAppDataDir(), "Mod"))
         
         # Define a prefix
         now = datetime.now()
@@ -515,9 +516,13 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         )
         if Fullname is not None and Fullname != "":
             # Create the zipfile with the config files
-            # if not platform.system() == "Darwin":
+            # if not platform.system() == "Darwin":            
             with ZipFile(Fullname, "w") as zipObj:
-                zipObj.write(ModDir, ModDir.split(os.sep)[-1])
+                # for DirName, SubDirs, Files in os.walk(ModDir):
+                    # for File in Files:
+                    #     zipObj.write(DirName, ModDir.split(os.sep)[-1])
+                for entry in ModDir.rglob("*"):
+                    zipObj.write(entry, entry.relative_to(ModDir))
             # if platform.system() == "Darwin":
             # for File in Files:
             #     self.WriteZip_MacOS(Fullname, File)
