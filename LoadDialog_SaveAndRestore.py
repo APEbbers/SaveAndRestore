@@ -42,6 +42,7 @@ import webbrowser
 import shutil
 import time
 import stat
+import pathlib
 
 # Get the resources
 pathUI = os.path.join(os.path.dirname(__file__), "Resources", "ui")
@@ -101,6 +102,26 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             SIGNAL("clicked()"),
             on_RestoreSettings_clicked,
         )
+        
+        # Connect the Addon backup function
+        def on_BackupMod_clicked():
+            self.BackupMod()
+            
+        self.form.BackupMod.connect(
+            self.form.BackupMod,
+            SIGNAL("clicked()"),
+            on_BackupMod_clicked,
+        )
+        
+        # Connect the Addon restore function
+        def on_RestoreMod_clicked():
+            self.RestoreMod()
+            
+        self.form.RestoreMod.connect(
+            self.form.RestoreMod,
+            SIGNAL("clicked()"),
+            on_RestoreMod_clicked,
+        )   
 
         # Connect the restore ToolBars function
         def on_EnableToolbars_clicked():
@@ -150,6 +171,16 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             SIGNAL("clicked()"),
             on_StartSafeMode_clicked,
         )
+        
+        # Connect the open Mod dir function
+        def on_OpenModDir_clicked():
+            self.OpenModDir()
+            
+        self.form.OpenModDir.connect(
+            self.form.OpenModDir,
+            SIGNAL("clicked()"),
+            on_OpenModDir_clicked,
+        )   
 
         return
 
@@ -226,8 +257,6 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             Files.append(UserConfig)
         if self.form.IncludeSystem_Restore.checkState() == Qt.CheckState.Checked:
             Files.append(SystemConfig)
-
-        print(Files)
 
         # If at least one config file is checked, select the zipfile with the config files via a file open dialog
         if len(Files) > 0:
@@ -466,6 +495,166 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
 
         return
 
+    def BackupMod(self):
+        ModDir = pathlib.Path(os.path.join(App.getUserAppDataDir(), "Mod"))
+        
+        # Define a prefix
+        now = datetime.now()
+        Prefix = now.strftime("%Y_%m_%d_%H_%M_%S")
+
+        # Define the filename
+        FileName = f"{Prefix} - FreeCAD Addons.zip"
+
+        # Get the file and location were the zip file must be saved wit a saveas dialog
+        Fullname = Standard_Functions.GetFileDialog(
+            Filter="Archive (*.zip)",
+            parent=self.form,
+            DefaultPath=os.path.join(
+                Parameters_SaveAndRestore.SAVE_DIRECTORY, FileName
+            ),
+            SaveAs=True,
+        )
+        if Fullname is not None and Fullname != "":
+            # Create the zipfile with the config files
+            # if not platform.system() == "Darwin":            
+            with ZipFile(Fullname, "w") as zipObj:
+                # for DirName, SubDirs, Files in os.walk(ModDir):
+                    # for File in Files:
+                    #     zipObj.write(DirName, ModDir.split(os.sep)[-1])
+                for entry in ModDir.rglob("*"):
+                    zipObj.write(entry, entry.relative_to(ModDir))
+            # if platform.system() == "Darwin":
+            # for File in Files:
+            #     self.WriteZip_MacOS(Fullname, File)
+
+        # Write the path to preferences
+        Parameters_SaveAndRestore.Settings.SetStringSetting(
+            "SaveDirectory", os.path.dirname(Fullname)
+        )
+        Parameters_SaveAndRestore.SAVE_DIRECTORY = os.path.dirname(Fullname)
+
+        print(
+            translate(
+                "FreeCAD SaveAndRestore",
+                f'Settings saved as "{FileName}" to "{os.path.dirname(Fullname)}"',
+            )
+        )
+        return
+    
+    def RestoreMod(self):
+        ModDir = os.path.join(App.getUserAppDataDir(), "Mod")
+        
+        Fullname = Standard_Functions.GetFileDialog(
+            Filter="Archive (*.zip)",
+            parent=self.form,
+            DefaultPath=Parameters_SaveAndRestore.SAVE_DIRECTORY,
+            SaveAs=False,
+        )
+        if Fullname != "" and Fullname is not None:
+            self.form.hide()
+            yesText = translate("FreeCAD SaveAndRestore", "Restore and restart")
+            if platform.system() == "Darwin":
+                yesText = translate("FreeCAD SaveAndRestore", "Restore")
+            answer = Standard_Functions.RestartDialog(
+                translate(
+                    "FreeCAD SaveAndRestore",
+                    "Do you really restore these settings?",
+                ),
+                True,
+                yesText,
+                translate("FreeCAD SaveAndRestore", "Cancel"),
+            )
+            if answer == "no":
+                return
+            if answer == "yes":
+                # Set the wait cursor
+                QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
+                
+                # Remove the current mod folder and create a new one
+                if os.path.exists(ModDir):                   
+                    for item in os.listdir(ModDir):
+                        dirName = item.replace("/", "")
+                        dir = os.path.join(ModDir, dirName)
+                        if dirName not in os.path.join(os.path.dirname(__file__)) and dirName not in ModDir:
+                            if os.path.isdir(dir):
+                                self.rmtree(dir)
+                            if os.path.isfile(dir):
+                                os.remove(dir)
+
+                # Extract the zipfile and place the config files
+                if Fullname is not None and Fullname != "":
+                    if not platform.system() == "Darwin":
+                        # loading the temp.zip and creating a zip object
+                        with ZipFile(Fullname, "r") as zipObj:
+                            # Extract the file from the zip file into the config directory
+                            try:
+                                members = [m for m in zipObj.namelist() if not m.startswith("SaveAndRestore")]
+                                zipObj.extractall(ModDir, members=members)
+                            except Exception as e:
+                                print(e)
+                                Standard_Functions.Print(
+                                    f"{ModDir} not present in archive", "Warning"
+                                )
+                                # Return to the normal cursor
+                                QApplication.setOverrideCursor(
+                                    Qt.CursorShape.ArrowCursor
+                                )
+                                return
+
+                    if platform.system() == "Darwin":
+                        # Extract the file from the zip file into the config directory
+                        with ZipFile(Fullname, "r") as zipObj:
+                            ZIP_SYSTEM=3
+                            try:                                
+                                for info in zipObj.infolist():
+                                    if "SaveAndRestore" not in info.filename:
+                                        extracted_path = zipObj.extract(info, ModDir)
+
+                                        if info.create_system == ZIP_SYSTEM:
+                                            unix_attributes = info.external_attr >> 16
+                                        if unix_attributes:
+                                            os.chmod(extracted_path, unix_attributes)
+                                                        
+                            except Exception as e:
+                                print(e)
+                                Standard_Functions.Print(
+                                    f"{ModDir} not present in archive", "Warning"
+                                )
+                                # Return to the normal cursor
+                                QApplication.setOverrideCursor(
+                                    Qt.CursorShape.ArrowCursor
+                                )
+                                return
+
+                    # Write the path to preferences
+                    Parameters_SaveAndRestore.Settings.SetStringSetting(
+                        "SaveDirectory", os.path.dirname(Fullname)
+                    )
+                    Parameters_SaveAndRestore.SAVE_DIRECTORY = os.path.dirname(
+                        Fullname
+                    )
+
+                    # print a message
+                    print(
+                        translate(
+                            "FreeCAD SaveAndRestore",
+                            f'Settings restored from "{Fullname}"',
+                        )
+                    )
+
+                    # Return to the normal cursor
+                    QApplication.setOverrideCursor(Qt.CursorShape.ArrowCursor)
+
+                    # Restart FreeCAD
+                    if platform.system() != "Darwin":
+                        Standard_Functions.restart_freecad()
+                    if platform.system() == "Darwin":
+                        Standard_Functions.Mbox(translate("FreeCAD SaveAndResore", "Please restart FreeCAD"))
+        
+        # Return to the normal cursor
+        QApplication.setOverrideCursor(Qt.CursorShape.ArrowCursor)
+        return
+
     def EnableToolbars(self, FinishMessage="", StyleSheet=None):
         # Show the restart dialog
         answer = Standard_Functions.RestartDialog(
@@ -557,6 +746,14 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         if Gui.getMainWindow().close():
             QProcess.startDetached(QApplication.applicationFilePath(), args)
 
+    def OpenModDir(self):
+        ModDir = os.path.join(App.getUserAppDataDir(), "Mod")
+        if platform.system() == "Darwin" or platform.system() == "Linux":
+            subprocess.Popen(['xdg-open', ModDir])
+        if platform.system() == "Windows":
+            os.startfile(ModDir)
+        return
+
     def extract_all_with_permission(self, zipfile, target_dir, ZIP_SYSTEM=3):
         for info in zipfile.infolist():
             extracted_path = zipfile.extract(info, target_dir)
@@ -606,7 +803,17 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             zipObj.writestr(zipInfo, NewArchive_FullPath)
 
         return
-
+    
+    def rmtree(self, top):
+        for root, dirs, files in os.walk(top, topdown=False):
+            for name in files:
+                filename = os.path.join(root, name)
+                os.chmod(filename, stat.S_IWUSR)
+                os.remove(filename)
+            for name in dirs:
+                os.rmdir(os.path.join(root, name))
+        os.rmdir(top)
+        return
 
 def main():
     # Get the form

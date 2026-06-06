@@ -231,6 +231,7 @@ def restart_freecad():
 
     """Shuts down and restarts FreeCAD"""
 
+    print("FreeCAD will be restarted")
     args = QtWidgets.QApplication.arguments()[1:]
     if Gui.getMainWindow().close():
         QtCore.QProcess.startDetached(
