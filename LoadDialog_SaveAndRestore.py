@@ -577,8 +577,6 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                                 self.rmtree(dir)
                             if os.path.isfile(dir):
                                 os.remove(dir)
-                        else:
-                            Standard_Functions.Mbox(os.path.join(os.path.dirname(__file__)))
 
                 # Extract the zipfile and place the config files
                 if Fullname is not None and Fullname != "":
@@ -651,7 +649,10 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                     QApplication.setOverrideCursor(Qt.CursorShape.ArrowCursor)
 
                     # Restart FreeCAD
-                    Standard_Functions.restart_freecad()
+                    if platform.system() != "Darwin":
+                        Standard_Functions.restart_freecad()
+                    if platform.system() == "Darwin":
+                        Standard_Functions.Mbox(translate("FreeCAD SaveAndResore", "Please restart FreeCAD"))
         
         # Return to the normal cursor
         QApplication.setOverrideCursor(Qt.CursorShape.ArrowCursor)
