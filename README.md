@@ -1,10 +1,11 @@
 # SaveAndRestore
-![image](https://codeberg.org/apebbers/SaveAndRestore/raw/branch/Develop/Resources/Images/Dialog%20-%201.png)
-
+![Dialog](https://codeberg.org/apebbers/SaveAndRestore/raw/branch/Develop/Resources/Images/Dialog%20-%201.png)  
 A simple addon to save and restore your settings. With this addon you can:
 - Create a backup for the user.cfg and system.cfg files.
 - Restore user.cfg and system.cfg files from a backup.
 - Clear the user.cfg and system.cfg files by removal. FreeCAD will create new config files after restart.
+- Backup all addons.
+- Restore all addons
 - Reset all toolbars. Usefull when for example the Ribbon UI is disabled or uninstalled.
 - Start FreeCAD in safe mode
 
