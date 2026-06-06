@@ -543,11 +543,6 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
     
     def RestoreMod(self):
         ModDir = os.path.join(App.getUserAppDataDir(), "Mod")
-        for item in os.listdir(ModDir):
-            dir = os.path.join(ModDir, item)
-            print(dir)
-        
-        print(os.path.join(os.path.dirname(__file__)))
         
         Fullname = Standard_Functions.GetFileDialog(
             Filter="Archive (*.zip)",
