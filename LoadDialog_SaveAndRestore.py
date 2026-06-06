@@ -543,6 +543,11 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
     
     def RestoreMod(self):
         ModDir = os.path.join(App.getUserAppDataDir(), "Mod")
+        for item in os.listdir(ModDir):
+            dir = os.path.join(ModDir, item)
+            print(dir)
+        
+        print(os.path.join(os.path.dirname(__file__)))
         
         Fullname = Standard_Functions.GetFileDialog(
             Filter="Archive (*.zip)",
@@ -568,10 +573,17 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                 QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
                 
                 # Remove the current mod folder and create a new one
-                if os.path.exists(ModDir):
-                    # shutil.rmtree(ModDir)
-                    self.rmtree(ModDir)
-                os.makedirs(ModDir)
+                if os.path.exists(ModDir):                   
+                    for item in os.listdir(ModDir):
+                        dir = os.path.join(ModDir, item)
+                        if dir != os.path.join(os.path.dirname(__file__)) and dir != ModDir:
+                            if os.path.isdir(dir):
+                                self.rmtree(dir)
+                            if os.path.isfile(dir):
+                                os.remove(dir)
+                        else:
+                            print(os.path.join(os.path.dirname(__file__)))
+                # os.makedirs(ModDir)
 
                 # Extract the zipfile and place the config files
                 if Fullname is not None and Fullname != "":
@@ -581,9 +593,10 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                             # Extract the file from the zip file into the config directory
                             try:
                                 for info in zipObj.infolist():
-                                    zipObj.extract(
-                                        info, ModDir
-                                    )
+                                    if os.path.basename(os.path.dirname(__file__)).lower() not in info.filename.lower():
+                                        zipObj.extract(
+                                            info, ModDir
+                                        )
                             except Exception as e:
                                 print(e)
                                 Standard_Functions.Print(
