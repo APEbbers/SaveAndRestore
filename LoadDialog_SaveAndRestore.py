@@ -593,11 +593,8 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                         with ZipFile(Fullname, "r") as zipObj:
                             # Extract the file from the zip file into the config directory
                             try:
-                                for info in zipObj.infolist():
-                                    if os.path.basename(os.path.dirname(__file__)).lower() not in info.filename.lower():
-                                        zipObj.extract(
-                                            info, ModDir
-                                        )
+                                members = [m for m in zipObj.namelist() if not m.startswith(os.path.basename(os.path.dirname(__file__)))]
+                                zipObj.extractall(ModDir, members=members)
                             except Exception as e:
                                 print(e)
                                 Standard_Functions.Print(
@@ -779,7 +776,6 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             if filename in info.filename:
                 extracted_path = zipfile.extract(info, target_dir)
 
-                unix_attributes = None
                 if info.create_system == ZIP_SYSTEM:
                     unix_attributes = info.external_attr >> 16
                 if unix_attributes:
