@@ -605,16 +605,25 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                         # Extract the file from the zip file into the config directory
                         with ZipFile(Fullname, "r") as zipObj:
                             ZIP_SYSTEM=3
-                            try:
+                            try:                                
+                                # members = [m for m in zipObj.namelist() if not m.startswith("SaveAndRestore")]
+                                # zipObj.extractall(ModDir, members=members)
+
+                                # for info in zipObj.infolist():
+                                #     extracted_path = os.path.join(ModDir, info.filename)
+                                #     if info.create_system == ZIP_SYSTEM:
+                                #         unix_attributes = info.external_attr >> 16
+                                #     if unix_attributes:
+                                #         os.chmod(extracted_path, unix_attributes)
                                 for info in zipObj.infolist():
-                                    if os.path.basename("SaveAndRestore") not  in info.filename:
-                                        extracted_path = os.path.join(ModDir, info.filename)
-                                        zipObj.extractall(ModDir)
+                                    if "SaveAndRestore" not in info.filename:
+                                        extracted_path = zipObj.extract(info, ModDir)
 
                                         if info.create_system == ZIP_SYSTEM:
                                             unix_attributes = info.external_attr >> 16
                                         if unix_attributes:
                                             os.chmod(extracted_path, unix_attributes)
+                                                        
                             except Exception as e:
                                 print(e)
                                 Standard_Functions.Print(
