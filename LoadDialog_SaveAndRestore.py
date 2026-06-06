@@ -569,7 +569,8 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                 
                 # Remove the current mod folder and create a new one
                 if os.path.exists(ModDir):
-                    shutil.rmtree(ModDir)
+                    # shutil.rmtree(ModDir)
+                    self.rmtree(ModDir)
                 os.makedirs(ModDir)
 
                 # Extract the zipfile and place the config files
@@ -796,7 +797,17 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             zipObj.writestr(zipInfo, NewArchive_FullPath)
 
         return
-
+    
+    def rmtree(self, top):
+        for root, dirs, files in os.walk(top, topdown=False):
+            for name in files:
+                filename = os.path.join(root, name)
+                os.chmod(filename, stat.S_IWUSR)
+                os.remove(filename)
+            for name in dirs:
+                os.rmdir(os.path.join(root, name))
+        os.rmdir(top)
+        return
 
 def main():
     # Get the form
