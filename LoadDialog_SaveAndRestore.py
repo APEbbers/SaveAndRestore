@@ -575,14 +575,15 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                 # Remove the current mod folder and create a new one
                 if os.path.exists(ModDir):                   
                     for item in os.listdir(ModDir):
-                        dir = os.path.join(ModDir, item)
-                        if dir != os.path.join(os.path.dirname(__file__)) and dir != ModDir:
+                        dirName = item.replace("/", "")
+                        dir = os.path.join(ModDir, dirName)
+                        if dirName not in os.path.join(os.path.dirname(__file__)) and dirName not in ModDir:
                             if os.path.isdir(dir):
                                 self.rmtree(dir)
                             if os.path.isfile(dir):
                                 os.remove(dir)
                         else:
-                            print(os.path.join(os.path.dirname(__file__)))
+                            Standard_Functions.Mbox(os.path.join(os.path.dirname(__file__)))
                 # os.makedirs(ModDir)
 
                 # Extract the zipfile and place the config files
@@ -778,6 +779,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             if filename in info.filename:
                 extracted_path = zipfile.extract(info, target_dir)
 
+                unix_attributes = None
                 if info.create_system == ZIP_SYSTEM:
                     unix_attributes = info.external_attr >> 16
                 if unix_attributes:
