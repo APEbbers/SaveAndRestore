@@ -579,7 +579,6 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                                 os.remove(dir)
                         else:
                             Standard_Functions.Mbox(os.path.join(os.path.dirname(__file__)))
-                # os.makedirs(ModDir)
 
                 # Extract the zipfile and place the config files
                 if Fullname is not None and Fullname != "":
@@ -606,15 +605,6 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                         with ZipFile(Fullname, "r") as zipObj:
                             ZIP_SYSTEM=3
                             try:                                
-                                # members = [m for m in zipObj.namelist() if not m.startswith("SaveAndRestore")]
-                                # zipObj.extractall(ModDir, members=members)
-
-                                # for info in zipObj.infolist():
-                                #     extracted_path = os.path.join(ModDir, info.filename)
-                                #     if info.create_system == ZIP_SYSTEM:
-                                #         unix_attributes = info.external_attr >> 16
-                                #     if unix_attributes:
-                                #         os.chmod(extracted_path, unix_attributes)
                                 for info in zipObj.infolist():
                                     if "SaveAndRestore" not in info.filename:
                                         extracted_path = zipObj.extract(info, ModDir)
