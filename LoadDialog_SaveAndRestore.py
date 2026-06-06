@@ -608,7 +608,8 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                             try:
                                 for info in zipObj.infolist():
                                     if os.path.basename(os.path.dirname(__file__)) not  in info.filename:
-                                        extracted_path = zipObj.extract(info, ModDir)
+                                        extracted_path = os.path.join(ModDir, info.filename)
+                                        zipObj.extractall(info.filename, ModDir)
 
                                         if info.create_system == ZIP_SYSTEM:
                                             unix_attributes = info.external_attr >> 16
