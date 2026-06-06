@@ -625,12 +625,6 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                                     Qt.CursorShape.ArrowCursor
                                 )
                                 return
-                            
-                        # Return to the normal cursor
-                        QApplication.setOverrideCursor(
-                            Qt.CursorShape.ArrowCursor
-                        )
-                        return
 
                     # Write the path to preferences
                     Parameters_SaveAndRestore.Settings.SetStringSetting(
