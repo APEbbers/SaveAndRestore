@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>419</width>
+    <width>480</width>
     <height>496</height>
    </rect>
   </property>
@@ -32,8 +32,8 @@
       <property name="spacing">
        <number>3</number>
       </property>
-      <item row="1" column="0">
-       <widget class="QPushButton" name="startSafeMode">
+      <item row="2" column="0">
+       <widget class="QPushButton" name="OpenModDir">
         <property name="minimumSize">
          <size>
           <width>200</width>
@@ -41,22 +41,9 @@
          </size>
         </property>
         <property name="text">
-         <string>Start FreeCAD in safe mode</string>
+         <string>Open addon directory</string>
         </property>
        </widget>
-      </item>
-      <item row="0" column="2">
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Orientation::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
       </item>
       <item row="0" column="0">
        <widget class="QPushButton" name="restoreToolbars">
@@ -74,8 +61,8 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QPushButton" name="OpenModDir">
+      <item row="1" column="0">
+       <widget class="QPushButton" name="startSafeMode">
         <property name="minimumSize">
          <size>
           <width>200</width>
@@ -83,7 +70,7 @@
          </size>
         </property>
         <property name="text">
-         <string>Open addon directory</string>
+         <string>Start FreeCAD in safe mode</string>
         </property>
        </widget>
       </item>
@@ -219,6 +206,18 @@
    </item>
    <item row="3" column="0">
     <widget class="QGroupBox" name="groupBox_3">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>30</height>
+      </size>
+     </property>
      <property name="title">
       <string/>
      </property>
@@ -243,26 +242,13 @@
         <property name="minimumSize">
          <size>
           <width>200</width>
-          <height>50</height>
+          <height>30</height>
          </size>
         </property>
         <property name="text">
          <string>Backup addon directory</string>
         </property>
        </widget>
-      </item>
-      <item row="0" column="1">
-       <spacer name="horizontalSpacer_3">
-        <property name="orientation">
-         <enum>Qt::Orientation::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
       </item>
      </layout>
     </widget>
@@ -378,29 +364,22 @@
       </property>
       <item row="0" column="0">
        <widget class="QPushButton" name="RestoreMod">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
           <width>200</width>
-          <height>50</height>
+          <height>30</height>
          </size>
         </property>
         <property name="text">
          <string>Restore addon directory</string>
         </property>
        </widget>
-      </item>
-      <item row="0" column="1">
-       <spacer name="horizontalSpacer_4">
-        <property name="orientation">
-         <enum>Qt::Orientation::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
       </item>
      </layout>
     </widget>
