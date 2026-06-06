@@ -566,50 +566,23 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             if answer == "yes":
                 # Set the wait cursor
                 QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
+                
+                # Remove the current mod folder and create a new one
+                if os.path.exists(ModDir):
+                    shutil.rmtree(ModDir)
+                os.makedirs(ModDir)
 
                 # Extract the zipfile and place the config files
                 if Fullname is not None and Fullname != "":
                     if not platform.system() == "Darwin":
                         # loading the temp.zip and creating a zip object
                         with ZipFile(Fullname, "r") as zipObj:
-                            # Extracting all the members of the zip
-                            # into a specific location.
-                            counter = 0
-                            # Delete the files first to be sure that the file will be from the zipfile.
-                            if platform.system() == "Windows":
-                                subprocess.run(
-                                    os.path.join(
-                                        os.path.dirname(__file__),
-                                        "DeleteFile.bat",
-                                    )
-                                    + " "
-                                    + ModDir
-                                )
-                            if (
-                                platform.system() == "Linux"
-                                or platform.system() == "Darwin"
-                            ):
-                                subprocess.run(
-                                    [
-                                        "bash",
-                                        os.path.join(
-                                            os.path.dirname(__file__),
-                                            "DeleteFile.sh",
-                                        ),
-                                        ModDir,
-                                    ]
-                                )
-
                             # Extract the file from the zip file into the config directory
                             try:
                                 for info in zipObj.infolist():
-                                    if ModDir in info.filename:
-                                        zipObj.extract(
-                                            info, ModDir
-                                        )
-
-                                # Set the file to read only to prevent from FreeCAD from overwrite the file after shutdown
-                                os.chmod(ModDir, S_IREAD)
+                                    zipObj.extract(
+                                        info, ModDir
+                                    )
                             except Exception as e:
                                 print(e)
                                 Standard_Functions.Print(
@@ -622,7 +595,6 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                                 return
 
                     if platform.system() == "Darwin":
-                        counter = 0
                         self.extract_with_permission(
                             ZipFile(Fullname),
                             os.path.basename(ModDir),
@@ -630,15 +602,6 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                         )
                         time.sleep(1)
                         try:
-                            # Delete the current files
-                            subprocess.run(
-                                [
-                                    "bash",
-                                    "DeleteFile.sh",
-                                    ModDir,
-                                ]
-                            )
-
                             # Move the extracted files to the config location
                             shutil.move(
                                 os.path.join(
@@ -648,9 +611,6 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                                 ModDir,
                             )
                             time.sleep(1)
-                            # Set the file to read only to prevent from FreeCAD from overwrite the file after shutdown
-                            # os.chmod(App.getUserConfigDir() + File, S_IREAD)
-
                         except Exception as e:
                             print(e)
                             Standard_Functions.Print(
