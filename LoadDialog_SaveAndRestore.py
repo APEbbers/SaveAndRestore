@@ -607,27 +607,29 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                                 return
 
                     if platform.system() == "Darwin":
-                        self.extract_with_permission(
-                            ZipFile(Fullname),
-                            os.path.basename(ModDir),
-                            os.path.dirname(Fullname),
-                        )
-                        time.sleep(1)
-                        try:
-                            # Move the extracted files to the config location
-                            shutil.move(
-                                os.path.join(
-                                    os.path.dirname(Fullname),
-                                    os.path.basename(ModDir),
-                                ),
-                                ModDir,
-                            )
-                            time.sleep(1)
-                        except Exception as e:
-                            print(e)
-                            Standard_Functions.Print(
-                                f"{ModDir} not present in archive", "Warning"
-                            )
+                        # Extract the file from the zip file into the config directory
+                        with ZipFile(Fullname, "r") as zipObj:
+                            ZIP_SYSTEM=3
+                            try:
+                                for info in zipObj.infolist():
+                                    if os.path.basename(os.path.dirname(__file__)) not  in info.filename:
+                                        extracted_path = zipObj.extract(info, ModDir)
+
+                                        if info.create_system == ZIP_SYSTEM:
+                                            unix_attributes = info.external_attr >> 16
+                                        if unix_attributes:
+                                            os.chmod(extracted_path, unix_attributes)
+                            except Exception as e:
+                                print(e)
+                                Standard_Functions.Print(
+                                    f"{ModDir} not present in archive", "Warning"
+                                )
+                                # Return to the normal cursor
+                                QApplication.setOverrideCursor(
+                                    Qt.CursorShape.ArrowCursor
+                                )
+                                return
+                            
                         # Return to the normal cursor
                         QApplication.setOverrideCursor(
                             Qt.CursorShape.ArrowCursor
