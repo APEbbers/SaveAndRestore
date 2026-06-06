@@ -552,13 +552,16 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         )
         if Fullname != "" and Fullname is not None:
             self.form.hide()
+            yesText = translate("FreeCAD SaveAndRestore", "Restore and restart")
+            if platform.system() == "Darwin":
+                yesText = translate("FreeCAD SaveAndRestore", "Restore")
             answer = Standard_Functions.RestartDialog(
                 translate(
                     "FreeCAD SaveAndRestore",
                     "Do you really restore these settings?",
                 ),
                 True,
-                translate("FreeCAD SaveAndRestore", "Restore and restart"),
+                yesText,
                 translate("FreeCAD SaveAndRestore", "Cancel"),
             )
             if answer == "no":
