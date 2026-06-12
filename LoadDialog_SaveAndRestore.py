@@ -29,6 +29,7 @@ import os
 from stat import S_IREAD, S_IRGRP, S_IROTH
 from PySide.QtCore import Qt, SIGNAL, QProcess
 from PySide.QtWidgets import QApplication, QLabel, QToolBar, QMenu
+from PySide.QtGui import QGuiApplication, QAction, QIcon, QPixmap
 import sys
 from datetime import datetime
 import Standard_Functions_SaveAndRestore as Standard_Functions
@@ -82,6 +83,8 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         self.ReproAdress = Standard_Functions.ReturnXML_Value(
             PackageXML, "url", "type", "repository"
         )
+        
+        self.form.setWindowIcon(QIcon(os.path.join(pathIcons, "SaveAnRestore.svg")))
 
         # Connect the save function
         def on_saveSettings_clicked():

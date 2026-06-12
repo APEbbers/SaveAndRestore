@@ -5,7 +5,7 @@
 
   <description>A simple addon to save and restore your settings</description>
 
-  <version>1.0</version>
+  <version>1.1</version>
 
   <date>2025-05-10</date>
 
@@ -24,7 +24,7 @@
   <content>
     <workbench>
       <freecadmin>0.21.0</freecadmin>
-      <icon>Resources/icons/FreecadNew.svg</icon>
+      <icon>Resources/icons/SaveAnRestore.svg</icon>
       <subdirectory>./</subdirectory>
     </workbench>
   </content>
