@@ -100,7 +100,8 @@
          rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:creator><cc:Agent><dc:title>[maxwxyz]</dc:title></cc:Agent></dc:creator><dc:relation>https://www.freecad.org/wiki/index.php?title=Artwork</dc:relation><dc:publisher><cc:Agent><dc:title>FreeCAD</dc:title></cc:Agent></dc:publisher><dc:identifier>FreeCAD/src/</dc:identifier><dc:rights><cc:Agent><dc:title>FreeCAD LGPL2+</dc:title></cc:Agent></dc:rights><dc:date>2024</dc:date></cc:Work></rdf:RDF></metadata><g
      id="layer3"
-     style="display:inline"><g
+     style="display:inline"
+     transform="matrix(0.83288348,0,0,0.83288348,0.94924201,0.66846621)"><g
        id="layer3-3"
        style="display:inline"><path
          style="fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:#2e3436;stroke-width:2;stroke-dasharray:none;stroke-opacity:1"
