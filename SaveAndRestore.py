@@ -31,7 +31,7 @@ import FreeCADGui as Gui
 import json
 import platform
 from PySide.QtCore import Qt, QTimer, QSize, QSettings, SIGNAL
-from PySide.QtGui import QGuiApplication, QAction
+from PySide.QtGui import QGuiApplication, QAction, QIcon, QPixmap
 from PySide.QtWidgets import (
     QMainWindow,
     QLabel,
@@ -43,6 +43,7 @@ from PySide.QtWidgets import (
     QMenu,
 )
 from time import sleep
+import sys
 
 import Standard_Functions_SaveAndRestore as Standard_Functions
 import LoadDialog_SaveAndRestore
@@ -52,6 +53,11 @@ translate = App.Qt.translate
 # Get the main window of FreeCAD
 mw: QMainWindow = Gui.getMainWindow()
 
+# Get the resources
+pathUI = os.path.join(os.path.dirname(__file__), "Resources", "ui")
+pathIcons = os.path.join(os.path.dirname(__file__), "Resources", "icons")
+sys.path.append(pathIcons)
+sys.path.append(pathUI)
 
 class SaveAndRestore:
 
@@ -84,6 +90,7 @@ class SaveAndRestore:
                     "FreeCAD SaveAndRestore", "Save and restore FreeCAD's setting files"
                 )
             )
+            Button.setIcon(QIcon(os.path.join(pathIcons, "SaveAnRestore.svg")))
 
             def LoadDialog():
                 LoadDialog_SaveAndRestore.main()
