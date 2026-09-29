@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'ui_DialogWsbYej.ui'
+## Form generated from reading UI file 'ui_DialogZLqnmU.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.11.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
+from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
     QSize, QTime, QUrl, Qt)
-from PySide.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
+from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide.QtWidgets import (QApplication, QCheckBox, QDialog, QFrame,
+from PySide6.QtWidgets import (QApplication, QCheckBox, QDialog, QFrame,
     QGridLayout, QGroupBox, QPushButton, QSizePolicy,
     QSpacerItem, QWidget)
 
@@ -23,7 +23,7 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         if not Dialog.objectName():
             Dialog.setObjectName(u"Dialog")
-        Dialog.resize(409, 537)
+        Dialog.resize(409, 510)
         self.gridLayout_8 = QGridLayout(Dialog)
         self.gridLayout_8.setObjectName(u"gridLayout_8")
         self.groupBox_4 = QGroupBox(Dialog)
@@ -129,8 +129,9 @@ class Ui_Dialog(object):
         self.groupBox_3.setSizePolicy(sizePolicy)
         self.groupBox_3.setMinimumSize(QSize(0, 0))
         self.gridLayout_7 = QGridLayout(self.groupBox_3)
-        self.gridLayout_7.setSpacing(3)
         self.gridLayout_7.setObjectName(u"gridLayout_7")
+        self.gridLayout_7.setHorizontalSpacing(3)
+        self.gridLayout_7.setVerticalSpacing(6)
         self.gridLayout_7.setContentsMargins(3, 3, 3, 3)
         self.BackupMod = QPushButton(self.groupBox_3)
         self.BackupMod.setObjectName(u"BackupMod")
@@ -157,8 +158,9 @@ class Ui_Dialog(object):
         self.groupBox = QGroupBox(Dialog)
         self.groupBox.setObjectName(u"groupBox")
         self.gridLayout_4 = QGridLayout(self.groupBox)
-        self.gridLayout_4.setSpacing(3)
         self.gridLayout_4.setObjectName(u"gridLayout_4")
+        self.gridLayout_4.setHorizontalSpacing(3)
+        self.gridLayout_4.setVerticalSpacing(6)
         self.gridLayout_4.setContentsMargins(3, 3, 3, 3)
         self.OpenModDir = QPushButton(self.groupBox)
         self.OpenModDir.setObjectName(u"OpenModDir")

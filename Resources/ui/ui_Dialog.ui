@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>409</width>
-    <height>537</height>
+    <height>510</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -251,8 +251,11 @@
       <property name="bottomMargin">
        <number>3</number>
       </property>
-      <property name="spacing">
+      <property name="horizontalSpacing">
        <number>3</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>6</number>
       </property>
       <item row="0" column="0">
        <widget class="QPushButton" name="BackupMod">
@@ -313,8 +316,11 @@
       <property name="bottomMargin">
        <number>3</number>
       </property>
-      <property name="spacing">
+      <property name="horizontalSpacing">
        <number>3</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>6</number>
       </property>
       <item row="2" column="0">
        <widget class="QPushButton" name="OpenModDir">
