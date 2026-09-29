@@ -9,7 +9,9 @@
 
   <date>2025-05-10</date>
 
-  <maintainer>Paul Ebbers</maintainer>
+  <author>Paul Ebbers</author>
+
+  <maintainer email="business@apebbers.nl">Paul Ebbers</maintainer>
 
   <license file="LICENSE">MIT</license>
 
