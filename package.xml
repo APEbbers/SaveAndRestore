@@ -17,7 +17,7 @@
 
   <pythonmin>3.8.0</pythonmin>
 
-  <url type="website">https://github.com/APEbbers/SaveAndRestore</url>
+  <url type="website">https://codeberg.org/apebbers/SaveAndRestore</url>
 
   <url branch="main" type="repository">https://github.com/APEbbers/SaveAndRestore</url>
 
