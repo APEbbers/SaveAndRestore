@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'ui_DialogZLqnmU.ui'
+## Form generated from reading UI file 'ui_DialogOOPevR.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.11.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
+from PySide.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
     QSize, QTime, QUrl, Qt)
-from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
+from PySide.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QDialog, QFrame,
+from PySide.QtWidgets import (QApplication, QCheckBox, QDialog, QFrame,
     QGridLayout, QGroupBox, QPushButton, QSizePolicy,
     QSpacerItem, QWidget)
 
@@ -245,6 +245,9 @@ class Ui_Dialog(object):
         self.restoreToolbars.setText(QCoreApplication.translate("Dialog", u"Restore toolbars", None))
         self.startSafeMode.setText(QCoreApplication.translate("Dialog", u"Start FreeCAD in safe mode", None))
         self.CloseButton.setText(QCoreApplication.translate("Dialog", u"Close", None))
+#if QT_CONFIG(shortcut)
+        self.CloseButton.setShortcut(QCoreApplication.translate("Dialog", u"Esc", None))
+#endif // QT_CONFIG(shortcut)
         self.HelpButton.setText(QCoreApplication.translate("Dialog", u"Help", None))
     # retranslateUi
 

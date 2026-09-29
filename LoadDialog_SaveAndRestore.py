@@ -28,7 +28,7 @@ import FreeCADGui as Gui
 import os
 from stat import S_IREAD, S_IRGRP, S_IROTH
 from PySide.QtCore import Qt, SIGNAL, QProcess
-from PySide.QtWidgets import QApplication, QLabel, QToolBar, QMenu
+from PySide.QtWidgets import QApplication, QLabel, QToolBar, QMenu, QSizePolicy
 from PySide.QtGui import QGuiApplication, QAction, QIcon, QPixmap
 import sys
 from datetime import datetime
@@ -77,6 +77,31 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         self.form.setWindowFlag(Qt.WindowType.WindowMinMaxButtonsHint, False)
         self.form.setWindowFlag(Qt.WindowType.WindowCloseButtonHint, True)
         self.form.setWindowFlag(Qt.WindowType.WindowMinimizeButtonHint, True)
+        
+        # Set the size of the window to the previous state
+        #
+        # Get the previous values
+        LayoutDialog_Height = Parameters_SaveAndRestore.Settings.GetIntSetting(
+            "LayoutDialog_Height"
+        )
+        if LayoutDialog_Height == 0 or LayoutDialog_Height is None:
+            LayoutDialog_Height = 500
+        LayoutDialog_Width = Parameters_SaveAndRestore.Settings.GetIntSetting(
+            "LayoutDialog_Width"
+        )
+        if LayoutDialog_Width == 0 or LayoutDialog_Height is None:
+            LayoutDialog_Width = 400
+        # set a fixed size to force the form in to shape
+        self.form.setFixedSize(LayoutDialog_Width, LayoutDialog_Height)
+        # Set the size policy to fixed
+        self.form.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        # Set a minimum and maximum size
+        self.form.setMinimumSize(400, 500)
+        self.form.setMaximumSize(120000, 120000)
+        # change the sizepolicy to preferred, to allow stretching
+        self.form.setSizePolicy(
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred
+        )
 
         # Get the address of the repository address
         PackageXML = os.path.join(os.path.dirname(__file__), "package.xml")
@@ -184,6 +209,9 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             SIGNAL("clicked()"),
             on_OpenModDir_clicked,
         )   
+        
+        # Connect the close function
+        self.form.CloseButton.clicked.connect(self.on_CloseButton_clicked)   
 
         return
 
@@ -218,6 +246,9 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                 SaveAs=True,
             )
             if Fullname is not None and Fullname != "":
+                # Set the wait cursor
+                QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
+                
                 # Create the zipfile with the config files
                 # if not platform.system() == "Darwin":
                 with ZipFile(Fullname, "w") as zipObj:
@@ -247,6 +278,8 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                     "Warning",
                 )
             )
+        # Return to the normal cursor
+        QApplication.setOverrideCursor(Qt.CursorShape.ArrowCursor)
         return
 
     def RestoreSettings(self):
@@ -498,7 +531,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
 
         return
 
-    def BackupMod(self):
+    def BackupMod(self):        
         ModDir = pathlib.Path(os.path.join(App.getUserAppDataDir(), "Mod"))
         
         # Define a prefix
@@ -518,6 +551,9 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
             SaveAs=True,
         )
         if Fullname is not None and Fullname != "":
+            # Set the wait cursor
+            QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
+            
             # Create the zipfile with the config files
             # if not platform.system() == "Darwin":            
             with ZipFile(Fullname, "w") as zipObj:
@@ -542,6 +578,8 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
                 f'Addons saved as "{FileName}" to "{os.path.dirname(Fullname)}"',
             )
         )
+        # Return to the normal cursor
+        QApplication.setOverrideCursor(Qt.CursorShape.ArrowCursor)
         return
     
     def RestoreMod(self):
@@ -756,6 +794,15 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         if platform.system() == "Windows":
             os.startfile(ModDir)
         return
+
+    def on_CloseButton_clicked(self):
+         # Set the size of the window to the previous state
+        Parameters_SaveAndRestore.Settings.SetIntSetting(
+            "LayoutDialog_Height", self.form.height()
+        )
+        Parameters_SaveAndRestore.Settings.SetIntSetting(
+            "LayoutDialog_Width", self.form.width()
+        )
 
     def extract_all_with_permission(self, zipfile, target_dir, ZIP_SYSTEM=3):
         for info in zipfile.infolist():
