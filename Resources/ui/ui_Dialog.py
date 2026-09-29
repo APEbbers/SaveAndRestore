@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'ui_DialogFtHOxB.ui'
+## Form generated from reading UI file 'ui_DialogWsbYej.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.11.1
+## Created by: Qt User Interface Compiler version 6.11.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -15,9 +15,9 @@ from PySide.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide.QtWidgets import (QApplication, QCheckBox, QDialog, QGridLayout,
-    QGroupBox, QPushButton, QSizePolicy, QSpacerItem,
-    QWidget)
+from PySide.QtWidgets import (QApplication, QCheckBox, QDialog, QFrame,
+    QGridLayout, QGroupBox, QPushButton, QSizePolicy,
+    QSpacerItem, QWidget)
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
@@ -30,86 +30,92 @@ class Ui_Dialog(object):
         self.groupBox_4.setObjectName(u"groupBox_4")
         self.gridLayout_6 = QGridLayout(self.groupBox_4)
         self.gridLayout_6.setObjectName(u"gridLayout_6")
-        self.groupBox = QGroupBox(self.groupBox_4)
-        self.groupBox.setObjectName(u"groupBox")
-        self.gridLayout = QGridLayout(self.groupBox)
-        self.gridLayout.setSpacing(3)
+        self.gridLayout_6.setHorizontalSpacing(3)
+        self.gridLayout_6.setVerticalSpacing(6)
+        self.gridLayout_6.setContentsMargins(3, 3, 3, 3)
+        self.frame = QFrame(self.groupBox_4)
+        self.frame.setObjectName(u"frame")
+        self.gridLayout = QGridLayout(self.frame)
         self.gridLayout.setObjectName(u"gridLayout")
-        self.gridLayout.setContentsMargins(3, 3, 3, 3)
-        self.saveSettings = QPushButton(self.groupBox)
+        self.gridLayout.setHorizontalSpacing(3)
+        self.gridLayout.setVerticalSpacing(0)
+        self.gridLayout.setContentsMargins(0, 0, 0, 0)
+        self.saveSettings = QPushButton(self.frame)
         self.saveSettings.setObjectName(u"saveSettings")
         self.saveSettings.setMinimumSize(QSize(200, 50))
 
         self.gridLayout.addWidget(self.saveSettings, 0, 0, 2, 1)
 
-        self.IncludeUser_Save = QCheckBox(self.groupBox)
+        self.IncludeUser_Save = QCheckBox(self.frame)
         self.IncludeUser_Save.setObjectName(u"IncludeUser_Save")
         self.IncludeUser_Save.setChecked(True)
 
         self.gridLayout.addWidget(self.IncludeUser_Save, 0, 1, 1, 1)
 
-        self.IncludeSystem_Save = QCheckBox(self.groupBox)
+        self.IncludeSystem_Save = QCheckBox(self.frame)
         self.IncludeSystem_Save.setObjectName(u"IncludeSystem_Save")
         self.IncludeSystem_Save.setChecked(True)
 
         self.gridLayout.addWidget(self.IncludeSystem_Save, 1, 1, 1, 1)
 
 
-        self.gridLayout_6.addWidget(self.groupBox, 0, 0, 1, 1)
+        self.gridLayout_6.addWidget(self.frame, 0, 0, 1, 1)
 
-        self.groupBox1 = QGroupBox(self.groupBox_4)
-        self.groupBox1.setObjectName(u"groupBox1")
-        self.gridLayout_2 = QGridLayout(self.groupBox1)
-        self.gridLayout_2.setSpacing(3)
+        self.frame1 = QFrame(self.groupBox_4)
+        self.frame1.setObjectName(u"frame1")
+        self.gridLayout_2 = QGridLayout(self.frame1)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
-        self.gridLayout_2.setContentsMargins(3, 3, 3, 3)
-        self.IncludeUser_Restore = QCheckBox(self.groupBox1)
+        self.gridLayout_2.setHorizontalSpacing(3)
+        self.gridLayout_2.setVerticalSpacing(0)
+        self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.IncludeUser_Restore = QCheckBox(self.frame1)
         self.IncludeUser_Restore.setObjectName(u"IncludeUser_Restore")
         self.IncludeUser_Restore.setChecked(True)
 
         self.gridLayout_2.addWidget(self.IncludeUser_Restore, 0, 1, 1, 1)
 
-        self.restoreSettings = QPushButton(self.groupBox1)
+        self.restoreSettings = QPushButton(self.frame1)
         self.restoreSettings.setObjectName(u"restoreSettings")
         self.restoreSettings.setMinimumSize(QSize(200, 50))
 
         self.gridLayout_2.addWidget(self.restoreSettings, 0, 0, 2, 1)
 
-        self.IncludeSystem_Restore = QCheckBox(self.groupBox1)
+        self.IncludeSystem_Restore = QCheckBox(self.frame1)
         self.IncludeSystem_Restore.setObjectName(u"IncludeSystem_Restore")
         self.IncludeSystem_Restore.setChecked(True)
 
         self.gridLayout_2.addWidget(self.IncludeSystem_Restore, 1, 1, 1, 1)
 
 
-        self.gridLayout_6.addWidget(self.groupBox1, 1, 0, 1, 1)
+        self.gridLayout_6.addWidget(self.frame1, 1, 0, 1, 1)
 
-        self.groupBox_2 = QGroupBox(self.groupBox_4)
-        self.groupBox_2.setObjectName(u"groupBox_2")
-        self.gridLayout_5 = QGridLayout(self.groupBox_2)
-        self.gridLayout_5.setSpacing(3)
+        self.frame_2 = QFrame(self.groupBox_4)
+        self.frame_2.setObjectName(u"frame_2")
+        self.gridLayout_5 = QGridLayout(self.frame_2)
         self.gridLayout_5.setObjectName(u"gridLayout_5")
-        self.gridLayout_5.setContentsMargins(3, 3, 3, 3)
-        self.IncludeUser_Clear = QCheckBox(self.groupBox_2)
+        self.gridLayout_5.setHorizontalSpacing(3)
+        self.gridLayout_5.setVerticalSpacing(0)
+        self.gridLayout_5.setContentsMargins(0, 0, 0, 0)
+        self.IncludeUser_Clear = QCheckBox(self.frame_2)
         self.IncludeUser_Clear.setObjectName(u"IncludeUser_Clear")
         self.IncludeUser_Clear.setChecked(True)
 
         self.gridLayout_5.addWidget(self.IncludeUser_Clear, 0, 1, 1, 1)
 
-        self.clearSettings = QPushButton(self.groupBox_2)
+        self.clearSettings = QPushButton(self.frame_2)
         self.clearSettings.setObjectName(u"clearSettings")
         self.clearSettings.setMinimumSize(QSize(200, 50))
 
         self.gridLayout_5.addWidget(self.clearSettings, 0, 0, 2, 1)
 
-        self.IncludeSystem_Clear = QCheckBox(self.groupBox_2)
+        self.IncludeSystem_Clear = QCheckBox(self.frame_2)
         self.IncludeSystem_Clear.setObjectName(u"IncludeSystem_Clear")
         self.IncludeSystem_Clear.setChecked(True)
 
         self.gridLayout_5.addWidget(self.IncludeSystem_Clear, 1, 1, 1, 1)
 
 
-        self.gridLayout_6.addWidget(self.groupBox_2, 2, 0, 1, 1)
+        self.gridLayout_6.addWidget(self.frame_2, 2, 0, 1, 1)
 
 
         self.gridLayout_8.addWidget(self.groupBox_4, 0, 0, 1, 1)
@@ -148,32 +154,32 @@ class Ui_Dialog(object):
 
         self.gridLayout_8.addWidget(self.groupBox_3, 1, 0, 1, 1)
 
-        self.groupBox2 = QGroupBox(Dialog)
-        self.groupBox2.setObjectName(u"groupBox2")
-        self.gridLayout_4 = QGridLayout(self.groupBox2)
+        self.groupBox = QGroupBox(Dialog)
+        self.groupBox.setObjectName(u"groupBox")
+        self.gridLayout_4 = QGridLayout(self.groupBox)
         self.gridLayout_4.setSpacing(3)
         self.gridLayout_4.setObjectName(u"gridLayout_4")
         self.gridLayout_4.setContentsMargins(3, 3, 3, 3)
-        self.OpenModDir = QPushButton(self.groupBox2)
+        self.OpenModDir = QPushButton(self.groupBox)
         self.OpenModDir.setObjectName(u"OpenModDir")
         self.OpenModDir.setMinimumSize(QSize(200, 30))
 
         self.gridLayout_4.addWidget(self.OpenModDir, 2, 0, 1, 1)
 
-        self.restoreToolbars = QPushButton(self.groupBox2)
+        self.restoreToolbars = QPushButton(self.groupBox)
         self.restoreToolbars.setObjectName(u"restoreToolbars")
         self.restoreToolbars.setMinimumSize(QSize(200, 30))
 
         self.gridLayout_4.addWidget(self.restoreToolbars, 0, 0, 1, 1)
 
-        self.startSafeMode = QPushButton(self.groupBox2)
+        self.startSafeMode = QPushButton(self.groupBox)
         self.startSafeMode.setObjectName(u"startSafeMode")
         self.startSafeMode.setMinimumSize(QSize(200, 30))
 
         self.gridLayout_4.addWidget(self.startSafeMode, 1, 0, 1, 1)
 
 
-        self.gridLayout_8.addWidget(self.groupBox2, 2, 0, 1, 1)
+        self.gridLayout_8.addWidget(self.groupBox, 2, 0, 1, 1)
 
         self.verticalSpacer = QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -229,7 +235,7 @@ class Ui_Dialog(object):
         self.groupBox_3.setTitle(QCoreApplication.translate("Dialog", u"Addons", None))
         self.BackupMod.setText(QCoreApplication.translate("Dialog", u"Backup addon directory", None))
         self.RestoreMod.setText(QCoreApplication.translate("Dialog", u"Restore addon directory", None))
-        self.groupBox2.setTitle(QCoreApplication.translate("Dialog", u"Extra functions", None))
+        self.groupBox.setTitle(QCoreApplication.translate("Dialog", u"Extra functions", None))
         self.OpenModDir.setText(QCoreApplication.translate("Dialog", u"Open addon directory", None))
 #if QT_CONFIG(tooltip)
         self.restoreToolbars.setToolTip(QCoreApplication.translate("Dialog", u"Restores all toolbars for every workbench.", None))

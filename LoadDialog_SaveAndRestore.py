@@ -539,7 +539,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         print(
             translate(
                 "FreeCAD SaveAndRestore",
-                f'Settings saved as "{FileName}" to "{os.path.dirname(Fullname)}"',
+                f'Addons saved as "{FileName}" to "{os.path.dirname(Fullname)}"',
             )
         )
         return

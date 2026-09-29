@@ -83,7 +83,7 @@ class SaveAndRestore:
 
             # Add a button for the Save and Restore dialog
             Button = QAction(mw)
-            Button.setText(translate("FreeCAD SaveAndRestore", "Save and restore..."))
+            Button.setText(translate("FreeCAD SaveAndRestore", "Save and Restore"))
             Button.setObjectName("SaveAndRestore")
             Button.setToolTip(
                 translate(
@@ -106,7 +106,7 @@ class SaveAndRestore:
                             # Check if the button is already present
                             isPresent = False
                             for action in child.actions():
-                                if action.text() == "Save and restore...":
+                                if action.text() == "Save and Restore":
                                     isPresent = True
                             # If not present, add the button
                             if isPresent is False:
