@@ -106,7 +106,7 @@ class LoadDialog(ui_Dialog.Ui_Dialog):
         # Get the address of the repository address
         PackageXML = os.path.join(os.path.dirname(__file__), "package.xml")
         self.ReproAdress = Standard_Functions.ReturnXML_Value(
-            PackageXML, "url", "type", "repository"
+            PackageXML, "url", "type", "website"
         )
         
         self.form.setWindowIcon(QIcon(os.path.join(pathIcons, "SaveAnRestore.svg")))
