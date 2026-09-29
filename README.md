@@ -1,5 +1,5 @@
-# SaveAndRestore
-![Dialog](https://codeberg.org/apebbers/SaveAndRestore/raw/branch/Develop/Resources/Images/Dialog%20-%201.png)  
+## SaveAndRestore
+![Dialog](https://codeberg.org/apebbers/SaveAndRestore/raw/branch/main/Resources/Images/Dialog%20-%201.png)  
 A simple addon to save and restore your settings. With this addon you can:
 - Create a backup for the user.cfg and system.cfg files.
 - Restore user.cfg and system.cfg files from a backup.
@@ -7,15 +7,25 @@ A simple addon to save and restore your settings. With this addon you can:
 - Backup all addons.
 - Restore all addons
 - Reset all toolbars. Usefull when for example the Ribbon UI is disabled or uninstalled.
-- Start FreeCAD in safe mode
+- Start FreeCAD in safe mode.
 
-You can find the "Save and restore" button in the Tools menu (Windows and Linux) or the application menu (MacOS).
+### Button location in FreeCAD
+<ins>*Menubar:*</ins>    
+  - Windows and Linux:  
+    ![image2](https://codeberg.org/apebbers/SaveAndRestore/raw/branch/main/Resources/Images/Button%20-%20Menubar.png)  
+  - MacOS:  
+    ![image4](https://codeberg.org/apebbers/SaveAndRestore/raw/branch/main/Resources/Images/Button%20-%20MacOs.png)  
+  
+<ins>*RibbonUI:*</ins>  
+![Image3](https://codeberg.org/apebbers/SaveAndRestore/raw/branch/main/Resources/Images/Button%20-%20RibbonUI.png)  
 
-Windows and Linux:  
-![image](https://github.com/user-attachments/assets/c8b75347-1e2d-45c3-bb76-4cc36e74eb54)
+## Installation
 
-MacOS:  
-![image](https://github.com/user-attachments/assets/41211f2a-53cc-456e-ac90-81bd85d992b1)
+### Install via the Addon Manager
 
-This addon can be installed via the Addon Manager.
+1. Open FreeCAD [Addon Manager](https://wiki.freecad.org/Std_AddonMgr).
+1. Search for 'Save and restore'.
+1. Click on 'Install'.
 
+Result: Addon will be installed and FreeCAD will prompt for a restart.
+Accept prompt and FreeCAD will restart with the Save and restore addon included.
